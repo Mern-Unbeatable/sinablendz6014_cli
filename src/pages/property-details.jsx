@@ -278,6 +278,7 @@ export default function PropertyDetailsPage() {
   const { slug } = useParams();
   const property = allProperties[slug];
   const [sent, setSent] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
   if (!property) {
     return (
@@ -340,56 +341,64 @@ export default function PropertyDetailsPage() {
             </div>
           </FadeIn>
 
-          {/* Airbnb Style Responsive Gallery */}
+          {/* Responsive Gallery */}
           <FadeIn delay={0.1}>
-            <div className="relative group">
-              <div className="flex md:grid overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 gap-3 md:gap-2 h-[35vh] sm:h-[45vh] md:h-[60vh] md:rounded-2xl pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
-                <div className="md:row-span-2 relative overflow-hidden flex-none w-[85%] sm:w-[70%] md:w-auto snap-center rounded-xl md:rounded-none">
-                  <img
-                    src={images[0]}
-                    alt="Main"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block" />
+            {/* Mobile View: Main Image + Thumbnails */}
+            <div className="md:hidden flex flex-col gap-3">
+              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-sm">
+                <img 
+                  src={images[activeImage]} 
+                  alt={`Property Image ${activeImage + 1}`} 
+                  className="w-full h-full object-cover transition-opacity duration-300" 
+                  key={activeImage}
+                />
+                <button className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-semibold shadow-soft flex items-center gap-2 border border-border z-10">
+                  {activeImage + 1} / {images.length}
+                </button>
+              </div>
+              <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x pb-2">
+                {images.map((img, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => setActiveImage(i)}
+                    className={`relative w-[22%] aspect-[4/3] shrink-0 rounded-xl overflow-hidden snap-center transition-all ${
+                      activeImage === i 
+                        ? 'ring-2 ring-ink ring-offset-1' 
+                        : 'opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop View: Masonry Grid */}
+            <div className="hidden md:block relative group">
+              <div className="grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden">
+                <div className="md:row-span-2 relative overflow-hidden group/item">
+                  <img src={images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden flex-none w-[85%] sm:w-[70%] md:w-auto snap-center rounded-xl md:rounded-none">
-                  <img
-                    src={images[1]}
-                    alt="Gallery 1"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block" />
+                <div className="relative overflow-hidden group/item">
+                  <img src={images[1]} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden flex-none w-[85%] sm:w-[70%] md:w-auto snap-center rounded-xl md:rounded-none">
-                  <img
-                    src={images[2]}
-                    alt="Gallery 2"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block" />
+                <div className="relative overflow-hidden group/item">
+                  <img src={images[2]} alt="Gallery 2" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden flex-none w-[85%] sm:w-[70%] md:w-auto snap-center rounded-xl md:rounded-none">
-                  <img
-                    src={images[3]}
-                    alt="Gallery 3"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block" />
+                <div className="relative overflow-hidden group/item">
+                  <img src={images[3]} alt="Gallery 3" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden flex-none w-[85%] sm:w-[70%] md:w-auto snap-center rounded-xl md:rounded-none">
-                  <img
-                    src={images[4]}
-                    alt="Gallery 4"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block" />
+                <div className="relative overflow-hidden group/item">
+                  <img src={images[4]} alt="Gallery 4" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
               </div>
-              <button className="absolute bottom-8 right-0 md:bottom-4 md:right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform items-center gap-2 border border-border z-10 hidden md:flex">
+              <button className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform flex items-center gap-2 border border-border z-10">
                 Show all photos
-              </button>
-              <button className="absolute bottom-8 right-6 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-semibold shadow-soft flex items-center gap-2 border border-border z-10 md:hidden">
-                1 / 5
               </button>
             </div>
           </FadeIn>
