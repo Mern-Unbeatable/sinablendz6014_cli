@@ -39,7 +39,7 @@
   --color-copper-soft: var(--copper-soft);
 
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
-  --font-sans: "Jakarta", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
 
   --shadow-luxe: 0 30px 80px -30px color-mix(in oklab, var(--ink) 50%, transparent);
   --shadow-soft: 0 10px 40px -20px color-mix(in oklab, var(--ink) 25%, transparent);
@@ -49,10 +49,10 @@
   --radius: 0.75rem;
 
   /* Brand palette */
-  --ink: oklch(0.16 0.01 60);              /* near-black warm */
-  --sand: oklch(0.93 0.025 75);            /* warm cream/beige */
-  --sand-soft: oklch(0.97 0.012 80);       /* off-white */
-  --copper: oklch(0.68 0.13 55);           /* warm copper/gold */
+  --ink: oklch(0.16 0.01 60);
+  --sand: oklch(0.93 0.025 75);
+  --sand-soft: oklch(0.97 0.012 80);
+  --copper: oklch(0.68 0.13 55);
   --copper-soft: oklch(0.82 0.09 70);
 
   --background: var(--sand-soft);
@@ -90,11 +90,18 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "ss02";
     -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    line-height: 1.6;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
+    line-height: 1.2;
   }
+  h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 600; }
+  h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 600; }
+  p { font-size: clamp(0.95rem, 1.2vw, 1.1rem); }
   .font-display { font-family: var(--font-display); }
   .italic-script {
     font-family: var(--font-display);
@@ -105,9 +112,10 @@
 }
 
 @utility eyebrow {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
+  font-weight: 500;
   color: color-mix(in oklab, var(--ink) 65%, transparent);
 }
 
@@ -118,13 +126,31 @@
   gap: 0.5rem;
   background: var(--copper);
   color: white;
-  padding: 0.85rem 1.6rem;
+  padding: 1rem 2rem;
   border-radius: 999px;
-  font-weight: 500;
-  font-size: 0.92rem;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
   transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
   box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--copper) 60%, transparent);
-  &:hover { background: color-mix(in oklab, var(--copper) 88%, black); transform: translateY(-1px); }
+  &:hover { background: color-mix(in oklab, var(--copper) 88%, black); transform: translateY(-2px); box-shadow: 0 15px 40px -12px color-mix(in oklab, var(--copper) 70%, transparent); }
+}
+
+@utility btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--sand-soft);
+  border: 1.5px solid var(--sand-soft);
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  transition: all .25s ease;
+  &:hover { background: var(--sand-soft); color: var(--ink); transform: translateY(-2px); }
 }
 
 @utility btn-ghost-dark {
@@ -134,20 +160,21 @@
   gap: 0.5rem;
   background: var(--ink);
   color: var(--sand-soft);
-  padding: 0.85rem 1.6rem;
+  padding: 1rem 2rem;
   border-radius: 999px;
-  font-weight: 500;
-  font-size: 0.92rem;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
   transition: all .25s ease;
-  &:hover { background: color-mix(in oklab, var(--ink) 85%, var(--copper)); }
+  &:hover { background: color-mix(in oklab, var(--ink) 85%, var(--copper)); transform: translateY(-2px); }
 }
 
 @utility section-pad {
-  padding-block: clamp(4rem, 8vw, 7rem);
+  padding-block: clamp(5rem, 10vw, 8rem);
 }
 
 @utility container-luxe {
-  max-width: 1200px;
+  max-width: 1320px;
   margin-inline: auto;
-  padding-inline: 1.5rem;
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
 }

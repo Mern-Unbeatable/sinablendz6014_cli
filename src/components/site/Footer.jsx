@@ -1,83 +1,168 @@
-import { Link } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
+
+const navLinks = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/services", label: "Services" },
+  { to: "/properties", label: "Properties" },
+  { to: "/contact", label: "Contact" },
+];
+
+const serviceLinks = [
+  "Property Management",
+  "Guest Support",
+  "Dynamic Pricing",
+  "Property Inspections",
+];
 
 export function Footer() {
+  const location = useLocation();
+  const isContactPage = location.pathname === "/contact";
+
   return (
     <footer className="bg-ink text-sand-soft">
-      <div className="container-luxe grid gap-12 py-16 md:grid-cols-4">
-        <div>
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-copper/60">
-            <span className="font-display text-3xl italic text-copper">L</span>
-          </div>
-          <p className="mt-6 max-w-xs text-sm text-sand-soft/60">
-            Melbourne&rsquo;s trusted short-term rental management — premium care, premium returns.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="eyebrow !text-copper">Navigate</h4>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li>
-              <Link to="/services" className="hover:text-copper">
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link to="/properties" className="hover:text-copper">
-                Properties
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="hover:text-copper">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="hover:text-copper">
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="eyebrow !text-copper">Contact Us</h4>
-          <ul className="mt-4 space-y-3 text-sm text-sand-soft/80">
-            <li className="flex items-center gap-2">
-              <Phone size={14} className="text-copper" /> (03) 6123 0127
-            </li>
-            <li className="flex items-center gap-2">
-              <Mail size={14} className="text-copper" /> info@liveluxe.com.au
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="eyebrow !text-copper">Follow</h4>
-          <div className="mt-4 flex gap-3">
-            {[Facebook, Instagram, Linkedin].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-sand-soft/80 transition hover:border-copper hover:text-copper"
-              >
-                <Icon size={15} />
-              </a>
-            ))}
+      {/* CTA Banner */}
+      {!isContactPage && (
+        <div className="bg-copper">
+          <div className="container-luxe flex flex-col items-center justify-between gap-6 py-10 md:flex-row">
+            <div>
+              <h3 className="text-2xl font-bold text-white tracking-tight">
+                Ready to Unlock Your Property's Potential?
+              </h3>
+              <p className="mt-1 text-white/80">
+                Get a free revenue estimate and discover what your property could earn.
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-semibold text-ink transition-all hover:bg-sand-soft hover:-translate-y-1 hover:shadow-lg whitespace-nowrap"
+            >
+              Get Your Estimate <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
+      )}
+
+      {/* Main footer */}
+      <div className="container-luxe grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+        <FadeIn>
+          <div>
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-copper/60 transition group-hover:border-copper">
+                <span className="font-display text-3xl italic text-copper">L</span>
+              </div>
+              <div className="leading-none">
+                <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">
+                  LIVE
+                </div>
+                <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">
+                  LUXE
+                </div>
+              </div>
+            </Link>
+            <p className="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-sand-soft/60">
+              Melbourne&rsquo;s trusted short-term rental management — premium care, premium
+              returns. We treat every property like it&rsquo;s our own.
+            </p>
+            <div className="mt-6 flex gap-3">
+              {[Facebook, Instagram, Linkedin].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-sand-soft/70 transition-all hover:border-copper hover:text-copper hover:bg-copper/10 hover:-translate-y-1"
+                >
+                  <Icon size={16} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div>
+            <h4 className="eyebrow text-copper! text-sm!">Quick Links</h4>
+            <ul className="mt-5 space-y-3">
+              {navLinks.map((l) => (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
+                    className="text-[0.95rem] text-sand-soft/70 transition-colors hover:text-copper"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <div>
+            <h4 className="eyebrow text-copper! text-sm!">Our Services</h4>
+            <ul className="mt-5 space-y-3">
+              {serviceLinks.map((s) => (
+                <li key={s}>
+                  <Link
+                    to="/services"
+                    className="text-[0.95rem] text-sand-soft/70 transition-colors hover:text-copper"
+                  >
+                    {s}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.3}>
+          <div>
+            <h4 className="eyebrow text-copper! text-sm!">Contact Info</h4>
+            <ul className="mt-5 space-y-4">
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-copper/15 text-copper">
+                  <Phone size={15} />
+                </span>
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-sand-soft/50">CALL US</p>
+                  <p className="text-[0.95rem] text-sand-soft/80">(03) 6123 0127</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-copper/15 text-copper">
+                  <Mail size={15} />
+                </span>
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-sand-soft/50">EMAIL</p>
+                  <p className="text-[0.95rem] text-sand-soft/80">info@liveluxe.com.au</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-copper/15 text-copper">
+                  <MapPin size={15} />
+                </span>
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-sand-soft/50">LOCATION</p>
+                  <p className="text-[0.95rem] text-sand-soft/80">Melbourne, VIC, Australia</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </FadeIn>
       </div>
 
+      {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="container-luxe flex flex-col items-center justify-between gap-3 py-6 text-xs text-sand-soft/50 md:flex-row">
-          <p>© 2025 Live Luxe Pty Ltd. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-copper">
+        <div className="container-luxe flex flex-col items-center justify-between gap-3 py-6 text-sm text-sand-soft/50 md:flex-row">
+          <p>&copy; {new Date().getFullYear()} Live Luxe Pty Ltd. All rights reserved.</p>
+          <div className="flex gap-8">
+            <Link to="/privacy" className="transition-colors hover:text-copper">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-copper">
+            </Link>
+            <Link to="/terms" className="transition-colors hover:text-copper">
               Terms &amp; Conditions
-            </a>
+            </Link>
           </div>
         </div>
       </div>

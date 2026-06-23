@@ -1,6 +1,7 @@
-import { Link, NavLink } from "react-router-dom";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
   { to: "/", label: "Home" },
@@ -10,69 +11,159 @@ const links = [
   { to: "/contact", label: "Contact" },
 ];
 
-export function Header() {
+export function Header({ theme = "dark" }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isLightMode = theme === "light" && !scrolled;
+  const textColorClass = isLightMode ? "text-ink" : "text-sand-soft";
+  const textMutedClass = isLightMode ? "text-ink/80" : "text-sand-soft/80";
+
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
-      <div className="container-luxe flex items-center justify-between pt-6">
-        <Link to="/" className="flex items-center gap-3 rounded-full bg-ink/90 px-5 py-3 backdrop-blur">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-copper/60">
-            <span className="font-display text-xl italic text-copper">L</span>
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-ink/95 shadow-lg shadow-black/10 backdrop-blur-xl"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="container-luxe flex items-center justify-between py-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-copper/60 transition-all group-hover:border-copper group-hover:shadow-[0_0_15px_rgba(191,145,82,0.3)]">
+            <span className="font-display text-2xl italic text-copper">L</span>
           </div>
-          <div className="leading-none">
-            <div className="font-display text-base tracking-[0.25em] text-sand-soft">LIVE</div>
-            <div className="font-display text-base tracking-[0.25em] text-sand-soft">LUXE</div>
+          <div className={`leading-none ${textColorClass}`}>
+            <div className="font-display text-sm tracking-[0.3em] font-medium">LIVE</div>
+            <div className="font-display text-sm tracking-[0.3em] font-medium">LUXE</div>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-1 rounded-full bg-ink/90 px-3 py-2 backdrop-blur md:flex">
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.to === "/"}
               className={({ isActive }) =>
-                `rounded-full px-4 py-2 text-sm transition hover:text-copper ${
-                  isActive ? "text-copper" : "text-sand-soft/80"
+                `relative px-5 py-2 text-[0.95rem] font-medium transition-colors duration-300 ${
+                  isActive
+                    ? "text-copper"
+                    : `${textMutedClass} hover:text-copper`
                 }`
               }
             >
-              {l.label}
+              {({ isActive }) => (
+                <>
+                  {l.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="nav-indicator"
+                      className="absolute inset-x-2 -bottom-1 h-0.5 rounded-full bg-copper"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </>
+              )}
             </NavLink>
           ))}
           <Link
             to="/contact"
-            className="ml-2 rounded-full bg-sand-soft px-5 py-2 text-sm font-medium text-ink transition hover:bg-copper hover:text-white"
+            className="ml-4 inline-flex items-center gap-2 rounded-full bg-copper px-6 py-2.5 text-[0.95rem] font-semibold text-white transition-all hover:bg-copper/90 hover:shadow-lg hover:shadow-copper/25 hover:-translate-y-0.5"
           >
-            Book Now
+            Get Started <ArrowRight size={16} />
           </Link>
         </nav>
 
+        {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="rounded-full bg-ink/90 p-3 text-sand-soft md:hidden"
+          className={`relative z-50 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur-sm md:hidden ${
+            isLightMode ? "bg-ink/10 text-ink" : "bg-white/10 text-sand-soft"
+          }`}
           aria-label="Menu"
         >
-          {open ? <X size={18} /> : <Menu size={18} />}
+          <AnimatePresence mode="wait">
+            {open ? (
+              <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                <X size={20} />
+              </motion.div>
+            ) : (
+              <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                <Menu size={20} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </button>
       </div>
 
-      {open && (
-        <div className="container-luxe mt-4 md:hidden">
-          <div className="rounded-2xl bg-ink/95 p-4 backdrop-blur">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setOpen(false)}
-                className="block rounded-lg px-4 py-3 text-sand-soft/90 hover:bg-white/5"
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden border-t border-white/10 bg-ink/98 backdrop-blur-xl md:hidden"
+          >
+            <div className="container-luxe py-6 space-y-1">
+              {links.map((l, i) => (
+                <motion.div
+                  key={l.to}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                >
+                  <NavLink
+                    to={l.to}
+                    end={l.to === "/"}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `block rounded-xl px-5 py-3.5 text-lg font-medium transition-colors ${
+                        isActive
+                          ? "bg-copper/10 text-copper"
+                          : "text-sand-soft/80 hover:bg-white/5 hover:text-sand-soft"
+                      }`
+                    }
+                  >
+                    {l.label}
+                  </NavLink>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="pt-4"
               >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
+                <Link
+                  to="/contact"
+                  onClick={() => setOpen(false)}
+                  className="btn-primary w-full justify-center"
+                >
+                  Get Started <ArrowRight size={16} />
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }
