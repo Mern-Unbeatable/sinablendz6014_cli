@@ -124,8 +124,6 @@
   font-size: 0.92rem;
   transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
   box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--copper) 60%, transparent);
-}
-@utility btn-primary {
   &:hover { background: color-mix(in oklab, var(--copper) 88%, black); transform: translateY(-1px); }
 }
 
@@ -141,8 +139,6 @@
   font-weight: 500;
   font-size: 0.92rem;
   transition: all .25s ease;
-}
-@utility btn-ghost-dark {
   &:hover { background: color-mix(in oklab, var(--ink) 85%, var(--copper)); }
 }
 
