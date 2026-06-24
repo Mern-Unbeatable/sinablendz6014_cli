@@ -27,26 +27,51 @@ export function Header({ theme = "dark" }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isLightMode = theme === "light" && !scrolled;
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const isLightMode = theme === "light" && !scrolled && !open;
   const textColorClass = isLightMode ? "text-ink" : "text-sand-soft";
   const textMutedClass = isLightMode ? "text-ink/80" : "text-sand-soft/80";
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-ink/95 shadow-lg shadow-black/10 backdrop-blur-xl"
-          : "bg-transparent"
-      }`}
-    >
+    <>
+      <AnimatePresence>
+        {open && (
+          <motion.button
+            type="button"
+            aria-label="Close menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+          open
+            ? "bg-ink shadow-lg"
+            : scrolled
+              ? "bg-ink/95 shadow-lg shadow-black/10 backdrop-blur-xl"
+              : "bg-transparent"
+        }`}
+      >
       <div className="container-luxe flex items-center justify-between py-3 md:py-4">
         <Logo className="h-11 md:h-16" />
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {links.map((l) => (
             <NavLink
               key={l.to}
@@ -85,7 +110,7 @@ export function Header({ theme = "dark" }) {
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className={`relative z-50 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur-sm md:hidden ${
+          className={`relative z-50 flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-sm lg:hidden ${
             isLightMode ? "bg-ink/10 text-ink" : "bg-white/10 text-sand-soft"
           }`}
           aria-label="Menu"
@@ -112,7 +137,7 @@ export function Header({ theme = "dark" }) {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-white/10 bg-ink/98 backdrop-blur-xl md:hidden"
+            className="overflow-hidden bg-ink lg:hidden"
           >
             <div className="container-luxe py-6 space-y-1">
               {links.map((l, i) => (
@@ -157,5 +182,6 @@ export function Header({ theme = "dark" }) {
         )}
       </AnimatePresence>
     </motion.header>
+    </>
   );
 }
