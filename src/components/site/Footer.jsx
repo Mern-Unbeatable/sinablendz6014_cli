@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
+import { FadeIn } from "@/components/animations";
+import { Logo } from "./Logo";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -49,19 +50,7 @@ export function Footer() {
       <div className="container-luxe grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         <FadeIn>
           <div>
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-copper/60 transition group-hover:border-copper">
-                <span className="font-display text-3xl italic text-copper">L</span>
-              </div>
-              <div className="leading-none">
-                <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">
-                  LIVE
-                </div>
-                <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">
-                  LUXE
-                </div>
-              </div>
-            </Link>
+            <Logo className="h-16 md:h-20" />
             <p className="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-sand-soft/60">
               Melbourne&rsquo;s trusted short-term rental management — premium care, premium
               returns. We treat every property like it&rsquo;s our own.
@@ -135,7 +124,7 @@ export function Footer() {
                 </span>
                 <div>
                   <p className="text-xs tracking-[0.2em] text-sand-soft/50">EMAIL</p>
-                  <p className="text-[0.95rem] text-sand-soft/80">info@liveluxe.com.au</p>
+                  <p className="text-[0.95rem] text-sand-soft/80">info@aurorasuites.com.au</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -155,7 +144,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container-luxe flex flex-col items-center justify-between gap-3 py-6 text-sm text-sand-soft/50 md:flex-row">
-          <p>&copy; {new Date().getFullYear()} Live Luxe Pty Ltd. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Aurora Suites Pty Ltd. All rights reserved.</p>
           <div className="flex gap-8">
             <Link to="/privacy" className="transition-colors hover:text-copper">
               Privacy Policy

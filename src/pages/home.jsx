@@ -137,7 +137,7 @@ const properties = [
   },
   {
     img: bedroom,
-    title: "Live Luxe | Gorgeous City Views 2BR APT w/ Pool & Gym",
+    title: "Aurora Suites | Gorgeous City Views 2BR APT w/ Pool & Gym",
     beds: 2,
     baths: 2,
     guests: 4,
@@ -175,7 +175,7 @@ function Hero() {
           {/* Left content */}
           <div>
             <FadeIn>
-              <span className="eyebrow !text-copper-soft !text-sm">Welcome to Live Luxe</span>
+              <span className="eyebrow !text-copper-soft !text-sm">Welcome to Aurora Suites</span>
             </FadeIn>
             <FadeIn delay={0.1}>
               <h1 className="mt-5 text-4xl font-bold tracking-tight text-white md:text-6xl leading-[1.1]">
@@ -238,19 +238,21 @@ function Hero() {
             <div className="grid grid-cols-2 gap-1 rounded-xl">
               <button
                 onClick={() => setTab("home")}
-                className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-base font-semibold transition ${
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold transition ${
                   tab === "home" ? "bg-sand text-ink shadow-soft" : "text-muted-foreground hover:text-ink"
                 }`}
               >
-                <HomeIcon size={18} className="text-copper" /> I am a homeowner
+                <HomeIcon size={18} className="text-copper shrink-0" /> 
+                <span className="whitespace-nowrap"><span className="hidden sm:inline">I am a </span><span className="capitalize sm:normal-case">homeowner</span></span>
               </button>
               <button
                 onClick={() => setTab("guest")}
-                className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-base font-semibold transition ${
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold transition ${
                   tab === "guest" ? "bg-sand text-ink shadow-soft" : "text-muted-foreground hover:text-ink"
                 }`}
               >
-                <KeyRound size={18} className="text-copper" /> I am a guest
+                <KeyRound size={18} className="text-copper shrink-0" /> 
+                <span className="whitespace-nowrap"><span className="hidden sm:inline">I am a </span><span className="capitalize sm:normal-case">guest</span></span>
               </button>
             </div>
             <div className="mt-2 rounded-xl bg-sand p-6">
@@ -323,7 +325,7 @@ function About() {
           </FadeIn>
           <FadeIn delay={0.15}>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Live Luxe is Melbourne&rsquo;s most trusted short-stay rental management company. We combine world-class hospitality, dynamic pricing science, and a deeply hands-on local team to help property owners earn more with zero effort.
+              Aurora Suites is Melbourne&rsquo;s most trusted short-stay rental management company. We combine world-class hospitality, dynamic pricing science, and a deeply hands-on local team to help property owners earn more with zero effort.
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>

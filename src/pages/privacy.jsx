@@ -12,7 +12,7 @@ export default function PrivacyPage() {
             
             <div className="prose prose-ink max-w-none space-y-6 text-ink/80 leading-relaxed">
               <p>
-                At Live Luxe, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and safeguard the data you provide to us.
+                At Aurora Suites, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and safeguard the data you provide to us.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">1. Information We Collect</h2>
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">2. How We Use Your Information</h2>
               <p>
-                The information we collect is used solely for the purpose of providing you with our property management services, communicating updates, and improving your experience with Live Luxe. We do not sell or share your personal data with third parties for marketing purposes.
+                The information we collect is used solely for the purpose of providing you with our property management services, communicating updates, and improving your experience with Aurora Suites. We do not sell or share your personal data with third parties for marketing purposes.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">3. Data Security</h2>
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">5. Your Rights</h2>
               <p>
-                You have the right to access, update, or request the deletion of your personal information. To exercise these rights, please contact us at info@liveluxe.com.au.
+                You have the right to access, update, or request the deletion of your personal information. To exercise these rights, please contact us at info@aurorasuites.com.au.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">6. Changes to This Policy</h2>

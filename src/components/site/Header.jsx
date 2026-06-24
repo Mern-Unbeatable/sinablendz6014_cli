@@ -2,6 +2,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Logo } from "./Logo";
 
 const links = [
   { to: "/", label: "Home" },
@@ -42,16 +43,7 @@ export function Header({ theme = "dark" }) {
       }`}
     >
       <div className="container-luxe flex items-center justify-between py-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-copper/60 transition-all group-hover:border-copper group-hover:shadow-[0_0_15px_rgba(191,145,82,0.3)]">
-            <span className="font-display text-2xl italic text-copper">L</span>
-          </div>
-          <div className={`leading-none ${textColorClass}`}>
-            <div className="font-display text-sm tracking-[0.3em] font-medium">LIVE</div>
-            <div className="font-display text-sm tracking-[0.3em] font-medium">LUXE</div>
-          </div>
-        </Link>
+        <Logo className="h-16" />
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex">

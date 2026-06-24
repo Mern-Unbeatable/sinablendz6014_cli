@@ -60,7 +60,7 @@ const team = [
 export default function AboutPage() {
   return (
     <Layout>
-      <PageHero title="ABOUT" script="Live Luxe" image={skyline}>
+      <PageHero title="ABOUT" script="Aurora Suites" image={skyline}>
         <p className="mt-6 max-w-xl text-lg text-sand-soft/75 leading-relaxed">
           Melbourne&rsquo;s most trusted short-stay rental management — born from a passion for
           premium hospitality.
@@ -81,7 +81,7 @@ export default function AboutPage() {
             </FadeIn>
             <FadeIn delay={0.15}>
               <p className="mt-6 text-muted-foreground leading-relaxed">
-                Live Luxe was founded by Melbourne property owners who knew there had to be a better
+                Aurora Suites was founded by Melbourne property owners who knew there had to be a better
                 way to run short-term rentals — one that delivered hotel-grade hospitality without
                 the daily headaches and constant stress.
               </p>
@@ -210,7 +210,7 @@ export default function AboutPage() {
             <div className="text-center max-w-2xl mx-auto">
               <span className="eyebrow">Our Team</span>
               <h2 className="mt-4 tracking-tight">
-                Meet the <span className="italic-script">team</span> behind Live Luxe
+                Meet the <span className="italic-script">team</span> behind Aurora Suites
               </h2>
               <p className="mt-4 text-muted-foreground">
                 A dedicated local team of property management professionals who are passionate about

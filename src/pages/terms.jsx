@@ -12,12 +12,12 @@ export default function TermsPage() {
             
             <div className="prose prose-ink max-w-none space-y-6 text-ink/80 leading-relaxed">
               <p>
-                Welcome to Live Luxe. By accessing our website and utilizing our property management services, you agree to be bound by the following terms and conditions.
+                Welcome to Aurora Suites. By accessing our website and utilizing our property management services, you agree to be bound by the following terms and conditions.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">1. Services Provided</h2>
               <p>
-                Live Luxe provides professional short-stay property management services, including listing optimization, dynamic pricing, guest communication, and property maintenance coordination. The specific scope of services will be detailed in your individual management agreement.
+                Aurora Suites provides professional short-stay property management services, including listing optimization, dynamic pricing, guest communication, and property maintenance coordination. The specific scope of services will be detailed in your individual management agreement.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">2. Homeowner Responsibilities</h2>
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">4. Limitation of Liability</h2>
               <p>
-                While we take every precaution to vet guests and protect your property, Live Luxe is not liable for damages caused by guests beyond the coverage provided by the booking platform's host guarantee or your personal landlord insurance policies.
+                While we take every precaution to vet guests and protect your property, Aurora Suites is not liable for damages caused by guests beyond the coverage provided by the booking platform's host guarantee or your personal landlord insurance policies.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">5. Termination</h2>

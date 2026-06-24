@@ -35,7 +35,7 @@ export default function ContactPage() {
               </p>
 
               <div className="mt-10 space-y-6">
-                <ContactDetail icon={Mail} label="EMAIL" value="info@liveluxe.com.au" />
+                <ContactDetail icon={Mail} label="EMAIL" value="info@aurorasuites.com.au" />
                 <ContactDetail icon={Phone} label="CALL" value="(03) 6123 0127" />
                 <ContactDetail icon={MapPin} label="VISIT" value="Melbourne, VIC, Australia" />
                 <ContactDetail icon={Clock} label="HOURS" value="Mon — Fri: 9AM — 6PM" />

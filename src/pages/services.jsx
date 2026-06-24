@@ -86,8 +86,8 @@ export default function ServicesPage() {
           </div>
           <FadeIn direction="left" delay={0.2}>
             <div className="grid grid-cols-2 gap-4">
-              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={skyline} alt="" loading="lazy" className="aspect-[3/4] rounded-2xl object-cover shadow-soft" />
-              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={penthouse} alt="" loading="lazy" className="aspect-[3/4] rounded-2xl object-cover shadow-soft mt-8" />
+              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={skyline} alt="" loading="lazy" className="aspect-3/4 rounded-2xl object-cover shadow-soft" />
+              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={penthouse} alt="" loading="lazy" className="aspect-3/4 rounded-2xl object-cover shadow-soft mt-8" />
             </div>
           </FadeIn>
         </div>
@@ -215,9 +215,9 @@ export default function ServicesPage() {
         <div className="container-luxe relative grid gap-14 lg:grid-cols-2 items-center">
           <FadeIn>
             <div>
-              <span className="eyebrow !text-copper-soft">Getting Started</span>
+              <span className="eyebrow text-copper-soft!">Getting Started</span>
               <h2 className="mt-4 text-white tracking-tight">
-                HOW IT <span className="italic-script !text-copper-soft">Works</span>
+                HOW IT <span className="italic-script text-copper-soft!">Works</span>
               </h2>
               <p className="mt-6 text-lg text-sand-soft/60 leading-relaxed">
                 We can have your property styled, listed, and generating income in as little as 7 days. Here&rsquo;s how we get started.
@@ -230,7 +230,7 @@ export default function ServicesPage() {
                 <motion.div
                   whileHover={{ x: 5, borderColor: "rgba(191,145,82,0.5)" }}
                   transition={{ duration: 0.3 }}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur"
+                  className="rounded-2xl border border-white/10 bg-white/4 p-7 backdrop-blur"
                 >
                   <div className="flex items-start gap-5">
                     <span className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-copper text-lg font-bold text-white">

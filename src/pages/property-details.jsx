@@ -121,7 +121,7 @@ const allProperties = {
     otherListings: ["sub-penthouse-southbank", "city-views-cbd"],
   },
   "city-views-cbd": {
-    title: "Live Luxe | Gorgeous City Views 2BR APT w/ Pool & Gym",
+    title: "Aurora Suites | Gorgeous City Views 2BR APT w/ Pool & Gym",
     location: "Melbourne CBD",
     beds: 2,
     baths: 2,
@@ -410,7 +410,7 @@ export default function PropertyDetailsPage() {
               <FadeIn delay={0.15}>
                 <div className="flex items-center justify-between pb-8 border-b border-border">
                   <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Hosted by Live Luxe</h2>
+                    <h2 className="text-2xl font-bold tracking-tight">Hosted by Aurora Suites</h2>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-2 text-[0.95rem] text-ink/75">
                       <span>{property.guests} guests</span>
                       <span>·</span>
@@ -451,7 +451,7 @@ export default function PropertyDetailsPage() {
                     <div>
                       <h3 className="font-semibold text-lg">Professionally managed</h3>
                       <p className="text-muted-foreground text-[0.95rem] mt-0.5">
-                        Managed by Live Luxe, ensuring hotel-grade cleanliness and 24/7 support.
+                        Managed by Aurora Suites, ensuring hotel-grade cleanliness and 24/7 support.
                       </p>
                     </div>
                   </div>
@@ -582,7 +582,7 @@ export default function PropertyDetailsPage() {
                         <Shield size={20} className="text-copper" />
                       </div>
                       <p className="text-sm font-medium text-ink/80 leading-snug">
-                        Secure booking directly with Live Luxe management.
+                        Secure booking directly with Aurora Suites management.
                       </p>
                     </div>
                   </div>
@@ -630,7 +630,7 @@ export default function PropertyDetailsPage() {
           {otherProperties.length > 0 && (
             <div className="mt-16 pt-16 border-t border-border">
               <FadeIn>
-                <h2 className="text-2xl font-bold tracking-tight">More from Live Luxe</h2>
+                <h2 className="text-2xl font-bold tracking-tight">More from Aurora Suites</h2>
               </FadeIn>
               <StaggerContainer
                 className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
