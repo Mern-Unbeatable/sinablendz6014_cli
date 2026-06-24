@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Check, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout, PageHero } from "@/components/site/Layout";
+import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import living from "@/assets/living-room.jpg";
 import skyline from "@/assets/skyline.jpg";
@@ -66,7 +67,7 @@ export default function ServicesPage() {
         <div className="container-luxe grid gap-14 lg:grid-cols-2 items-center">
           <div>
             <FadeIn>
-              <span className="font-display text-5xl italic text-copper">L</span>
+              <Logo className="h-16" />
             </FadeIn>
             <FadeIn delay={0.1}>
               <h2 className="mt-3 tracking-tight">

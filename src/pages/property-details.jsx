@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/site/Layout";
+import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import penthouse from "@/assets/penthouse.jpg";
 import living from "@/assets/living-room.jpg";
@@ -345,11 +346,11 @@ export default function PropertyDetailsPage() {
           <FadeIn delay={0.1}>
             {/* Mobile View: Main Image + Thumbnails */}
             <div className="md:hidden flex flex-col gap-3">
-              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-sm">
-                <img 
-                  src={images[activeImage]} 
-                  alt={`Property Image ${activeImage + 1}`} 
-                  className="w-full h-full object-cover transition-opacity duration-300" 
+              <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden shadow-sm">
+                <img
+                  src={images[activeImage]}
+                  alt={`Property Image ${activeImage + 1}`}
+                  className="w-full h-full object-cover transition-opacity duration-300"
                   key={activeImage}
                 />
                 <button className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-semibold shadow-soft flex items-center gap-2 border border-border z-10">
@@ -358,16 +359,20 @@ export default function PropertyDetailsPage() {
               </div>
               <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x pb-2">
                 {images.map((img, i) => (
-                  <button 
-                    key={i} 
+                  <button
+                    key={i}
                     onClick={() => setActiveImage(i)}
-                    className={`relative w-[22%] aspect-[4/3] shrink-0 rounded-xl overflow-hidden snap-center transition-all ${
-                      activeImage === i 
-                        ? 'ring-2 ring-ink ring-offset-1' 
-                        : 'opacity-60 hover:opacity-100'
+                    className={`relative w-[22%] aspect-4/3 shrink-0 rounded-xl overflow-hidden snap-center transition-all ${
+                      activeImage === i
+                        ? "ring-2 ring-ink ring-offset-1"
+                        : "opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt={`Thumbnail ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -377,23 +382,43 @@ export default function PropertyDetailsPage() {
             <div className="hidden md:block relative group">
               <div className="grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden">
                 <div className="md:row-span-2 relative overflow-hidden group/item">
-                  <img src={images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <img
+                    src={images[0]}
+                    alt="Main"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                  />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
                 <div className="relative overflow-hidden group/item">
-                  <img src={images[1]} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <img
+                    src={images[1]}
+                    alt="Gallery 1"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                  />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
                 <div className="relative overflow-hidden group/item">
-                  <img src={images[2]} alt="Gallery 2" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <img
+                    src={images[2]}
+                    alt="Gallery 2"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                  />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
                 <div className="relative overflow-hidden group/item">
-                  <img src={images[3]} alt="Gallery 3" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <img
+                    src={images[3]}
+                    alt="Gallery 3"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                  />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
                 <div className="relative overflow-hidden group/item">
-                  <img src={images[4]} alt="Gallery 4" className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]" />
+                  <img
+                    src={images[4]}
+                    alt="Gallery 4"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                  />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
               </div>
@@ -419,9 +444,7 @@ export default function PropertyDetailsPage() {
                       <span>{property.baths} baths</span>
                     </div>
                   </div>
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-copper/60 bg-ink text-sand-soft">
-                    <span className="font-display text-2xl italic text-copper">L</span>
-                  </div>
+                  <Logo className="h-14" />
                 </div>
               </FadeIn>
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone, Send, Clock, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout, PageHero } from "@/components/site/Layout";
+import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import dining from "@/assets/dining.jpg";
 
@@ -20,15 +21,7 @@ export default function ContactPage() {
           {/* Contact Info */}
           <FadeIn>
             <aside className="rounded-2xl bg-ink p-10 text-sand-soft h-fit lg:sticky lg:top-28">
-              <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-copper/60">
-                  <span className="font-display text-3xl italic text-copper">L</span>
-                </div>
-                <div className="leading-none">
-                  <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">LIVE</div>
-                  <div className="font-display text-base tracking-[0.3em] text-sand-soft font-medium">LUXE</div>
-                </div>
-              </div>
+              <Logo className="h-14" />
               <p className="mt-2 text-sm tracking-[0.25em] text-copper font-medium">LET&rsquo;S TALK</p>
               <p className="mt-6 text-base text-sand-soft/65 leading-relaxed">
                 If you&rsquo;re ready to maximise your property&rsquo;s earning potential with a trusted local team, get in touch today. We&rsquo;d love to hear from you.

@@ -168,19 +168,19 @@ function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-ink">
       <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-sand" />
+      <div className="absolute inset-0 bg-linear-to-b from-ink/60 via-ink/40 to-sand" />
 
-      <div className="container-luxe relative pt-28 pb-12 lg:pt-32 lg:pb-16 w-full">
+      <div className="container-luxe relative pt-36 pb-12 lg:pt-32 lg:pb-16 w-full">
         <div className="grid items-center gap-8 xl:gap-12 xl:grid-cols-[1.1fr_1fr]">
           {/* Left content */}
           <div>
             <FadeIn>
-              <span className="eyebrow !text-copper-soft !text-sm">Welcome to Aurora Suites</span>
+              <span className="eyebrow text-copper-soft! text-sm!">Welcome to Aurora Suites</span>
             </FadeIn>
             <FadeIn delay={0.1}>
               <h1 className="mt-5 text-4xl font-bold tracking-tight text-white md:text-6xl leading-[1.1]">
                 Professional Short-Stay{" "}
-                <span className="italic-script !text-copper-soft block mt-1 text-5xl md:text-7xl tracking-normal">
+                <span className="italic-script text-copper-soft! block mt-1 text-5xl md:text-7xl tracking-normal">
                   Property Management.
                 </span>
               </h1>
@@ -192,7 +192,7 @@ function Hero() {
             </FadeIn>
             <FadeIn delay={0.3}>
               <div className="mt-6 flex flex-wrap gap-3 md:mt-8 md:gap-4">
-                <Link to="/contact" className="btn-primary">
+                <Link to="/contact" className="btn-primary py-2.5">
                   Get a Free Estimate <ArrowRight className="size-4 md:size-[18px]" />
                 </Link>
                 <Link to="/properties" className="btn-outline">
@@ -210,7 +210,7 @@ function Hero() {
                 transition={{ duration: 0.4 }}
                 src={dining}
                 alt="Dining"
-                className="aspect-[3/4] w-full rounded-2xl object-cover shadow-luxe"
+                className="aspect-3/4 w-full rounded-2xl object-cover shadow-luxe"
               />
               <div className="space-y-3 pt-8">
                 <motion.img
@@ -225,7 +225,7 @@ function Hero() {
                   transition={{ duration: 0.4 }}
                   src={skyline}
                   alt="Skyline"
-                  className="aspect-[4/3] w-full rounded-2xl object-cover shadow-luxe"
+                  className="aspect-4/3 w-full rounded-2xl object-cover shadow-luxe"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ function Hero() {
             </div>
             <div className="mt-2 rounded-xl bg-sand p-6">
               <p className="mb-5 text-base text-muted-foreground">
-                <span className="italic-script !text-lg">Is your property in Melbourne?</span>{" "}
+                <span className="italic-script text-lg!">Is your property in Melbourne?</span>{" "}
                 Check if we manage homes in your area. Fill out your details and we&rsquo;ll be in touch to discuss your goals.
               </p>
               <form
@@ -400,10 +400,10 @@ function Services() {
       <div className="container-luxe relative">
         <FadeIn>
           <div className="text-center max-w-2xl mx-auto">
-            <span className="eyebrow !text-copper-soft">Our Services</span>
+            <span className="eyebrow text-copper-soft!">Our Services</span>
             <h2 className="mt-4 text-white tracking-tight">
               Professional Property Management{" "}
-              <span className="italic-script !text-copper-soft">Services</span>
+              <span className="italic-script text-copper-soft!">Services</span>
             </h2>
             <p className="mt-4 text-lg text-sand-soft/60">
               We offer turnkey short-term rental services tailored to make ownership effortless and profitable.
@@ -419,7 +419,7 @@ function Services() {
                 <motion.div
                   whileHover={{ y: -5, borderColor: "rgba(191,145,82,0.5)" }}
                   transition={{ duration: 0.3 }}
-                  className="group rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur transition-colors h-full"
+                  className="group rounded-2xl border border-white/10 bg-white/4 p-7 backdrop-blur transition-colors h-full"
                 >
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-copper/15 text-copper transition-transform group-hover:scale-110">
                     <Icon size={22} />
@@ -454,15 +454,15 @@ function Priority() {
   return (
     <section className="relative isolate overflow-hidden bg-ink section-pad">
       <img src={skyline} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/70" />
+      <div className="absolute inset-0 bg-linear-to-r from-ink via-ink/90 to-ink/70" />
       <div className="container-luxe relative">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <FadeIn>
             <div>
-              <span className="eyebrow !text-copper-soft">Your Property is Our Priority</span>
+              <span className="eyebrow text-copper-soft!">Your Property is Our Priority</span>
               <h2 className="mt-4 text-white tracking-tight">
                 Built on Professionalism,{" "}
-                <span className="italic-script !text-copper-soft">Not Promises</span>
+                <span className="italic-script text-copper-soft!">Not Promises</span>
               </h2>
               <p className="mt-6 text-lg text-sand-soft/65 leading-relaxed">
                 We&rsquo;ve built our reputation on transparency and results. Every property in our care is protected, maintained, and optimised to deliver strong returns — consistently.
@@ -475,7 +475,7 @@ function Priority() {
               const Icon = p.icon;
               return (
                 <StaggerItem key={p.title}>
-                  <div className="flex items-start gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur">
+                  <div className="flex items-start gap-5 rounded-2xl border border-white/10 bg-white/4 p-6 backdrop-blur">
                     <span className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-copper/15 text-copper">
                       <Icon size={22} />
                     </span>
@@ -583,10 +583,10 @@ function Faq() {
       <div className="container-luxe relative max-w-3xl mx-auto">
         <FadeIn>
           <div className="text-center">
-            <span className="eyebrow !text-copper-soft">FAQ</span>
+            <span className="eyebrow text-copper-soft!">FAQ</span>
             <h2 className="mt-4 text-white tracking-tight">
               Frequently Asked{" "}
-              <span className="italic-script !text-copper-soft">Questions</span>
+              <span className="italic-script text-copper-soft!">Questions</span>
             </h2>
           </div>
         </FadeIn>
@@ -655,7 +655,7 @@ function Properties() {
                   transition={{ duration: 0.3 }}
                   className="group overflow-hidden rounded-2xl bg-ink text-sand-soft shadow-soft"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-4/3 overflow-hidden">
                     <img
                       src={p.img}
                       alt={p.title}
