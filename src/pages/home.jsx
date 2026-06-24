@@ -191,9 +191,9 @@ function Hero() {
               </p>
             </FadeIn>
             <FadeIn delay={0.3}>
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="mt-6 flex flex-wrap gap-3 md:mt-8 md:gap-4">
                 <Link to="/contact" className="btn-primary">
-                  Get a Free Estimate <ArrowRight size={18} />
+                  Get a Free Estimate <ArrowRight className="size-4 md:size-[18px]" />
                 </Link>
                 <Link to="/properties" className="btn-outline">
                   View Properties
@@ -282,7 +282,7 @@ function Hero() {
 function Trusted() {
   const logos = ["OXFORD", "Belle", "RESORT GLOBAL", "CONQUEST", "RayWhite", "FORGE", "Elite", "DPM", "TMG"];
   return (
-    <section className="bg-sand py-16">
+    <section className="bg-sand py-10 md:py-16">
       <div className="container-luxe">
         <FadeIn>
           <p className="text-center text-sm tracking-[0.3em] text-muted-foreground font-medium">
@@ -372,7 +372,7 @@ function About() {
 function FeaturedIn() {
   const logos = ["airbnb", "Booking.com", "vrbo", "stayz", "HomeAway", "MARRIOTT BONVOY", "Google"];
   return (
-    <section className="bg-sand-soft pb-16">
+    <section className="bg-sand-soft py-10 md:pb-16">
       <div className="container-luxe">
         <FadeIn>
           <p className="text-center text-sm tracking-[0.3em] text-muted-foreground font-medium">

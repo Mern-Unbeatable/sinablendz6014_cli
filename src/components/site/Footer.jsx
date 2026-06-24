@@ -38,7 +38,7 @@ export function Footer() {
             </div>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-semibold text-ink transition-all hover:bg-sand-soft hover:-translate-y-1 hover:shadow-lg whitespace-nowrap"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-all hover:bg-sand-soft hover:-translate-y-1 hover:shadow-lg whitespace-nowrap md:px-8 md:py-3.5 md:text-base"
             >
               Get Your Estimate <ArrowRight size={16} />
             </Link>
@@ -47,10 +47,10 @@ export function Footer() {
       )}
 
       {/* Main footer */}
-      <div className="container-luxe grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+      <div className="container-luxe grid gap-12 py-10 md:grid-cols-[1.5fr_1fr_1fr_1.2fr] md:py-16">
         <FadeIn>
           <div>
-            <Logo className="h-16 md:h-20" />
+            <Logo className="h-14 md:h-20" />
             <p className="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-sand-soft/60">
               Melbourne&rsquo;s trusted short-term rental management — premium care, premium
               returns. We treat every property like it&rsquo;s our own.

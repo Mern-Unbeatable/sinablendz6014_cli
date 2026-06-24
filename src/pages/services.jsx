@@ -130,7 +130,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Complete Package */}
-      <section className="bg-sand pb-24">
+      <section className="bg-sand pb-10 md:pb-24">
         <div className="container-luxe">
           <FadeIn>
             <div className="rounded-3xl bg-sand-soft p-8 shadow-soft md:p-14">

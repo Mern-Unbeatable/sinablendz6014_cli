@@ -140,7 +140,7 @@ export default function PropertiesPage() {
       <section className="section-pad bg-sand-soft">
         <div className="container-luxe">
           <FadeIn>
-            <div className="rounded-3xl bg-ink p-12 text-center text-sand-soft md:p-20">
+            <div className="rounded-3xl bg-ink p-8 text-center text-sand-soft md:p-12 lg:p-20">
               <h2 className="tracking-tight text-white">
                 Want your property to <span className="italic-script text-copper-soft!">join the portfolio?</span>
               </h2>

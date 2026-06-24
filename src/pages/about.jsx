@@ -177,7 +177,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="relative isolate overflow-hidden bg-ink py-24 text-sand-soft">
+      <section className="relative isolate overflow-hidden bg-ink py-10 text-sand-soft md:py-24">
         <img
           src={penthouse}
           alt=""
