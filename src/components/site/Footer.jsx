@@ -12,10 +12,10 @@ const navLinks = [
 ];
 
 const serviceLinks = [
-  "Property Management",
-  "Guest Support",
-  "Dynamic Pricing",
-  "Property Inspections",
+  "Property Listings",
+  "Guest Inquiries",
+  "Homeowner Onboarding",
+  "Short-Stay Matching",
 ];
 
 export function Footer() {
@@ -30,17 +30,17 @@ export function Footer() {
           <div className="container-luxe flex flex-col items-center justify-between gap-6 py-10 md:flex-row">
             <div>
               <h3 className="text-2xl font-bold text-white tracking-tight">
-                Ready to Unlock Your Property's Potential?
+                Ready to list your property or find a stay?
               </h3>
               <p className="mt-1 text-white/80">
-                Get a free revenue estimate and discover what your property could earn.
+                Submit an inquiry and our team will follow up with you personally.
               </p>
             </div>
             <Link
               to="/contact"
               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-all hover:bg-sand-soft hover:-translate-y-1 hover:shadow-lg whitespace-nowrap md:px-8 md:py-3.5 md:text-base"
             >
-              Get Your Estimate <ArrowRight size={16} />
+              Get in Touch <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -52,8 +52,8 @@ export function Footer() {
           <div>
             <Logo className="h-14 md:h-20" />
             <p className="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-sand-soft/60">
-              Melbourne&rsquo;s trusted short-term rental management — premium care, premium
-              returns. We treat every property like it&rsquo;s our own.
+              Melbourne&rsquo;s curated short-stay property showcase — we partner with homeowners,
+              list premium properties, and manage every guest inquiry by hand.
             </p>
             <div className="mt-6 flex gap-3">
               {[Facebook, Instagram, Linkedin].map((Icon, i) => (

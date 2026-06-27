@@ -11,54 +11,49 @@ import dining from "@/assets/dining.jpg";
 import bedroom from "@/assets/bedroom.jpg";
 import penthouse from "@/assets/penthouse.jpg";
 
-const supportItems = [
-  "Revenue forecasting based on historical data and market analysis",
-  "Onboarding your property to our fine-tuned system for seamless execution",
-  "Access to our reviewer distribution network for maximum exposure",
-  "Furnishing packages based on your budget and goals",
-  "Professional photography & listing set up",
-  "Listing creation & optimisation across Airbnb, Booking.com, VRBO and more",
-  "Calendar & booking management",
-  "Dynamic pricing for higher occupancy with proven strategies",
-  "Guest screening, vetting & 24/7 support",
-  "Payments and guest communications",
-  "Handling guest feedback, reviews, and issue resolution",
-  "Monthly performance overview",
-  "Access to our extensive network of tradesmen",
+const homeownerItems = [
+  "Submit your property details through our website form",
+  "Professional photography and listing on aurorasuites.com.au",
+  "We collect and rent your property for short-stay use on your behalf",
+  "All guest inquiries are handled manually by our team",
+  "Personal follow-up on availability, terms, and next steps",
+  "Listing updates managed from the admin dashboard",
 ];
 
-const completeItems = [
-  "Full cleaning & linen service",
-  "Maintenance coordination & minor repairs",
-  "Stock replenishment & inventory checks",
-  "Biannual deep cleans",
-  "On-ground property management",
+const guestItems = [
+  "Browse curated short-stay properties across Melbourne",
+  "View full details, photos, and amenities for each listing",
+  "Submit a stay inquiry with your preferred dates",
+  "Our team contacts you directly to confirm availability",
+  "No online booking — every stay is arranged personally",
+  "Clear communication throughout the process",
 ];
 
 const steps = [
   {
     n: "01",
-    t: "Revenue Assessment",
-    d: "We run a free revenue estimate and assess your property's potential based on location, size, and seasonality.",
+    t: "Submit an Inquiry",
+    d: "Homeowners list their property or guests enquire about a stay through our website forms.",
   },
   {
     n: "02",
-    t: "Onboarding, Styling & Furnishing",
-    d: "We onboard your property, coordinate furnishing options based on your budget and goals, and style the space for maximum appeal.",
+    t: "We Connect Personally",
+    d: "Our team reviews every submission and follows up by phone or email — no automated booking.",
   },
   {
     n: "03",
-    t: "Listing & Launch",
-    d: "We craft your listing, photograph professionally, price dynamically and launch across every major platform.",
+    t: "Arrange the Stay",
+    d: "We match guests with suitable properties and coordinate the rental directly with both parties.",
   },
 ];
 
 export default function ServicesPage() {
   return (
     <Layout>
-      <PageHero title="MANAGEMENT" script="Services" image={living}>
+      <PageHero title="OUR" script="Services" image={living}>
         <p className="mt-6 max-w-xl text-lg text-sand-soft/75 leading-relaxed">
-          Turnkey solutions designed to maximise your property&rsquo;s income while you enjoy complete freedom.
+          How we work with homeowners and guests — from listing properties to managing every inquiry
+          manually.
         </p>
       </PageHero>
 
@@ -76,44 +71,77 @@ export default function ServicesPage() {
             </FadeIn>
             <FadeIn delay={0.15}>
               <p className="mt-6 text-muted-foreground leading-relaxed">
-                Whether you want a collaborative partnership or a hands-off experience, our services are designed to suit your lifestyle and maximise your property&rsquo;s potential.
+                Aurora Suites is a property showcase and inquiry platform. We collect properties from
+                Melbourne homeowners, list them on this website, and arrange short-term stays for
+                interested guests — all managed manually by our team.
               </p>
             </FadeIn>
             <FadeIn delay={0.2}>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                From day one, our team handles everything — professional photography, listing creation, dynamic pricing, guest communication, and property maintenance. You sit back, we deliver results.
+                The website is not a booking engine. It helps us present listings, receive inquiries,
+                and keep everything organised while we handle communication between owners and guests
+                directly.
               </p>
             </FadeIn>
           </div>
           <FadeIn direction="left" delay={0.2}>
             <div className="grid grid-cols-2 gap-4">
-              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={skyline} alt="" loading="lazy" className="aspect-3/4 rounded-2xl object-cover shadow-soft" />
-              <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={penthouse} alt="" loading="lazy" className="aspect-3/4 rounded-2xl object-cover shadow-soft mt-8" />
+              <motion.img
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.4 }}
+                src={skyline}
+                alt=""
+                loading="lazy"
+                className="aspect-3/4 rounded-2xl object-cover shadow-soft"
+              />
+              <motion.img
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.4 }}
+                src={penthouse}
+                alt=""
+                loading="lazy"
+                className="aspect-3/4 rounded-2xl object-cover shadow-soft mt-8"
+              />
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* Support Package */}
+      {/* For Homeowners */}
       <section className="section-pad bg-sand">
         <div className="container-luxe">
           <FadeIn>
             <div className="rounded-3xl bg-sand-soft p-8 shadow-soft md:p-14">
               <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
                 <div className="space-y-4">
-                  <motion.img whileHover={{ scale: 1.02 }} transition={{ duration: 0.4 }} src={kitchen} alt="" loading="lazy" className="h-52 w-full rounded-xl object-cover" />
-                  <motion.img whileHover={{ scale: 1.02 }} transition={{ duration: 0.4 }} src={dining} alt="" loading="lazy" className="h-52 w-full rounded-xl object-cover" />
+                  <motion.img
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    src={kitchen}
+                    alt=""
+                    loading="lazy"
+                    className="h-52 w-full rounded-xl object-cover"
+                  />
+                  <motion.img
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    src={dining}
+                    alt=""
+                    loading="lazy"
+                    className="h-52 w-full rounded-xl object-cover"
+                  />
                 </div>
                 <div>
                   <h2 className="tracking-tight">
-                    SUPPORT <span className="italic-script">Package</span>
+                    FOR <span className="italic-script">Homeowners</span>
                   </h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    For homeowners who want to stay involved with cleaning and maintenance but want experts managing revenue and guest experience.
+                    Partner with Aurora Suites to list your property and let us arrange short-term
+                    renters on your behalf. Submit your details and we&rsquo;ll follow up personally.
                   </p>
-                  <p className="mt-6 text-base font-semibold">We take care of:</p>
+                  <p className="mt-6 text-base font-semibold">What we handle:</p>
                   <ul className="mt-4 space-y-3">
-                    {supportItems.map((s) => (
+                    {homeownerItems.map((s) => (
                       <li key={s} className="flex items-start gap-3 text-[0.95rem] text-ink/85">
                         <Check size={16} className="mt-1 flex-none text-copper" />
                         <span>{s}</span>
@@ -121,7 +149,7 @@ export default function ServicesPage() {
                     ))}
                   </ul>
                   <Link to="/contact" className="btn-ghost-dark mt-10">
-                    Sign Up <ArrowRight size={18} />
+                    List Your Property <ArrowRight size={18} />
                   </Link>
                 </div>
               </div>
@@ -130,7 +158,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Complete Package */}
+      {/* For Guests */}
       <section className="bg-sand pb-10 md:pb-24">
         <div className="container-luxe">
           <FadeIn>
@@ -138,30 +166,41 @@ export default function ServicesPage() {
               <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
                 <div>
                   <h2 className="tracking-tight">
-                    COMPLETE <span className="italic-script">Package</span>
+                    FOR <span className="italic-script">Guests</span>
                   </h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    Perfect for hands-off owners wanting end-to-end service. Includes everything in the Support Package, plus:
+                    Looking for a short stay in Melbourne? Browse our portfolio, pick a property, and
+                    submit an inquiry. We&rsquo;ll get back to you with availability and next steps.
                   </p>
                   <ul className="mt-6 space-y-3">
-                    {completeItems.map((s) => (
+                    {guestItems.map((s) => (
                       <li key={s} className="flex items-start gap-3 text-[0.95rem] text-ink/85">
                         <Check size={16} className="mt-1 flex-none text-copper" />
                         <span>{s}</span>
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-8 text-muted-foreground">You stay in control of your asset.</p>
-                  <p className="mt-1 text-base font-semibold">
-                    We handle the rest — efficiently, professionally, and positively.
-                  </p>
-                  <Link to="/contact" className="btn-primary mt-8">
-                    Get Started <ArrowRight size={18} />
+                  <Link to="/properties" className="btn-primary mt-8">
+                    Browse Properties <ArrowRight size={18} />
                   </Link>
                 </div>
                 <div className="space-y-4">
-                  <motion.img whileHover={{ scale: 1.02 }} transition={{ duration: 0.4 }} src={living} alt="" loading="lazy" className="h-52 w-full rounded-xl object-cover" />
-                  <motion.img whileHover={{ scale: 1.02 }} transition={{ duration: 0.4 }} src={bedroom} alt="" loading="lazy" className="h-52 w-full rounded-xl object-cover" />
+                  <motion.img
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    src={living}
+                    alt=""
+                    loading="lazy"
+                    className="h-52 w-full rounded-xl object-cover"
+                  />
+                  <motion.img
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    src={bedroom}
+                    alt=""
+                    loading="lazy"
+                    className="h-52 w-full rounded-xl object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -169,49 +208,31 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* CTA */}
       <section className="section-pad bg-sand-soft">
         <div className="container-luxe text-center">
           <FadeIn>
-            <span className="eyebrow">Transparent Pricing</span>
-            <h2 className="mt-4 tracking-tight">PRICING</h2>
-            <p className="mt-3 text-muted-foreground">
-              We operate on a simple, transparent revenue-share model. No surprises.
+            <span className="eyebrow">Get in Touch</span>
+            <h2 className="mt-4 tracking-tight">READY TO START?</h2>
+            <p className="mt-3 mx-auto max-w-lg text-muted-foreground">
+              Whether you&rsquo;re a homeowner looking to list or a guest searching for a stay, submit
+              an inquiry and our team will respond within one business day.
             </p>
+            <Link to="/contact" className="btn-primary mt-10 inline-flex">
+              Contact Us <ArrowRight size={18} />
+            </Link>
           </FadeIn>
-          <StaggerContainer className="mt-12 grid gap-6 md:grid-cols-3" staggerDelay={0.1}>
-            {[
-              { t: "Support Package", v: "10% of net revenue + GST", highlight: false },
-              { t: "Complete Package", v: "18% of net revenue + GST", highlight: true },
-              { t: "Onboarding Fee", v: "One-time cost of $1,000 + GST", highlight: false },
-            ].map((p) => (
-              <StaggerItem key={p.t}>
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  transition={{ duration: 0.3 }}
-                  className={`rounded-2xl p-10 ${
-                    p.highlight
-                      ? "bg-ink text-sand-soft shadow-luxe"
-                      : "border border-copper/30 bg-white shadow-soft"
-                  }`}
-                >
-                  <div className={`mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl ${
-                    p.highlight ? "bg-copper/25 text-copper-soft" : "bg-copper/15 text-copper"
-                  }`}>
-                    <Check size={22} />
-                  </div>
-                  <h3 className={`text-xl font-semibold ${p.highlight ? "text-copper-soft" : "text-copper"}`}>{p.t}</h3>
-                  <p className={`mt-3 text-base ${p.highlight ? "text-sand-soft/70" : "text-muted-foreground"}`}>{p.v}</p>
-                </motion.div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
         </div>
       </section>
 
       {/* How it Works */}
       <section className="relative isolate overflow-hidden bg-ink section-pad text-sand-soft">
-        <img src={penthouse} alt="" className="absolute inset-0 h-full w-full object-cover opacity-15" />
+        <img
+          src={penthouse}
+          alt=""
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-15"
+        />
         <div className="absolute inset-0 bg-ink/85" />
         <div className="container-luxe relative grid gap-14 lg:grid-cols-2 items-center">
           <FadeIn>
@@ -221,7 +242,8 @@ export default function ServicesPage() {
                 HOW IT <span className="italic-script text-copper-soft!">Works</span>
               </h2>
               <p className="mt-6 text-lg text-sand-soft/60 leading-relaxed">
-                We can have your property styled, listed, and generating income in as little as 7 days. Here&rsquo;s how we get started.
+                Simple from start to finish — submit a form, hear from us personally, and we take
+                care of the rest.
               </p>
             </div>
           </FadeIn>

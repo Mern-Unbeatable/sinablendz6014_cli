@@ -14,15 +14,20 @@ import {
   UtensilsCrossed,
   AirVent,
   WashingMachine,
-  Star,
   Send,
+  Share,
+  Heart,
+  Star,
   Shield,
   Clock,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Layout } from "@/components/site/Layout";
 import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
+import { AMENITIES_MAP } from "@/data/amenities";
+import { addInquiry, isPropertyPublished, getProperties } from "@/lib/store";
 import penthouse from "@/assets/penthouse.jpg";
 import living from "@/assets/living-room.jpg";
 import bedroom from "@/assets/bedroom.jpg";
@@ -39,16 +44,7 @@ const allProperties = {
     guests: 6,
     images: [penthouse, skyline, living, kitchen, dining, bedroom],
     description: `Experience Melbourne at its finest from this stunning sub-penthouse in the heart of Southbank. With panoramic city skyline views, a private terrace, and luxurious interiors, this property is the ultimate urban retreat.\n\nSpanning over 120sqm of living space, this beautifully appointed apartment features three spacious bedrooms, two modern bathrooms, and a gourmet kitchen with premium appliances. The open-plan living and dining area flows seamlessly onto the expansive balcony where you can enjoy breathtaking views of the Melbourne skyline.\n\nWhether you're visiting for business, a family holiday, or a special occasion, this sub-penthouse delivers an unforgettable stay with resort-style amenities including a heated pool, fully-equipped gym, and secure double parking.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Car, label: "2x Parking Spaces" },
-      { icon: Dumbbell, label: "Gym Access" },
-      { icon: Waves, label: "Heated Pool" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Full Kitchen" },
-      { icon: AirVent, label: "Air Conditioning" },
-      { icon: WashingMachine, label: "In-unit Laundry" },
-    ],
+    amenities: ["wifi", "parking", "gym", "pool", "tv", "kitchen", "ac", "laundry"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -87,16 +83,7 @@ const allProperties = {
     guests: 4,
     images: [living, kitchen, bedroom, dining, skyline, penthouse],
     description: `Located in the vibrant Docklands precinct, this modern apartment offers the perfect base for exploring Melbourne. With direct access to tennis courts, a swimming pool, and a fully-equipped gym, you'll have everything you need for a comfortable and active stay.\n\nThe apartment features two well-appointed bedrooms, a modern bathroom, and an open-plan kitchen and living area with water views. The building's prime location puts you within walking distance of Melbourne's best restaurants, shopping, and entertainment.\n\nSecure parking is included, making this the ideal choice for both business and leisure travellers seeking convenience and comfort in Melbourne's waterfront district.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Car, label: "Parking Space" },
-      { icon: Dumbbell, label: "Gym Access" },
-      { icon: Waves, label: "Pool & Tennis" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Full Kitchen" },
-      { icon: AirVent, label: "Air Conditioning" },
-      { icon: WashingMachine, label: "In-unit Laundry" },
-    ],
+    amenities: ["wifi", "parking", "gym", "pool", "tv", "kitchen", "ac", "laundry"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -129,15 +116,7 @@ const allProperties = {
     guests: 4,
     images: [bedroom, skyline, penthouse, living, kitchen, dining],
     description: `Wake up to stunning city views in this gorgeous two-bedroom apartment right in the heart of Melbourne's CBD. Floor-to-ceiling windows flood the space with natural light while showcasing the incredible Melbourne skyline.\n\nEach bedroom has been thoughtfully designed with premium bedding and ample storage. The two modern bathrooms feature rainfall showers and quality fixtures. The kitchen is fully equipped for preparing meals, and the living area is the perfect spot to unwind after a day exploring the city.\n\nResidents enjoy access to a heated pool, sauna, and well-equipped gym. The central location puts you steps away from Melbourne's best dining, shopping, and cultural attractions.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Dumbbell, label: "Gym & Sauna" },
-      { icon: Waves, label: "Heated Pool" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Full Kitchen" },
-      { icon: AirVent, label: "Air Conditioning" },
-      { icon: WashingMachine, label: "In-unit Laundry" },
-    ],
+    amenities: ["wifi", "gym", "pool", "tv", "kitchen", "ac", "laundry"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -176,13 +155,7 @@ const allProperties = {
     guests: 2,
     images: [kitchen, dining, living, bedroom, skyline, penthouse],
     description: `Nestled in Melbourne's trendiest suburb, this designer loft blends industrial chic with modern luxury. The showpiece kitchen features premium appliances and a stunning stone benchtop — perfect for foodies and home chefs.\n\nThe open-plan design creates a spacious feel, with the bedroom tucked away for privacy. Natural light pours through oversized windows, and the bathroom features a rain shower and designer fixtures.\n\nFitzroy is Melbourne's creative heart, and you'll be steps from some of the city's best cafés, boutiques, street art, and nightlife.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Designer Kitchen" },
-      { icon: AirVent, label: "Air Conditioning" },
-      { icon: WashingMachine, label: "In-unit Laundry" },
-    ],
+    amenities: ["wifi", "tv", "kitchen", "ac", "laundry"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -209,14 +182,7 @@ const allProperties = {
     guests: 6,
     images: [dining, living, bedroom, kitchen, penthouse, skyline],
     description: `This beautifully sunlit family residence offers generous space and premium comfort in the prestigious South Yarra neighbourhood. Three bedrooms and two bathrooms provide plenty of room for families or groups.\n\nThe home features a gourmet kitchen, spacious living areas, and a charming outdoor entertaining space. Every room is bathed in natural light, creating a warm and inviting atmosphere.\n\nSouth Yarra's famous Chapel Street is at your doorstep with world-class dining, boutique shopping, and vibrant nightlife. The Royal Botanic Gardens are just a short stroll away.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Car, label: "Parking" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Full Kitchen" },
-      { icon: AirVent, label: "Air Conditioning" },
-      { icon: WashingMachine, label: "In-unit Laundry" },
-    ],
+    amenities: ["wifi", "parking", "tv", "kitchen", "ac", "laundry"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -249,12 +215,7 @@ const allProperties = {
     guests: 2,
     images: [skyline, bedroom, kitchen, living, dining, penthouse],
     description: `Perched high above Carlton, this modern studio retreat offers sweeping skyline views that will take your breath away. The compact but cleverly designed space maximises every square metre.\n\nThe studio features a comfortable queen bed, a well-equipped kitchenette, and a modern bathroom with quality fixtures. The highlight is the floor-to-ceiling windows that frame the Melbourne skyline — perfect for watching sunsets over the city.\n\nCarlton is Melbourne's Little Italy, and you'll be surrounded by some of the city's best Italian restaurants, cafés, and the beautiful Carlton Gardens.`,
-    amenities: [
-      { icon: Wifi, label: "High-Speed WiFi" },
-      { icon: Tv, label: "Smart TV" },
-      { icon: UtensilsCrossed, label: "Kitchenette" },
-      { icon: AirVent, label: "Air Conditioning" },
-    ],
+    amenities: ["wifi", "tv", "kitchen", "ac"],
     houseRules: {
       checkIn: "3:00 PM",
       checkOut: "10:00 AM",
@@ -277,11 +238,20 @@ const allProperties = {
 
 export default function PropertyDetailsPage() {
   const { slug } = useParams();
-  const property = allProperties[slug];
+  const storeProp = getProperties().find(p => p.slug === slug);
+  const baseProp = allProperties[slug] || {};
+  
+  let property = null;
+  if (storeProp || allProperties[slug]) {
+    property = { ...baseProp, ...storeProp };
+    if (!property.images) property.images = [property.img];
+    if (!property.description) property.description = "A beautiful property listed on Aurora Suites.";
+    if (!property.amenities) property.amenities = [];
+  }
   const [sent, setSent] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 
-  if (!property) {
+  if (!property || !isPropertyPublished(slug)) {
     return (
       <Layout>
         <div className="flex min-h-[60vh] items-center justify-center pt-24">
@@ -300,12 +270,10 @@ export default function PropertyDetailsPage() {
   }
 
   const images = property.images;
-  const otherProperties = property.otherListings
-    .map((s) => ({ slug: s, ...allProperties[s] }))
-    .filter(Boolean);
+  const otherProperties = (property.otherListings || [])
+    .map((s) => ({ slug: s, ...(allProperties[s] || {}), ...getProperties().find(p => p.slug === s) }))
+    .filter((p) => p.title && isPropertyPublished(p.slug));
 
-  const avgRating =
-    property.reviews.reduce((acc, r) => acc + r.rating, 0) / property.reviews.length || 0;
 
   return (
     <Layout theme="light">
@@ -323,21 +291,24 @@ export default function PropertyDetailsPage() {
               </Link>
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-ink md:text-4xl max-w-4xl leading-tight">
+                  <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight">
                     {property.title}
                   </h1>
-                  <div className="mt-3 flex flex-wrap items-center gap-4 text-ink/75 font-medium text-[0.95rem]">
-                    <span className="flex items-center gap-1.5 underline decoration-ink/30 underline-offset-4 cursor-pointer hover:text-ink transition-colors">
-                      <Star size={16} fill="currentColor" className="text-copper" />
-                      {avgRating.toFixed(1)} · {property.reviews.length} reviews
-                    </span>
-                    <span>·</span>
-                    <span className="flex items-center gap-1.5 underline decoration-ink/30 underline-offset-4 cursor-pointer hover:text-ink transition-colors">
-                      <MapPin size={16} className="text-copper" />
-                      {property.location}
-                    </span>
-                  </div>
                 </div>
+                <div className="shrink-0 flex gap-3 pt-2 md:pt-0">
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-ink font-semibold hover:bg-ink/5 transition-colors">
+                    <Share size={16} /> Share
+                  </button>
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-ink font-semibold hover:bg-ink/5 transition-colors">
+                    <Heart size={16} /> Save
+                  </button>
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-ink/75 font-medium text-[0.95rem]">
+                <span className="flex items-center gap-1.5 underline decoration-ink/30 underline-offset-4 cursor-pointer hover:text-ink transition-colors">
+                  <MapPin size={16} className="text-copper" />
+                  {property.location}
+                </span>
               </div>
             </div>
           </FadeIn>
@@ -474,7 +445,8 @@ export default function PropertyDetailsPage() {
                     <div>
                       <h3 className="font-semibold text-lg">Professionally managed</h3>
                       <p className="text-muted-foreground text-[0.95rem] mt-0.5">
-                        Managed by Aurora Suites, ensuring hotel-grade cleanliness and 24/7 support.
+                        Listed and coordinated by Aurora Suites — submit an inquiry and our team
+                        will follow up personally.
                       </p>
                     </div>
                   </div>
@@ -495,12 +467,14 @@ export default function PropertyDetailsPage() {
                 <div className="py-8 border-b border-border">
                   <h2 className="text-2xl font-bold tracking-tight mb-6">What this place offers</h2>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                    {property.amenities.map((a) => {
-                      const Icon = a.icon;
+                    {property.amenities.map((key) => {
+                      const item = AMENITIES_MAP[key];
+                      if (!item) return null;
+                      const Icon = item.icon;
                       return (
-                        <div key={a.label} className="flex items-center gap-4 text-ink/85">
+                        <div key={key} className="flex items-center gap-4 text-ink/85">
                           <Icon size={24} strokeWidth={1.5} className="flex-none" />
-                          <span className="text-[0.95rem]">{a.label}</span>
+                          <span className="text-[0.95rem]">{item.label}</span>
                         </div>
                       );
                     })}
@@ -512,31 +486,63 @@ export default function PropertyDetailsPage() {
               </FadeIn>
             </div>
 
-            {/* Right Column — Sticky Booking Widget */}
+            {/* Right Column — Sticky Inquiry Widget */}
             <div>
               <FadeIn direction="left" delay={0.3}>
                 <div className="sticky top-28 rounded-2xl bg-white p-6 shadow-[0_15px_60px_-15px_rgba(0,0,0,0.1)] border border-border">
-                  <div className="flex items-end justify-between mb-6">
+                  <div className="flex items-center justify-between pb-6 border-b border-border mb-6">
                     <div>
-                      <span className="text-2xl font-bold">Estimate</span>
-                      <span className="text-muted-foreground ml-2">revenue</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm font-medium">
-                      <Star size={14} fill="currentColor" />
-                      <span>{avgRating.toFixed(1)}</span>
-                      <span className="text-muted-foreground underline">
-                        ({property.reviews.length})
+                      <span className="text-2xl font-bold text-ink">
+                        ${property.price || 250}
                       </span>
+                      <span className="text-muted-foreground ml-1">AUD / night</span>
                     </div>
                   </div>
 
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
+                      const fd = new FormData(e.currentTarget);
+                      addInquiry({
+                        type: "booking",
+                        name: String(fd.get("name") || ""),
+                        email: String(fd.get("email") || ""),
+                        phone: String(fd.get("phone") || ""),
+                        propertySlug: slug,
+                        propertyTitle: property.title,
+                        checkIn: String(fd.get("checkIn") || ""),
+                        checkOut: String(fd.get("checkOut") || ""),
+                        guests: String(fd.get("guests") || ""),
+                        message: String(fd.get("message") || ""),
+                      });
                       setSent(true);
+                      toast.success("Stay inquiry received! We will contact you shortly.");
+                      e.currentTarget.reset();
                     }}
                     className="space-y-4"
                   >
+                    <input
+                      name="name"
+                      required
+                      placeholder="Full name"
+                      className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        name="email"
+                        type="email"
+                        required
+                        placeholder="Email"
+                        className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                      />
+                      <input
+                        name="phone"
+                        type="tel"
+                        required
+                        placeholder="Phone"
+                        className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                      />
+                    </div>
                     <div className="rounded-xl border border-ink/20 overflow-hidden divide-y divide-ink/20 focus-within:ring-2 focus-within:ring-ink transition-all">
                       <div className="grid grid-cols-2 divide-x divide-ink/20">
                         <div className="p-3 transition-colors hover:bg-sand/30 cursor-text">
@@ -544,7 +550,9 @@ export default function PropertyDetailsPage() {
                             Check-in
                           </label>
                           <input
+                            name="checkIn"
                             type="date"
+                            required
                             className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 cursor-pointer"
                           />
                         </div>
@@ -553,7 +561,9 @@ export default function PropertyDetailsPage() {
                             Check-out
                           </label>
                           <input
+                            name="checkOut"
                             type="date"
+                            required
                             className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 cursor-pointer"
                           />
                         </div>
@@ -562,7 +572,7 @@ export default function PropertyDetailsPage() {
                         <label className="block text-[10px] font-bold uppercase tracking-wider text-ink/70">
                           Guests
                         </label>
-                        <select className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 appearance-none cursor-pointer pr-8">
+                        <select name="guests" className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 appearance-none cursor-pointer pr-8">
                           {Array.from({ length: property.guests }).map((_, i) => (
                             <option key={i} value={i + 1}>
                               {i + 1} guest{i > 0 ? "s" : ""}
@@ -587,15 +597,22 @@ export default function PropertyDetailsPage() {
                       </div>
                     </div>
 
+                    <textarea
+                      name="message"
+                      rows={2}
+                      placeholder="Any special requests or questions?"
+                      className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                    />
+
                     <button
                       className="w-full bg-copper hover:bg-[#A67E46] text-white py-3.5 rounded-xl font-bold text-base transition-colors"
                       type="submit"
                     >
-                      {sent ? "Request Sent ✓" : "Request to Book"}
+                      {sent ? "Inquiry Sent ✓" : "Send Stay Inquiry"}
                     </button>
 
                     <p className="text-center text-sm text-muted-foreground mt-4">
-                      You won't be charged yet
+                      Our team will follow up manually — no instant booking
                     </p>
                   </form>
 
@@ -605,7 +622,7 @@ export default function PropertyDetailsPage() {
                         <Shield size={20} className="text-copper" />
                       </div>
                       <p className="text-sm font-medium text-ink/80 leading-snug">
-                        Secure booking directly with Aurora Suites management.
+                        Secure inquiry handled directly by the Aurora Suites team.
                       </p>
                     </div>
                   </div>
@@ -614,40 +631,7 @@ export default function PropertyDetailsPage() {
             </div>
           </div>
 
-          {/* Reviews Section */}
-          {property.reviews.length > 0 && (
-            <div className="mt-10 pt-10 border-t border-border">
-              <FadeIn>
-                <div className="flex items-center gap-3 text-2xl font-bold mb-8">
-                  <Star size={24} fill="currentColor" />
-                  <span>
-                    {avgRating.toFixed(1)} · {property.reviews.length} reviews
-                  </span>
-                </div>
-                <div className="grid md:grid-cols-2 gap-x-16 gap-y-10">
-                  {property.reviews.map((r, i) => (
-                    <div key={r.name + i}>
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="w-12 h-12 bg-copper/20 text-copper rounded-full flex items-center justify-center font-bold text-lg">
-                          {r.name[0]}
-                        </div>
-                        <div>
-                          <div className="font-semibold">{r.name}</div>
-                          <div className="text-sm text-muted-foreground">{r.date}</div>
-                        </div>
-                      </div>
-                      <p className="text-[0.95rem] text-ink/80 leading-relaxed">
-                        &ldquo;{r.text}&rdquo;
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <button className="mt-10 px-6 py-3 rounded-lg border border-ink font-semibold hover:bg-ink/5 transition-colors">
-                  Show all {property.reviews.length} reviews
-                </button>
-              </FadeIn>
-            </div>
-          )}
+
 
           {/* Other Listings */}
           {otherProperties.length > 0 && (
@@ -675,16 +659,13 @@ export default function PropertyDetailsPage() {
                           <h3 className="font-semibold text-ink truncate min-w-0 flex-1">
                             {p.location}
                           </h3>
-                          <div className="flex items-center gap-1 text-[0.9rem] shrink-0 text-ink">
-                            <Star size={12} fill="currentColor" /> 5.0
-                          </div>
                         </div>
                         <p className="text-[0.95rem] text-muted-foreground truncate min-w-0 w-full">
                           {p.title}
                         </p>
                         <p className="text-[0.95rem] mt-1 text-ink">
                           <span className="font-semibold">
-                            ${Math.floor(Math.random() * 200 + 200)}
+                            ${p.price || 250}
                           </span>{" "}
                           AUD <span className="font-normal text-muted-foreground">night</span>
                         </p>

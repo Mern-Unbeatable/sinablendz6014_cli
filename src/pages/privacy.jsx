@@ -17,12 +17,12 @@ export default function PrivacyPage() {
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">1. Information We Collect</h2>
               <p>
-                We may collect personal information such as your name, email address, phone number, and property details when you interact with our website, request a rental estimate, or communicate with our team.
+                We may collect personal information such as your name, email address, phone number, and property details when you submit an inquiry through our website forms or communicate with our team.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">2. How We Use Your Information</h2>
               <p>
-                The information we collect is used solely for the purpose of providing you with our property management services, communicating updates, and improving your experience with Aurora Suites. We do not sell or share your personal data with third parties for marketing purposes.
+                The information we collect is used to respond to your inquiries, coordinate property listings and short-term stays, and improve your experience with Aurora Suites. We do not sell or share your personal data with third parties for marketing purposes.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">3. Data Security</h2>

@@ -8,7 +8,6 @@ import {
   Headphones,
   Home as HomeIcon,
   KeyRound,
-  LineChart,
   Minus,
   Plus,
   Star,
@@ -19,8 +18,10 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Layout } from "@/components/site/Layout";
 import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from "@/components/animations";
+import { addInquiry, getPublishedProperties } from "@/lib/store";
 import hero from "@/assets/hero-apartment.jpg";
 import living from "@/assets/living-room.jpg";
 import bedroom from "@/assets/bedroom.jpg";
@@ -31,34 +32,34 @@ import dining from "@/assets/dining.jpg";
 
 const services = [
   {
-    icon: KeyRound,
-    title: "Professional Listing Creation",
-    desc: "High-converting property descriptions, SEO-friendly titles, and stunning photography that attracts premium guests.",
+    icon: HomeIcon,
+    title: "Property Showcase",
+    desc: "We list homeowner properties with professional photos and full details on this website.",
   },
   {
-    icon: HomeIcon,
-    title: "Property Maintenance & Upkeep",
-    desc: "Vetted housekeeping teams, hotel-quality turnover standards, and regular maintenance inspections.",
+    icon: KeyRound,
+    title: "Homeowner Partnerships",
+    desc: "We collect and rent properties from Melbourne owners for short-stay use on their behalf.",
   },
   {
     icon: Headphones,
-    title: "24/7 Guest Communication",
-    desc: "Fast, friendly, secure communication that ensures safety and consistently earns 5-star reviews.",
+    title: "Personal Inquiry Handling",
+    desc: "Every form submission is reviewed and followed up manually — no automated booking system.",
   },
   {
     icon: CalendarCheck,
-    title: "Multi-Platform Channel Management",
-    desc: "Seamless listings across Airbnb, Booking.com, Stayz, and direct booking platforms.",
+    title: "Guest Matching",
+    desc: "We connect interested short-term renters with the right property from our portfolio.",
   },
   {
     icon: BarChart3,
-    title: "Revenue Reporting & Owner Portal",
-    desc: "Full visibility into your property's performance, earnings, occupancy, and calendar.",
+    title: "Listing Management",
+    desc: "Publish, update, and manage property listings and track all inquiries from one dashboard.",
   },
   {
-    icon: LineChart,
-    title: "Dynamic Pricing Strategy",
-    desc: "Real-time price adjustments based on demand, season, events, and competitor analysis.",
+    icon: Shield,
+    title: "Owner–Guest Coordination",
+    desc: "All communication between property owners and guests is handled directly by our team.",
   },
 ];
 
@@ -91,60 +92,31 @@ const reviews = [
 
 const faqs = [
   {
-    q: "How much do your vacation rental management services cost?",
-    a: "We operate on a simple revenue-share model — 10% for our Support Package and 18% for the Complete Package. No hidden fees, no long contracts.",
+    q: "How do I list my property with Aurora Suites?",
+    a: "Submit the homeowner form on our homepage or contact page. Our team will review your property details and follow up personally to discuss listing it on our website.",
   },
   {
-    q: "Do I retain control of my calendar?",
-    a: "Absolutely. You can block out personal stays anytime through our owner portal. Your property, your rules.",
+    q: "How do guests enquire about a stay?",
+    a: "Browse our properties, open a listing you like, and submit a stay inquiry with your preferred dates. We will contact you directly to confirm availability and next steps.",
   },
   {
-    q: "What types of properties do you manage?",
-    a: "Apartments, townhouses, and homes across Melbourne's most desirable suburbs — from CBD penthouses to bayside retreats.",
+    q: "Is booking done through the website?",
+    a: "No. This website is for showcasing properties and collecting inquiries. All communication and arrangements are handled manually by our team.",
   },
   {
-    q: "How do you handle guest communication and issues?",
-    a: "Our team is on call 24/7 to handle every guest enquiry, request, and unexpected issue with professionalism.",
+    q: "What types of properties do you work with?",
+    a: "Apartments, townhouses, and homes across Melbourne — from CBD apartments to suburban family residences.",
   },
   {
-    q: "Can I use my property for personal stays?",
-    a: "Yes. Owners typically enjoy their property whenever they choose — just block dates in your portal.",
+    q: "How quickly will I hear back after submitting a form?",
+    a: "We aim to respond to all homeowner and guest inquiries within one business day.",
   },
   {
-    q: "How soon can we get started?",
-    a: "Most properties are styled, listed, and generating income in as little as 7 days from onboarding.",
+    q: "What does Aurora Suites handle for homeowners?",
+    a: "We collect properties from owners, showcase them online, receive guest inquiries, and manage the short-term rental process on your behalf.",
   },
 ];
 
-const properties = [
-  {
-    img: penthouse,
-    title: "Gorgeous Sub-Penthouse with 2x Parking, Pool, Gym",
-    beds: 3,
-    baths: 2,
-    guests: 6,
-    location: "Southbank",
-    slug: "sub-penthouse-southbank",
-  },
-  {
-    img: living,
-    title: "Super Central Apt with Parking, Tennis, Pool & Gym",
-    beds: 2,
-    baths: 1,
-    guests: 4,
-    location: "Docklands",
-    slug: "central-apt-docklands",
-  },
-  {
-    img: bedroom,
-    title: "Aurora Suites | Gorgeous City Views 2BR APT w/ Pool & Gym",
-    beds: 2,
-    baths: 2,
-    guests: 4,
-    location: "Melbourne CBD",
-    slug: "city-views-cbd",
-  },
-];
 
 export default function HomePage() {
   return (
@@ -165,9 +137,33 @@ export default function HomePage() {
 /* ─── HERO ─── */
 function Hero() {
   const [tab, setTab] = useState("home");
+  const [sent, setSent] = useState(false);
+
+  const handleInquirySubmit = (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    addInquiry({
+      type: tab === "home" ? "homeowner" : "guest",
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      phone: String(fd.get("phone") || ""),
+      address: tab === "home" ? String(fd.get("address") || "") : undefined,
+      message: tab === "guest" ? String(fd.get("message") || "") : undefined,
+    });
+    setSent(true);
+    toast.success("Inquiry received! Our team will contact you shortly.");
+    e.currentTarget.reset();
+    setTimeout(() => setSent(false), 4000);
+  };
+
   return (
     <section className="relative isolate overflow-hidden bg-ink">
-      <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />
+      <img
+        src={hero}
+        alt=""
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover opacity-30"
+      />
       <div className="absolute inset-0 bg-linear-to-b from-ink/60 via-ink/40 to-sand" />
 
       <div className="container-luxe relative pt-36 pb-12 lg:pt-32 lg:pb-16 w-full">
@@ -179,24 +175,25 @@ function Hero() {
             </FadeIn>
             <FadeIn delay={0.1}>
               <h1 className="mt-5 text-4xl font-bold tracking-tight text-white md:text-6xl leading-[1.1]">
-                Professional Short-Stay{" "}
+                Curated Short-Stay{" "}
                 <span className="italic-script text-copper-soft! block mt-1 text-5xl md:text-7xl tracking-normal">
-                  Property Management.
+                  Properties in Melbourne.
                 </span>
               </h1>
             </FadeIn>
             <FadeIn delay={0.2}>
               <p className="mt-6 max-w-lg text-lg text-sand-soft/75 leading-relaxed">
-                Your Melbourne property deserves expert care. We maximise your rental income with hotel-grade hospitality and data-driven pricing.
+                We partner with homeowners, showcase premium properties, and connect guests with
+                the right stay — with every inquiry handled personally by our team.
               </p>
             </FadeIn>
             <FadeIn delay={0.3}>
               <div className="mt-6 flex flex-wrap gap-3 md:mt-8 md:gap-4">
-                <Link to="/contact" className="btn-primary py-2.5">
-                  Get a Free Estimate <ArrowRight className="size-4 md:size-[18px]" />
+                <Link to="/properties" className="btn-primary py-2.5">
+                  Browse Properties <ArrowRight className="size-4 md:size-[18px]" />
                 </Link>
-                <Link to="/properties" className="btn-outline">
-                  View Properties
+                <Link to="/contact" className="btn-outline">
+                  List Your Property
                 </Link>
               </div>
             </FadeIn>
@@ -239,36 +236,88 @@ function Hero() {
               <button
                 onClick={() => setTab("home")}
                 className={`flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold transition ${
-                  tab === "home" ? "bg-sand text-ink shadow-soft" : "text-muted-foreground hover:text-ink"
+                  tab === "home"
+                    ? "bg-sand text-ink shadow-soft"
+                    : "text-muted-foreground hover:text-ink"
                 }`}
               >
-                <HomeIcon size={18} className="text-copper shrink-0" /> 
-                <span className="whitespace-nowrap"><span className="hidden sm:inline">I am a </span><span className="capitalize sm:normal-case">homeowner</span></span>
+                <HomeIcon size={18} className="text-copper shrink-0" />
+                <span className="whitespace-nowrap">
+                  <span className="hidden sm:inline">I am a </span>
+                  <span className="capitalize sm:normal-case">homeowner</span>
+                </span>
               </button>
               <button
                 onClick={() => setTab("guest")}
                 className={`flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold transition ${
-                  tab === "guest" ? "bg-sand text-ink shadow-soft" : "text-muted-foreground hover:text-ink"
+                  tab === "guest"
+                    ? "bg-sand text-ink shadow-soft"
+                    : "text-muted-foreground hover:text-ink"
                 }`}
               >
-                <KeyRound size={18} className="text-copper shrink-0" /> 
-                <span className="whitespace-nowrap"><span className="hidden sm:inline">I am a </span><span className="capitalize sm:normal-case">guest</span></span>
+                <KeyRound size={18} className="text-copper shrink-0" />
+                <span className="whitespace-nowrap">
+                  <span className="hidden sm:inline">I am a </span>
+                  <span className="capitalize sm:normal-case">guest</span>
+                </span>
               </button>
             </div>
             <div className="mt-2 rounded-xl bg-sand p-6">
               <p className="mb-5 text-base text-muted-foreground">
-                <span className="italic-script text-lg!">Is your property in Melbourne?</span>{" "}
-                Check if we manage homes in your area. Fill out your details and we&rsquo;ll be in touch to discuss your goals.
+                {tab === "home" ? (
+                  <>
+                    <span className="italic-script text-lg!">Own a property in Melbourne?</span> Tell
+                    us about your home and our team will reach out to discuss listing it with Aurora
+                    Suites.
+                  </>
+                ) : (
+                  <>
+                    <span className="italic-script text-lg!">Looking for a short stay?</span> Share
+                    your details and we&rsquo;ll help you find the right property.
+                  </>
+                )}
               </p>
               <form
                 className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[1fr_1fr_1fr_1fr_auto]"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleInquirySubmit}
               >
-                <input className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20" placeholder="Full Name" />
-                <input className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20" placeholder="Property Address" />
-                <input className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20" placeholder="Email Address" />
-                <input className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20" placeholder="Phone Number" />
-                <button className="btn-primary whitespace-nowrap sm:col-span-2 lg:col-span-4 xl:col-span-1">Get Your Rental Estimate</button>
+                <input
+                  name="name"
+                  required
+                  className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                  placeholder="Full Name"
+                />
+                {tab === "home" ? (
+                  <input
+                    name="address"
+                    required
+                    className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                    placeholder="Property Address"
+                  />
+                ) : (
+                  <input
+                    name="message"
+                    className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 sm:col-span-1"
+                    placeholder="What are you looking for?"
+                  />
+                )}
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                  placeholder="Email Address"
+                />
+                <input
+                  name="phone"
+                  type="tel"
+                  required
+                  className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                  placeholder="Phone Number"
+                />
+                <button type="submit" className="btn-primary whitespace-nowrap sm:col-span-2 lg:col-span-4 xl:col-span-1">
+                  {sent ? "Inquiry Sent ✓" : tab === "home" ? "List My Property" : "Send Inquiry"}
+                </button>
               </form>
             </div>
           </div>
@@ -280,7 +329,17 @@ function Hero() {
 
 /* ─── TRUSTED ─── */
 function Trusted() {
-  const logos = ["OXFORD", "Belle", "RESORT GLOBAL", "CONQUEST", "RayWhite", "FORGE", "Elite", "DPM", "TMG"];
+  const logos = [
+    "OXFORD",
+    "Belle",
+    "RESORT GLOBAL",
+    "CONQUEST",
+    "RayWhite",
+    "FORGE",
+    "Elite",
+    "DPM",
+    "TMG",
+  ];
   return (
     <section className="bg-sand py-10 md:py-16">
       <div className="container-luxe">
@@ -306,10 +365,10 @@ function Trusted() {
 /* ─── ABOUT / STRESS-FREE ─── */
 function About() {
   const items = [
-    { icon: TrendingUp, text: "Earn 40% more vs managing it yourself" },
-    { icon: Shield, text: "Professional listings, premium photography & smart dynamic pricing" },
-    { icon: Clock, text: "Full-service vacation management with local team on standby" },
-    { icon: Headphones, text: "No stress, no late-night guest calls — just passive income" },
+    { icon: TrendingUp, text: "Partner with homeowners to list premium short-stay properties" },
+    { icon: Shield, text: "Showcase each home with professional photography and detailed listings" },
+    { icon: Clock, text: "Receive and manage guest inquiries manually with a personal touch" },
+    { icon: Headphones, text: "Handle all owner and guest communication directly from our team" },
   ];
   return (
     <section className="section-pad bg-sand-soft">
@@ -320,17 +379,20 @@ function About() {
           </FadeIn>
           <FadeIn delay={0.1}>
             <h2 className="mt-4 tracking-tight">
-              About Short-Term Rental <span className="italic-script">Company</span>
+              Showcasing properties, <span className="italic-script">connecting people</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.15}>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Aurora Suites is Melbourne&rsquo;s most trusted short-stay rental management company. We combine world-class hospitality, dynamic pricing science, and a deeply hands-on local team to help property owners earn more with zero effort.
+              Aurora Suites works with Melbourne homeowners to collect and rent short-stay
+              properties. We showcase them on this website and manage every inquiry from owners and
+              guests manually — so nothing falls through the cracks.
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              Whether you&rsquo;re looking to maximise the return on a city apartment or a seaside retreat, our approach is the same: treat every property like it&rsquo;s our own, and every guest like they&rsquo;re our only guest.
+              Whether you want to list your property or find your next stay, submit an inquiry and
+              our team will follow up with you directly by phone or email.
             </p>
           </FadeIn>
           <StaggerContainer className="mt-8 space-y-4" staggerDelay={0.08}>
@@ -357,10 +419,38 @@ function About() {
 
         <FadeIn direction="left" delay={0.2}>
           <div className="grid grid-cols-2 gap-4">
-            <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={living} alt="" loading="lazy" className="aspect-square rounded-2xl object-cover shadow-soft" />
-            <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={skyline} alt="" loading="lazy" className="aspect-square rounded-2xl object-cover shadow-soft mt-8" />
-            <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={bedroom} alt="" loading="lazy" className="aspect-square rounded-2xl object-cover shadow-soft" />
-            <motion.img whileHover={{ scale: 1.03 }} transition={{ duration: 0.4 }} src={kitchen} alt="" loading="lazy" className="aspect-square rounded-2xl object-cover shadow-soft mt-8" />
+            <motion.img
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.4 }}
+              src={living}
+              alt=""
+              loading="lazy"
+              className="aspect-square rounded-2xl object-cover shadow-soft"
+            />
+            <motion.img
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.4 }}
+              src={skyline}
+              alt=""
+              loading="lazy"
+              className="aspect-square rounded-2xl object-cover shadow-soft mt-8"
+            />
+            <motion.img
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.4 }}
+              src={bedroom}
+              alt=""
+              loading="lazy"
+              className="aspect-square rounded-2xl object-cover shadow-soft"
+            />
+            <motion.img
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.4 }}
+              src={kitchen}
+              alt=""
+              loading="lazy"
+              className="aspect-square rounded-2xl object-cover shadow-soft mt-8"
+            />
           </div>
         </FadeIn>
       </div>
@@ -368,21 +458,23 @@ function About() {
   );
 }
 
-/* ─── FEATURED IN ─── */
+/* ─── LOCATIONS ─── */
 function FeaturedIn() {
-  const logos = ["airbnb", "Booking.com", "vrbo", "stayz", "HomeAway", "MARRIOTT BONVOY", "Google"];
+  const areas = ["Southbank", "Carlton", "St Kilda", "Richmond", "Docklands", "South Yarra", "Melbourne CBD"];
   return (
     <section className="bg-sand-soft py-10 md:pb-16">
       <div className="container-luxe">
         <FadeIn>
           <p className="text-center text-sm tracking-[0.3em] text-muted-foreground font-medium">
-            — FEATURED IN —
+            — PROPERTIES ACROSS MELBOURNE —
           </p>
         </FadeIn>
         <StaggerContainer className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-ink/55">
-          {logos.map((l) => (
+          {areas.map((l) => (
             <StaggerItem key={l}>
-              <span className="font-display text-xl tracking-wide hover:text-ink transition-colors cursor-default">{l}</span>
+              <span className="font-display text-xl tracking-wide hover:text-ink transition-colors cursor-default">
+                {l}
+              </span>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -395,23 +487,32 @@ function FeaturedIn() {
 function Services() {
   return (
     <section className="relative isolate overflow-hidden bg-ink section-pad text-sand-soft">
-      <img src={penthouse} alt="" className="absolute inset-0 h-full w-full object-cover opacity-15" />
+      <img
+        src={penthouse}
+        alt=""
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover opacity-15"
+      />
       <div className="absolute inset-0 bg-ink/85" />
       <div className="container-luxe relative">
         <FadeIn>
           <div className="text-center max-w-2xl mx-auto">
             <span className="eyebrow text-copper-soft!">Our Services</span>
             <h2 className="mt-4 text-white tracking-tight">
-              Professional Property Management{" "}
-              <span className="italic-script text-copper-soft!">Services</span>
+              How We Help{" "}
+              <span className="italic-script text-copper-soft!">Homeowners &amp; Guests</span>
             </h2>
             <p className="mt-4 text-lg text-sand-soft/60">
-              We offer turnkey short-term rental services tailored to make ownership effortless and profitable.
+              We showcase properties, collect inquiries through the website, and handle every
+              arrangement personally on your behalf.
             </p>
           </div>
         </FadeIn>
 
-        <StaggerContainer className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" staggerDelay={0.08}>
+        <StaggerContainer
+          className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+          staggerDelay={0.08}
+        >
           {services.map((s) => {
             const Icon = s.icon;
             return (
@@ -447,13 +548,30 @@ function Services() {
 /* ─── PRIORITY ─── */
 function Priority() {
   const priorities = [
-    { icon: Shield, title: "Professional Screening", desc: "Every guest is thoroughly vetted for your peace of mind." },
-    { icon: HomeIcon, title: "Hotel-Grade Cleaning", desc: "Spotless turnovers with premium linen and amenities." },
-    { icon: Clock, title: "24/7 Maintenance Support", desc: "Issues resolved fast with our trusted local tradespeople." },
+    {
+      icon: Shield,
+      title: "Personal Follow-Up",
+      desc: "Every inquiry from homeowners and guests is reviewed and responded to by our team.",
+    },
+    {
+      icon: HomeIcon,
+      title: "Quality Listings",
+      desc: "Properties are professionally photographed and presented to attract the right guests.",
+    },
+    {
+      icon: Clock,
+      title: "Manual Coordination",
+      desc: "We manage communication between owners and renters — no automated booking on the site.",
+    },
   ];
   return (
     <section className="relative isolate overflow-hidden bg-ink section-pad">
-      <img src={skyline} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <img
+        src={skyline}
+        alt=""
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover opacity-20"
+      />
       <div className="absolute inset-0 bg-linear-to-r from-ink via-ink/90 to-ink/70" />
       <div className="container-luxe relative">
         <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -465,7 +583,9 @@ function Priority() {
                 <span className="italic-script text-copper-soft!">Not Promises</span>
               </h2>
               <p className="mt-6 text-lg text-sand-soft/65 leading-relaxed">
-                We&rsquo;ve built our reputation on transparency and results. Every property in our care is protected, maintained, and optimised to deliver strong returns — consistently.
+                We built Aurora Suites around a simple model: showcase great properties, collect
+                inquiries through the website, and handle every conversation personally. Homeowners
+                partner with us; guests browse and enquire — we do the rest.
               </p>
             </div>
           </FadeIn>
@@ -508,8 +628,7 @@ function Testimonials() {
           <div className="text-center max-w-2xl mx-auto">
             <span className="eyebrow">Testimonials</span>
             <h2 className="mt-4 tracking-tight">
-              What Our Property Owners{" "}
-              <span className="italic-script">Say</span>
+              What Our Property Owners <span className="italic-script">Say</span>
             </h2>
           </div>
         </FadeIn>
@@ -578,15 +697,18 @@ function Faq() {
   const [open, setOpen] = useState(0);
   return (
     <section className="relative isolate overflow-hidden bg-ink section-pad text-sand-soft">
-      <img src={skyline} alt="" className="absolute inset-0 h-full w-full object-cover opacity-12" />
+      <img
+        src={skyline}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover opacity-12"
+      />
       <div className="absolute inset-0 bg-ink/90" />
       <div className="container-luxe relative max-w-3xl mx-auto">
         <FadeIn>
           <div className="text-center">
             <span className="eyebrow text-copper-soft!">FAQ</span>
             <h2 className="mt-4 text-white tracking-tight">
-              Frequently Asked{" "}
-              <span className="italic-script text-copper-soft!">Questions</span>
+              Frequently Asked <span className="italic-script text-copper-soft!">Questions</span>
             </h2>
           </div>
         </FadeIn>
@@ -594,10 +716,7 @@ function Faq() {
         <StaggerContainer className="mt-12 space-y-3" staggerDelay={0.06}>
           {faqs.map((f, i) => (
             <StaggerItem key={f.q}>
-              <motion.div
-                layout
-                className="overflow-hidden rounded-xl bg-sand-soft text-ink"
-              >
+              <motion.div layout className="overflow-hidden rounded-xl bg-sand-soft text-ink">
                 <button
                   onClick={() => setOpen(open === i ? -1 : i)}
                   className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left text-base font-semibold transition-colors hover:text-copper"
@@ -613,7 +732,9 @@ function Faq() {
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="px-6 pb-5 text-base text-muted-foreground leading-relaxed">{f.a}</div>
+                  <div className="px-6 pb-5 text-base text-muted-foreground leading-relaxed">
+                    {f.a}
+                  </div>
                 </motion.div>
               </motion.div>
             </StaggerItem>
@@ -626,6 +747,8 @@ function Faq() {
 
 /* ─── PROPERTIES ─── */
 function Properties() {
+  const properties = getPublishedProperties().slice(0, 3);
+
   return (
     <section className="section-pad bg-sand-soft">
       <div className="container-luxe">
@@ -634,19 +757,22 @@ function Properties() {
             <div>
               <span className="eyebrow">Showcase</span>
               <h2 className="mt-4 tracking-tight">
-                OUR{" "}
-                <span className="italic-script">Properties</span>
+                OUR <span className="italic-script">Properties</span>
               </h2>
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>
             <p className="text-muted-foreground leading-relaxed lg:text-right">
-              We manage every aspect of your short-term rental with care and precision. From guest screening to professional cleaning, your home is protected and optimised.
+              We manage every aspect of your short-term rental with care and precision. From guest
+              screening to professional cleaning, your home is protected and optimised.
             </p>
           </FadeIn>
         </div>
 
-        <StaggerContainer className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3" staggerDelay={0.1}>
+        <StaggerContainer
+          className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          staggerDelay={0.1}
+        >
           {properties.map((p) => (
             <StaggerItem key={p.title}>
               <Link to={`/properties/${p.slug}`}>

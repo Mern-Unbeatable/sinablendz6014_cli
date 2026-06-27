@@ -12,32 +12,32 @@ export default function TermsPage() {
             
             <div className="prose prose-ink max-w-none space-y-6 text-ink/80 leading-relaxed">
               <p>
-                Welcome to Aurora Suites. By accessing our website and utilizing our property management services, you agree to be bound by the following terms and conditions.
+                Welcome to Aurora Suites. By accessing our website and submitting inquiries, you agree to be bound by the following terms and conditions.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">1. Services Provided</h2>
               <p>
-                Aurora Suites provides professional short-stay property management services, including listing optimization, dynamic pricing, guest communication, and property maintenance coordination. The specific scope of services will be detailed in your individual management agreement.
+                Aurora Suites showcases short-stay properties on this website and collects inquiries from homeowners and guests. We arrange short-term rentals on behalf of property owners and coordinate communication between parties manually. The specific terms of any rental arrangement will be agreed directly with you.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">2. Homeowner Responsibilities</h2>
               <p>
-                As a homeowner partner, you agree to provide a property that meets local safety and compliance standards. You must ensure the property is available on agreed dates and notify us promptly of any issues that may affect guest stays.
+                As a homeowner partner, you agree to provide accurate property details and ensure your property meets local safety and compliance standards. You must notify us promptly of any changes that may affect guest stays.
               </p>
 
-              <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">3. Fees and Payments</h2>
+              <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">3. Inquiries and Arrangements</h2>
               <p>
-                Our management fees are charged as a percentage of the gross rental revenue, as outlined in your management agreement. Payouts are processed monthly, accompanied by a detailed revenue statement.
+                Submitting a form on this website does not constitute a confirmed booking or listing agreement. All arrangements — including availability, pricing, and terms — are confirmed directly by our team following your inquiry.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">4. Limitation of Liability</h2>
               <p>
-                While we take every precaution to vet guests and protect your property, Aurora Suites is not liable for damages caused by guests beyond the coverage provided by the booking platform's host guarantee or your personal landlord insurance policies.
+                Aurora Suites acts as an intermediary between property owners and guests. While we take care in presenting listings and handling inquiries, we are not liable for disputes arising between owners and guests beyond what is agreed in your individual arrangement.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">5. Termination</h2>
               <p>
-                Either party may terminate the management agreement with a 30-day written notice. Any upcoming bookings within that 30-day period must be honored or subjected to cancellation fees.
+                Either party may end a homeowner partnership or guest arrangement with reasonable written notice, subject to any confirmed stays already in progress.
               </p>
 
               <h2 className="text-2xl font-semibold text-ink mt-10 mb-4">6. Governing Law</h2>

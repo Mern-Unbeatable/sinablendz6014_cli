@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "./Logo";
 
@@ -100,10 +100,10 @@ export function Header({ theme = "dark" }) {
             </NavLink>
           ))}
           <Link
-            to="/contact"
+            to="/admin"
             className="ml-4 inline-flex items-center gap-2 rounded-full bg-copper px-6 py-2.5 text-[0.95rem] font-semibold text-white transition-all hover:bg-copper/90 hover:shadow-lg hover:shadow-copper/25 hover:-translate-y-0.5"
           >
-            Get Started <ArrowRight size={16} />
+            Login
           </Link>
         </nav>
 
@@ -170,11 +170,11 @@ export function Header({ theme = "dark" }) {
                 className="pt-4"
               >
                 <Link
-                  to="/contact"
+                  to="/admin"
                   onClick={() => setOpen(false)}
-                  className="btn-primary w-full justify-center"
+                  className="btn-primary w-full justify-center gap-2"
                 >
-                  Get Started <ArrowRight size={16} />
+                  Login
                 </Link>
               </motion.div>
             </div>

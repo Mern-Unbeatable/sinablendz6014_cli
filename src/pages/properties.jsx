@@ -3,76 +3,17 @@ import { ArrowRight, Bath, BedDouble, Users, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout, PageHero } from "@/components/site/Layout";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
+import { getPublishedProperties } from "@/lib/store";
 import penthouse from "@/assets/penthouse.jpg";
-import living from "@/assets/living-room.jpg";
-import bedroom from "@/assets/bedroom.jpg";
-import kitchen from "@/assets/kitchen.jpg";
-import dining from "@/assets/dining.jpg";
-import skyline from "@/assets/skyline.jpg";
-
-const items = [
-  {
-    img: penthouse,
-    title: "Sub-Penthouse | Pool, Gym & 2 Parking",
-    beds: 3,
-    baths: 2,
-    guests: 6,
-    location: "Southbank",
-    slug: "sub-penthouse-southbank",
-  },
-  {
-    img: living,
-    title: "Central Apt | Tennis, Pool & Gym",
-    beds: 2,
-    baths: 1,
-    guests: 4,
-    location: "Docklands",
-    slug: "central-apt-docklands",
-  },
-  {
-    img: bedroom,
-    title: "Gorgeous City Views | 2BR APT",
-    beds: 2,
-    baths: 2,
-    guests: 4,
-    location: "Melbourne CBD",
-    slug: "city-views-cbd",
-  },
-  {
-    img: kitchen,
-    title: "Designer Kitchen Loft",
-    beds: 1,
-    baths: 1,
-    guests: 2,
-    location: "Fitzroy",
-    slug: "designer-loft-fitzroy",
-  },
-  {
-    img: dining,
-    title: "Sunlit Family Residence",
-    beds: 3,
-    baths: 2,
-    guests: 6,
-    location: "South Yarra",
-    slug: "sunlit-residence-south-yarra",
-  },
-  {
-    img: skyline,
-    title: "Skyline Studio Retreat",
-    beds: 1,
-    baths: 1,
-    guests: 2,
-    location: "Carlton",
-    slug: "skyline-studio-carlton",
-  },
-];
 
 export default function PropertiesPage() {
+  const items = getPublishedProperties();
   return (
     <Layout>
       <PageHero title="OUR" script="Properties" image={penthouse}>
         <p className="mt-6 max-w-xl text-lg text-sand-soft/75 leading-relaxed">
-          A curated portfolio of premium short-stay rentals across Melbourne&rsquo;s most sought-after locations.
+          Browse our curated portfolio of short-stay properties across Melbourne. Enquire about a
+          stay and our team will follow up with you directly.
         </p>
       </PageHero>
 
@@ -85,12 +26,16 @@ export default function PropertiesPage() {
                 A curated portfolio across <span className="italic-script">Melbourne</span>
               </h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Every home in our care is professionally styled, photographed, and listed to attract the right guests at the right price. Click on any property to see full details.
+                Every property in our portfolio is professionally photographed and listed for guests
+                to browse. Click any listing to view details and submit a stay inquiry.
               </p>
             </div>
           </FadeIn>
 
-          <StaggerContainer className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={0.08}>
+          <StaggerContainer
+            className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+            staggerDelay={0.08}
+          >
             {items.map((p) => (
               <StaggerItem key={p.title}>
                 <Link to={`/properties/${p.slug}`}>
@@ -142,13 +87,15 @@ export default function PropertiesPage() {
           <FadeIn>
             <div className="rounded-3xl bg-ink p-8 text-center text-sand-soft md:p-12 lg:p-20">
               <h2 className="tracking-tight text-white">
-                Want your property to <span className="italic-script text-copper-soft!">join the portfolio?</span>
+                Want your property to{" "}
+                <span className="italic-script text-copper-soft!">join the portfolio?</span>
               </h2>
               <p className="mx-auto mt-5 max-w-lg text-lg text-sand-soft/65 leading-relaxed">
-                Get a free revenue estimate and discover how much your property could earn under Aurora Suites management.
+                Submit your property details and our team will follow up personally to discuss
+                listing it on Aurora Suites.
               </p>
               <Link to="/contact" className="btn-primary mt-10">
-                Get Your Estimate <ArrowRight size={18} />
+                List Your Property <ArrowRight size={18} />
               </Link>
             </div>
           </FadeIn>

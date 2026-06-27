@@ -27,16 +27,16 @@ const values = [
   },
   {
     icon: Award,
-    t: "Proven Performance",
-    d: "Smart pricing and channel reach that consistently outperforms self-managed listings by up to 40%.",
+    t: "Proven Process",
+    d: "A straightforward workflow — list, enquire, connect — that keeps owners and guests informed at every step.",
   },
 ];
 
 const stats = [
-  { k: "40%", v: "Average uplift vs self-managed" },
-  { k: "300+", v: "Five-star guest reviews" },
-  { k: "7 days", v: "Average time to first booking" },
-  { k: "24/7", v: "Guest support coverage" },
+  { k: "6+", v: "Properties in portfolio" },
+  { k: "100%", v: "Inquiries handled manually" },
+  { k: "1 day", v: "Typical response time" },
+  { k: "Melbourne", v: "Local, hands-on team" },
 ];
 
 const team = [
@@ -62,8 +62,8 @@ export default function AboutPage() {
     <Layout>
       <PageHero title="ABOUT" script="Aurora Suites" image={skyline}>
         <p className="mt-6 max-w-xl text-lg text-sand-soft/75 leading-relaxed">
-          Melbourne&rsquo;s most trusted short-stay rental management — born from a passion for
-          premium hospitality.
+          Melbourne&rsquo;s curated short-stay property showcase — connecting homeowners with guests
+          through personal, hands-on service.
         </p>
       </PageHero>
 
@@ -81,23 +81,23 @@ export default function AboutPage() {
             </FadeIn>
             <FadeIn delay={0.15}>
               <p className="mt-6 text-muted-foreground leading-relaxed">
-                Aurora Suites was founded by Melbourne property owners who knew there had to be a better
-                way to run short-term rentals — one that delivered hotel-grade hospitality without
-                the daily headaches and constant stress.
+                Aurora Suites was founded to give Melbourne homeowners a simple way to list their
+                properties for short-stay use — and give guests a curated place to browse and enquire,
+                without the noise of big booking platforms.
               </p>
             </FadeIn>
             <FadeIn delay={0.2}>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Today we manage homes across Melbourne&rsquo;s most desirable suburbs, blending
-                hospitality experience, dynamic pricing science, and a deeply hands-on local team
-                that truly cares about your property.
+                Today we partner with homeowners across Melbourne&rsquo;s most desirable suburbs,
+                showcasing their properties on this website and arranging short-term stays through
+                personal, hands-on service.
               </p>
             </FadeIn>
             <FadeIn delay={0.25}>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Our mission is simple: maximise your income while you enjoy complete peace of mind.
-                We handle everything from professional photography and listing optimisation to 24/7
-                guest management and maintenance coordination.
+                Our mission is straightforward: showcase great properties, collect inquiries through
+                the website, and manage every conversation between owners and guests manually — so
+                nothing falls through the cracks.
               </p>
             </FadeIn>
             <FadeIn delay={0.3}>
@@ -213,8 +213,8 @@ export default function AboutPage() {
                 Meet the <span className="italic-script">team</span> behind Aurora Suites
               </h2>
               <p className="mt-4 text-muted-foreground">
-                A dedicated local team of property management professionals who are passionate about
-                delivering exceptional results.
+                A dedicated local team focused on listing properties, responding to inquiries, and
+                coordinating stays between homeowners and guests.
               </p>
             </div>
           </FadeIn>
