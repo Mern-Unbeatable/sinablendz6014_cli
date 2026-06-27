@@ -74,6 +74,21 @@
   --border: oklch(0.88 0.02 75);
   --input: oklch(0.88 0.02 75);
   --ring: var(--copper);
+
+  /* Spacing rhythm — one scale for every page/section */
+  --section-py: 3rem;
+  --section-py-lg: 6rem;
+  --section-gap: 2.5rem;
+  --section-gap-lg: 3.5rem;
+  --grid-gap: 2.5rem;
+  --grid-gap-lg: 4rem;
+  --header-height: 4.5rem;
+  --hero-pt: calc(var(--header-height) + 2rem);
+  --hero-pb: var(--section-py);
+  --hero-pt-lg: calc(var(--header-height) + 2.5rem);
+  --hero-pb-lg: calc(var(--section-py-lg) * 0.67);
+  --card-pad: 1.5rem;
+  --card-pad-lg: 2.5rem;
 }
 
 .dark {
@@ -185,9 +200,61 @@
 }
 
 @utility section-pad {
-  padding-block: 2.5rem;
-  @media (width >= 768px) {
-    padding-block: clamp(5rem, 10vw, 8rem);
+  padding-block: var(--section-py);
+  @media (width >= 1024px) {
+    padding-block: var(--section-py-lg);
+  }
+}
+
+@utility section-gap {
+  margin-top: var(--section-gap);
+  @media (width >= 1024px) {
+    margin-top: var(--section-gap-lg);
+  }
+}
+
+@utility grid-split {
+  display: grid;
+  align-items: center;
+  gap: var(--grid-gap);
+  @media (width >= 1024px) {
+    gap: var(--grid-gap-lg);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@utility hero-inner {
+  padding-top: var(--hero-pt);
+  padding-bottom: var(--hero-pb);
+  @media (width >= 1024px) {
+    padding-top: var(--hero-pt-lg);
+    padding-bottom: var(--hero-pb-lg);
+  }
+}
+
+@utility page-main {
+  min-height: 100vh;
+  padding-top: var(--hero-pt);
+  padding-bottom: var(--section-py);
+  @media (width >= 1024px) {
+    padding-top: var(--hero-pt-lg);
+    padding-bottom: var(--section-py-lg);
+  }
+}
+
+@utility card-pad {
+  padding: var(--card-pad);
+  @media (width >= 1024px) {
+    padding: var(--card-pad-lg);
+  }
+}
+
+@utility section-head {
+  & h2, & .section-title {
+    margin-top: 1rem;
+  }
+  & p, & .section-desc {
+    margin-top: 1rem;
   }
 }
 

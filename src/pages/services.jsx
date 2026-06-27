@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Check, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Layout, PageHero } from "@/components/site/Layout";
+import { Layout, PageHero, Section, SectionHeader } from "@/components/site/Layout";
 import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import living from "@/assets/living-room.jpg";
@@ -57,9 +57,8 @@ export default function ServicesPage() {
         </p>
       </PageHero>
 
-      {/* Intro */}
-      <section className="section-pad bg-sand">
-        <div className="container-luxe grid gap-14 lg:grid-cols-2 items-center">
+      <Section className="bg-sand">
+        <div className="container-luxe grid-split">
           <div>
             <FadeIn>
               <Logo className="h-16" />
@@ -105,14 +104,13 @@ export default function ServicesPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
+      </Section>
 
-      {/* For Homeowners */}
-      <section className="section-pad bg-sand">
+      <Section className="bg-sand">
         <div className="container-luxe">
           <FadeIn>
-            <div className="rounded-3xl bg-sand-soft p-8 shadow-soft md:p-14">
-              <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
+            <div className="rounded-3xl bg-sand-soft card-pad shadow-soft">
+              <div className="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-16">
                 <div className="space-y-4">
                   <motion.img
                     whileHover={{ scale: 1.02 }}
@@ -156,14 +154,13 @@ export default function ServicesPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
+      </Section>
 
-      {/* For Guests */}
-      <section className="bg-sand pb-10 md:pb-24">
+      <Section className="bg-sand">
         <div className="container-luxe">
           <FadeIn>
-            <div className="rounded-3xl bg-sand-soft p-8 shadow-soft md:p-14">
-              <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
+            <div className="rounded-3xl bg-sand-soft card-pad shadow-soft">
+              <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
                 <div>
                   <h2 className="tracking-tight">
                     FOR <span className="italic-script">Guests</span>
@@ -206,27 +203,24 @@ export default function ServicesPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
+      </Section>
 
-      {/* CTA */}
-      <section className="section-pad bg-sand-soft">
+      <Section className="bg-sand-soft">
         <div className="container-luxe text-center">
           <FadeIn>
-            <span className="eyebrow">Get in Touch</span>
-            <h2 className="mt-4 tracking-tight">READY TO START?</h2>
-            <p className="mt-3 mx-auto max-w-lg text-muted-foreground">
-              Whether you&rsquo;re a homeowner looking to list or a guest searching for a stay, submit
-              an inquiry and our team will respond within one business day.
-            </p>
+            <SectionHeader
+              eyebrow="Get in Touch"
+              title="READY TO START?"
+              description="Whether you're a homeowner looking to list or a guest searching for a stay, submit an inquiry and our team will respond within one business day."
+            />
             <Link to="/contact" className="btn-primary mt-10 inline-flex">
               Contact Us <ArrowRight size={18} />
             </Link>
           </FadeIn>
         </div>
-      </section>
+      </Section>
 
-      {/* How it Works */}
-      <section className="relative isolate overflow-hidden bg-ink section-pad text-sand-soft">
+      <Section className="relative isolate overflow-hidden bg-ink text-sand-soft">
         <img
           src={penthouse}
           alt=""
@@ -234,18 +228,16 @@ export default function ServicesPage() {
           className="absolute inset-0 h-full w-full object-cover opacity-15"
         />
         <div className="absolute inset-0 bg-ink/85" />
-        <div className="container-luxe relative grid gap-14 lg:grid-cols-2 items-center">
+        <div className="container-luxe relative grid-split">
           <FadeIn>
-            <div>
-              <span className="eyebrow text-copper-soft!">Getting Started</span>
-              <h2 className="mt-4 text-white tracking-tight">
-                HOW IT <span className="italic-script text-copper-soft!">Works</span>
-              </h2>
-              <p className="mt-6 text-lg text-sand-soft/60 leading-relaxed">
-                Simple from start to finish — submit a form, hear from us personally, and we take
-                care of the rest.
-              </p>
-            </div>
+            <SectionHeader
+              eyebrow="Getting Started"
+              title="HOW IT"
+              script="Works"
+              theme="dark"
+              align="left"
+              description="Simple from start to finish — submit a form, hear from us personally, and we take care of the rest."
+            />
           </FadeIn>
           <StaggerContainer className="space-y-4" staggerDelay={0.1}>
             {steps.map((s) => (
@@ -269,7 +261,7 @@ export default function ServicesPage() {
             ))}
           </StaggerContainer>
         </div>
-      </section>
+      </Section>
     </Layout>
   );
 }

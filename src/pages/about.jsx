@@ -1,34 +1,32 @@
 import { Link } from "react-router-dom";
 import { Award, Heart, Shield, Sparkles, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Layout, PageHero } from "@/components/site/Layout";
-import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from "@/components/animations";
+import { Layout, PageHero, Section, SectionHeader } from "@/components/site/Layout";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import skyline from "@/assets/skyline.jpg";
 import living from "@/assets/living-room.jpg";
 import penthouse from "@/assets/penthouse.jpg";
-import kitchen from "@/assets/kitchen.jpg";
-import dining from "@/assets/dining.jpg";
 
 const values = [
   {
     icon: Shield,
     t: "Trust & Transparency",
-    d: "Transparent reporting and clear communication at every step — your property is in safe, experienced hands.",
+    d: "Clear communication at every step — your property and inquiries are in safe, experienced hands.",
   },
   {
     icon: Sparkles,
-    t: "Premium Hospitality",
-    d: "Hotel-grade standards on every turnover, every check-in, every single detail. We never cut corners.",
+    t: "Quality Listings",
+    d: "Every property is professionally photographed and presented to attract the right guests.",
   },
   {
     icon: Heart,
-    t: "Genuine Care",
-    d: "We treat every property like it's our own — because reputations are built that way, one guest at a time.",
+    t: "Personal Service",
+    d: "We treat every inquiry individually — because great stays start with a human conversation.",
   },
   {
     icon: Award,
     t: "Proven Process",
-    d: "A straightforward workflow — list, enquire, connect — that keeps owners and guests informed at every step.",
+    d: "A straightforward workflow — list, enquire, connect — that keeps owners and guests informed.",
   },
 ];
 
@@ -67,9 +65,8 @@ export default function AboutPage() {
         </p>
       </PageHero>
 
-      {/* Our Story */}
-      <section className="section-pad bg-sand">
-        <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
+      <Section className="bg-sand">
+        <div className="container-luxe grid-split">
           <div>
             <FadeIn>
               <span className="eyebrow">Our Story</span>
@@ -130,26 +127,21 @@ export default function AboutPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
+      </Section>
 
-      {/* Values */}
-      <section className="section-pad bg-sand-soft">
+      <Section className="bg-sand-soft">
         <div className="container-luxe">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto">
-              <span className="eyebrow">Our Values</span>
-              <h2 className="mt-4 tracking-tight">
-                What we <span className="italic-script">stand for</span>
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                These aren&rsquo;t just words — they&rsquo;re the principles that guide every
-                decision we make for your property.
-              </p>
-            </div>
+            <SectionHeader
+              eyebrow="Our Values"
+              title="What we"
+              script="stand for"
+              description="These aren't just words — they're the principles that guide every decision we make."
+            />
           </FadeIn>
 
           <StaggerContainer
-            className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+            className="section-gap grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
             staggerDelay={0.1}
           >
             {values.map((v) => {
@@ -174,13 +166,13 @@ export default function AboutPage() {
             })}
           </StaggerContainer>
         </div>
-      </section>
+      </Section>
 
-      {/* Stats */}
-      <section className="relative isolate overflow-hidden bg-ink py-10 text-sand-soft md:py-24">
+      <Section className="relative isolate overflow-hidden bg-ink text-sand-soft">
         <img
           src={penthouse}
           alt=""
+          loading="lazy"
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-ink/80" />
@@ -201,25 +193,20 @@ export default function AboutPage() {
             ))}
           </StaggerContainer>
         </div>
-      </section>
+      </Section>
 
-      {/* Team */}
-      <section className="section-pad bg-sand">
+      <Section className="bg-sand">
         <div className="container-luxe">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto">
-              <span className="eyebrow">Our Team</span>
-              <h2 className="mt-4 tracking-tight">
-                Meet the <span className="italic-script">team</span> behind Aurora Suites
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                A dedicated local team focused on listing properties, responding to inquiries, and
-                coordinating stays between homeowners and guests.
-              </p>
-            </div>
+            <SectionHeader
+              eyebrow="Our Team"
+              title="Meet the"
+              script="team"
+              description="A dedicated local team focused on listing properties, responding to inquiries, and coordinating stays between homeowners and guests."
+            />
           </FadeIn>
 
-          <StaggerContainer className="mt-14 grid gap-6 md:grid-cols-3" staggerDelay={0.1}>
+          <StaggerContainer className="section-gap grid gap-6 md:grid-cols-3" staggerDelay={0.1}>
             {team.map((t) => (
               <StaggerItem key={t.name}>
                 <motion.div
@@ -244,7 +231,7 @@ export default function AboutPage() {
             ))}
           </StaggerContainer>
         </div>
-      </section>
+      </Section>
     </Layout>
   );
 }

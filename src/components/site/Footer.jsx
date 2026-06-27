@@ -27,7 +27,7 @@ export function Footer() {
       {/* CTA Banner */}
       {!isContactPage && (
         <div className="bg-copper">
-          <div className="container-luxe flex flex-col items-center justify-between gap-6 py-10 md:flex-row">
+          <div className="container-luxe flex flex-col items-center justify-between gap-6 section-pad md:flex-row">
             <div>
               <h3 className="text-2xl font-bold text-white tracking-tight">
                 Ready to list your property or find a stay?
@@ -47,7 +47,7 @@ export function Footer() {
       )}
 
       {/* Main footer */}
-      <div className="container-luxe grid gap-12 py-10 md:grid-cols-[1.5fr_1fr_1fr_1.2fr] md:py-16">
+      <div className="container-luxe section-pad grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1.2fr] lg:gap-16">
         <FadeIn>
           <div>
             <Logo className="h-14 md:h-20" />

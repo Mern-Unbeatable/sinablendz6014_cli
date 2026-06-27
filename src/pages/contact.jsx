@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Mail, MapPin, Phone, Send, Clock, ArrowRight } from "lucide-react";
+import { Mail, MapPin, Phone, Send, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Layout, PageHero } from "@/components/site/Layout";
+import { Layout, PageHero, Section } from "@/components/site/Layout";
 import { Logo } from "@/components/site/Logo";
 import { FadeIn } from "@/components/animations";
 import { addInquiry } from "@/lib/store";
@@ -19,11 +19,10 @@ export default function ContactPage() {
         </p>
       </PageHero>
 
-      <section className="section-pad bg-sand">
-        <div className="container-luxe grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-          {/* Contact Info */}
+      <Section className="bg-sand">
+        <div className="container-luxe grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
           <FadeIn>
-            <aside className="rounded-2xl bg-ink p-10 text-sand-soft h-fit lg:sticky lg:top-28">
+            <aside className="rounded-2xl bg-ink card-pad text-sand-soft h-fit lg:sticky lg:top-28">
               <Logo className="h-14" />
               <p className="mt-2 text-sm tracking-[0.25em] text-copper font-medium">
                 LET&rsquo;S TALK
@@ -42,7 +41,6 @@ export default function ContactPage() {
             </aside>
           </FadeIn>
 
-          {/* Form */}
           <FadeIn direction="left" delay={0.15}>
             <form
               onSubmit={(e) => {
@@ -60,7 +58,7 @@ export default function ContactPage() {
                 toast.success("Message received! Our team will be in touch soon.");
                 e.currentTarget.reset();
               }}
-              className="rounded-2xl bg-sand-soft p-10 shadow-soft"
+              className="rounded-2xl bg-sand-soft card-pad shadow-soft"
             >
               <h2 className="text-2xl font-bold tracking-tight">
                 Send us a <span className="italic-script">message</span>
@@ -107,7 +105,7 @@ export default function ContactPage() {
             </form>
           </FadeIn>
         </div>
-      </section>
+      </Section>
     </Layout>
   );
 }

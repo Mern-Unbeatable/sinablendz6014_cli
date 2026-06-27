@@ -23,6 +23,7 @@ import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Swal from 'sweetalert2';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -316,9 +317,19 @@ function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                           onClick={() => {
-                            if (confirm("Delete this inquiry permanently?")) {
-                              deleteInquiry(item.id);
-                            }
+                            Swal.fire({
+                              title: 'Delete Inquiry?',
+                              text: "Are you sure you want to delete this inquiry permanently?",
+                              icon: 'warning',
+                              showCancelButton: true,
+                              confirmButtonColor: '#1a1a1a',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                deleteInquiry(item.id);
+                              }
+                            });
                           }}
                         >
                           <Trash2 size={16} />
@@ -715,9 +726,19 @@ function PropertiesPanel({ properties }) {
                     <Pencil size={14} className="mr-1.5" /> Edit
                   </Button>
                   <Button size="sm" variant="outline" className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20" onClick={() => {
-                    if (confirm("Are you sure you want to delete this property?")) {
-                      deleteProperty(property.id);
-                    }
+                    Swal.fire({
+                      title: 'Delete Property?',
+                      text: "Are you sure you want to delete this property? This action cannot be undone.",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#1a1a1a',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteProperty(property.id);
+                      }
+                    });
                   }}>
                     <Trash2 size={14} className="mr-1.5" /> Delete
                   </Button>

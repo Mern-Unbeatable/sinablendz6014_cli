@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Bath, BedDouble, Users, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
-import { Layout, PageHero } from "@/components/site/Layout";
+import { Layout, PageHero, Section, SectionHeader } from "@/components/site/Layout";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
 import { getPublishedProperties } from "@/lib/store";
 import penthouse from "@/assets/penthouse.jpg";
@@ -17,23 +17,19 @@ export default function PropertiesPage() {
         </p>
       </PageHero>
 
-      <section className="section-pad bg-sand">
+      <Section className="bg-sand">
         <div className="container-luxe">
           <FadeIn>
-            <div className="mx-auto max-w-2xl text-center">
-              <span className="eyebrow">Showcase</span>
-              <h2 className="mt-4 tracking-tight">
-                A curated portfolio across <span className="italic-script">Melbourne</span>
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Every property in our portfolio is professionally photographed and listed for guests
-                to browse. Click any listing to view details and submit a stay inquiry.
-              </p>
-            </div>
+            <SectionHeader
+              eyebrow="Showcase"
+              title="A curated portfolio across"
+              script="Melbourne"
+              description="Every property in our portfolio is professionally photographed and listed for guests to browse. Click any listing to view details and submit a stay inquiry."
+            />
           </FadeIn>
 
           <StaggerContainer
-            className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+            className="section-gap grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
             staggerDelay={0.08}
           >
             {items.map((p) => (
@@ -79,13 +75,12 @@ export default function PropertiesPage() {
             ))}
           </StaggerContainer>
         </div>
-      </section>
+      </Section>
 
-      {/* CTA */}
-      <section className="section-pad bg-sand-soft">
+      <Section className="bg-sand-soft">
         <div className="container-luxe">
           <FadeIn>
-            <div className="rounded-3xl bg-ink p-8 text-center text-sand-soft md:p-12 lg:p-20">
+            <div className="rounded-3xl bg-ink card-pad text-center text-sand-soft">
               <h2 className="tracking-tight text-white">
                 Want your property to{" "}
                 <span className="italic-script text-copper-soft!">join the portfolio?</span>
@@ -100,7 +95,7 @@ export default function PropertiesPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
+      </Section>
     </Layout>
   );
 }

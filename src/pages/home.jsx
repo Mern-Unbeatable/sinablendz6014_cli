@@ -166,8 +166,8 @@ function Hero() {
       />
       <div className="absolute inset-0 bg-linear-to-b from-ink/60 via-ink/40 to-sand" />
 
-      <div className="container-luxe relative pt-36 pb-12 lg:pt-32 lg:pb-16 w-full">
-        <div className="grid items-center gap-8 xl:gap-12 xl:grid-cols-[1.1fr_1fr]">
+      <div className="container-luxe hero-inner relative w-full">
+        <div className="grid items-center gap-8 xl:grid-cols-[1.1fr_1fr] xl:gap-12">
           {/* Left content */}
           <div>
             <FadeIn>
@@ -341,14 +341,14 @@ function Trusted() {
     "TMG",
   ];
   return (
-    <section className="bg-sand py-10 md:py-16">
+    <section className="section-pad bg-sand">
       <div className="container-luxe">
         <FadeIn>
           <p className="text-center text-sm tracking-[0.3em] text-muted-foreground font-medium">
             — TRUSTED BY SOME OF THE BIGGEST NAMES IN REAL ESTATE —
           </p>
         </FadeIn>
-        <StaggerContainer className="mt-10 flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
+        <StaggerContainer className="section-gap flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
           {logos.map((l) => (
             <StaggerItem key={l}>
               <span className="font-display text-2xl tracking-widest text-ink/60 hover:text-ink transition-colors cursor-default">
@@ -372,7 +372,7 @@ function About() {
   ];
   return (
     <section className="section-pad bg-sand-soft">
-      <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
+      <div className="container-luxe grid-split">
         <div>
           <FadeIn>
             <span className="eyebrow">About Us</span>
@@ -462,14 +462,14 @@ function About() {
 function FeaturedIn() {
   const areas = ["Southbank", "Carlton", "St Kilda", "Richmond", "Docklands", "South Yarra", "Melbourne CBD"];
   return (
-    <section className="bg-sand-soft py-10 md:pb-16">
+    <section className="section-pad bg-sand-soft">
       <div className="container-luxe">
         <FadeIn>
           <p className="text-center text-sm tracking-[0.3em] text-muted-foreground font-medium">
             — PROPERTIES ACROSS MELBOURNE —
           </p>
         </FadeIn>
-        <StaggerContainer className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-ink/55">
+        <StaggerContainer className="section-gap flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-ink/55">
           {areas.map((l) => (
             <StaggerItem key={l}>
               <span className="font-display text-xl tracking-wide hover:text-ink transition-colors cursor-default">
@@ -510,7 +510,7 @@ function Services() {
         </FadeIn>
 
         <StaggerContainer
-          className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+          className="section-gap grid gap-5 md:grid-cols-2 lg:grid-cols-3"
           staggerDelay={0.08}
         >
           {services.map((s) => {
@@ -574,7 +574,7 @@ function Priority() {
       />
       <div className="absolute inset-0 bg-linear-to-r from-ink via-ink/90 to-ink/70" />
       <div className="container-luxe relative">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid-split">
           <FadeIn>
             <div>
               <span className="eyebrow text-copper-soft!">Your Property is Our Priority</span>
@@ -633,7 +633,7 @@ function Testimonials() {
           </div>
         </FadeIn>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
+        <div className="section-gap grid gap-6 md:grid-cols-3">
           {visible.map((r, i) => (
             <ScaleIn key={r.name + page} delay={i * 0.1}>
               <article className="rounded-2xl bg-white p-7 shadow-soft h-full flex flex-col">
@@ -700,6 +700,7 @@ function Faq() {
       <img
         src={skyline}
         alt=""
+        loading="lazy"
         className="absolute inset-0 h-full w-full object-cover opacity-12"
       />
       <div className="absolute inset-0 bg-ink/90" />
@@ -713,7 +714,7 @@ function Faq() {
           </div>
         </FadeIn>
 
-        <StaggerContainer className="mt-12 space-y-3" staggerDelay={0.06}>
+        <StaggerContainer className="section-gap space-y-3" staggerDelay={0.06}>
           {faqs.map((f, i) => (
             <StaggerItem key={f.q}>
               <motion.div layout className="overflow-hidden rounded-xl bg-sand-soft text-ink">
@@ -752,7 +753,7 @@ function Properties() {
   return (
     <section className="section-pad bg-sand-soft">
       <div className="container-luxe">
-        <div className="grid items-end gap-8 lg:grid-cols-2">
+        <div className="grid-split items-end">
           <FadeIn>
             <div>
               <span className="eyebrow">Showcase</span>
@@ -763,14 +764,14 @@ function Properties() {
           </FadeIn>
           <FadeIn delay={0.1}>
             <p className="text-muted-foreground leading-relaxed lg:text-right">
-              We manage every aspect of your short-term rental with care and precision. From guest
-              screening to professional cleaning, your home is protected and optimised.
+              Browse our curated Melbourne portfolio. Open a listing and submit a stay inquiry — our
+              team will follow up with you directly.
             </p>
           </FadeIn>
         </div>
 
         <StaggerContainer
-          className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          className="section-gap grid gap-6 md:grid-cols-2 lg:grid-cols-3"
           staggerDelay={0.1}
         >
           {properties.map((p) => (

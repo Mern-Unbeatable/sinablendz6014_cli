@@ -23,9 +23,10 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Layout } from "@/components/site/Layout";
+import { Layout, PageMain } from "@/components/site/Layout";
 import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AMENITIES_MAP } from "@/data/amenities";
 import { addInquiry, isPropertyPublished, getProperties } from "@/lib/store";
 import penthouse from "@/assets/penthouse.jpg";
@@ -238,14 +239,15 @@ const allProperties = {
 
 export default function PropertyDetailsPage() {
   const { slug } = useParams();
-  const storeProp = getProperties().find(p => p.slug === slug);
+  const storeProp = getProperties().find((p) => p.slug === slug);
   const baseProp = allProperties[slug] || {};
-  
+
   let property = null;
   if (storeProp || allProperties[slug]) {
     property = { ...baseProp, ...storeProp };
     if (!property.images) property.images = [property.img];
-    if (!property.description) property.description = "A beautiful property listed on Aurora Suites.";
+    if (!property.description)
+      property.description = "A beautiful property listed on Aurora Suites.";
     if (!property.amenities) property.amenities = [];
   }
   const [sent, setSent] = useState(false);
@@ -254,8 +256,8 @@ export default function PropertyDetailsPage() {
   if (!property || !isPropertyPublished(slug)) {
     return (
       <Layout>
-        <div className="flex min-h-[60vh] items-center justify-center pt-24">
-          <div className="text-center">
+        <PageMain className="flex min-h-[60vh] items-center justify-center">
+          <div className="container-luxe text-center">
             <h1 className="text-4xl font-bold">Property Not Found</h1>
             <p className="mt-4 text-lg text-muted-foreground">
               This property doesn&rsquo;t exist or has been removed.
@@ -264,20 +266,23 @@ export default function PropertyDetailsPage() {
               <ArrowLeft size={18} /> Back to Properties
             </Link>
           </div>
-        </div>
+        </PageMain>
       </Layout>
     );
   }
 
   const images = property.images;
   const otherProperties = (property.otherListings || [])
-    .map((s) => ({ slug: s, ...(allProperties[s] || {}), ...getProperties().find(p => p.slug === s) }))
+    .map((s) => ({
+      slug: s,
+      ...(allProperties[s] || {}),
+      ...getProperties().find((p) => p.slug === s),
+    }))
     .filter((p) => p.title && isPropertyPublished(p.slug));
-
 
   return (
     <Layout theme="light">
-      <div className="pt-32 pb-20 bg-sand-soft min-h-screen">
+      <PageMain>
         <div className="container-luxe">
           {/* Top Header */}
           <FadeIn>
@@ -295,14 +300,14 @@ export default function PropertyDetailsPage() {
                     {property.title}
                   </h1>
                 </div>
-                <div className="shrink-0 flex gap-3 pt-2 md:pt-0">
+                {/* <div className="shrink-0 flex gap-3 pt-2 md:pt-0">
                   <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-ink font-semibold hover:bg-ink/5 transition-colors">
                     <Share size={16} /> Share
                   </button>
                   <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-ink font-semibold hover:bg-ink/5 transition-colors">
                     <Heart size={16} /> Save
                   </button>
-                </div>
+                </div> */}
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-4 text-ink/75 font-medium text-[0.95rem]">
                 <span className="flex items-center gap-1.5 underline decoration-ink/30 underline-offset-4 cursor-pointer hover:text-ink transition-colors">
@@ -399,7 +404,7 @@ export default function PropertyDetailsPage() {
             </div>
           </FadeIn>
 
-          <div className="grid gap-16 lg:grid-cols-[1.6fr_1fr] mt-12">
+          <div className="section-gap grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
             {/* Left Column - Content */}
             <div className="pb-10">
               {/* Host / Key Info */}
@@ -492,9 +497,7 @@ export default function PropertyDetailsPage() {
                 <div className="sticky top-28 rounded-2xl bg-white p-6 shadow-[0_15px_60px_-15px_rgba(0,0,0,0.1)] border border-border">
                   <div className="flex items-center justify-between pb-6 border-b border-border mb-6">
                     <div>
-                      <span className="text-2xl font-bold text-ink">
-                        ${property.price || 250}
-                      </span>
+                      <span className="text-2xl font-bold text-ink">${property.price || 250}</span>
                       <span className="text-muted-foreground ml-1">AUD / night</span>
                     </div>
                   </div>
@@ -527,7 +530,7 @@ export default function PropertyDetailsPage() {
                       placeholder="Full name"
                       className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <input
                         name="email"
                         type="email"
@@ -544,7 +547,7 @@ export default function PropertyDetailsPage() {
                       />
                     </div>
                     <div className="rounded-xl border border-ink/20 overflow-hidden divide-y divide-ink/20 focus-within:ring-2 focus-within:ring-ink transition-all">
-                      <div className="grid grid-cols-2 divide-x divide-ink/20">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-ink/20">
                         <div className="p-3 transition-colors hover:bg-sand/30 cursor-text">
                           <label className="block text-[10px] font-bold uppercase tracking-wider text-ink/70">
                             Check-in
@@ -568,32 +571,22 @@ export default function PropertyDetailsPage() {
                           />
                         </div>
                       </div>
-                      <div className="p-3 relative transition-colors hover:bg-sand/30 cursor-pointer">
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-ink/70">
+                      <div className="p-3 transition-colors hover:bg-sand/30 cursor-pointer">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-ink/70 mb-0.5">
                           Guests
                         </label>
-                        <select name="guests" className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 appearance-none cursor-pointer pr-8">
-                          {Array.from({ length: property.guests }).map((_, i) => (
-                            <option key={i} value={i + 1}>
-                              {i + 1} guest{i > 0 ? "s" : ""}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ink/50">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="m6 9 6 6 6-6" />
-                          </svg>
-                        </div>
+                        <Select name="guests" defaultValue="1">
+                          <SelectTrigger className="w-full bg-transparent border-0 h-auto p-0 shadow-none text-[0.95rem] text-ink focus:ring-0 rounded-none focus:ring-offset-0">
+                            <SelectValue placeholder="Select guests" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: property.guests }).map((_, i) => (
+                              <SelectItem key={i} value={String(i + 1)}>
+                                {i + 1} guest{i > 0 ? "s" : ""}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
@@ -631,8 +624,6 @@ export default function PropertyDetailsPage() {
             </div>
           </div>
 
-
-
           {/* Other Listings */}
           {otherProperties.length > 0 && (
             <div className="mt-16 pt-16 border-t border-border">
@@ -664,10 +655,8 @@ export default function PropertyDetailsPage() {
                           {p.title}
                         </p>
                         <p className="text-[0.95rem] mt-1 text-ink">
-                          <span className="font-semibold">
-                            ${p.price || 250}
-                          </span>{" "}
-                          AUD <span className="font-normal text-muted-foreground">night</span>
+                          <span className="font-semibold">${p.price || 250}</span> AUD{" "}
+                          <span className="font-normal text-muted-foreground">night</span>
                         </p>
                       </div>
                     </Link>
@@ -677,7 +666,7 @@ export default function PropertyDetailsPage() {
             </div>
           )}
         </div>
-      </div>
+      </PageMain>
     </Layout>
   );
 }
