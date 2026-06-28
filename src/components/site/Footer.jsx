@@ -20,7 +20,7 @@ const serviceLinks = [
 
 export function Footer() {
   const location = useLocation();
-  const isContactPage = location.pathname === "/contact";
+  const isContactPage = location.pathname === "/contact" || location.pathname === "/properties";
 
   return (
     <footer className="bg-ink text-sand-soft">
