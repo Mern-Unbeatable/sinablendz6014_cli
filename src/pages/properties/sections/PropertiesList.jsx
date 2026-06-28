@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Bath, BedDouble, Users, MapPin } from "lucide-react";
+import { ArrowRight, Bath, BedDouble, Users, MapPin, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Section, SectionHeader } from "@/components/site/Layout";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
-import { getPublishedProperties } from "@/lib/store";
+
 
 function getPaginationRange(currentPage, totalPages) {
   if (totalPages <= 7) {
@@ -20,12 +20,40 @@ function getPaginationRange(currentPage, totalPages) {
 }
 
 export default function PropertiesList() {
-  const allItems = getPublishedProperties();
+  const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(allItems.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const items = allItems.slice(startIndex, startIndex + itemsPerPage);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
+        const baseUrl = import.meta.env.VITE_BASE_URL;
+        const res = await fetch(`${baseUrl}/api/properties?page=${currentPage}&limit=${itemsPerPage}`);
+        const result = await res.json();
+        
+        if (result.success && result.data) {
+          setItems(result.data);
+          setTotalPages(
+            result.totalPages || 
+            result.pagination?.totalPages || 
+            (result.total ? Math.ceil(result.total / itemsPerPage) : 1)
+          );
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        console.error("Failed to fetch properties:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, [currentPage]);
   return (
     <Section className="bg-sand">
       <div className="container-luxe">
@@ -38,12 +66,21 @@ export default function PropertiesList() {
           />
         </FadeIn>
 
+        {loading ? (
+          <div className="flex justify-center items-center section-gap py-20">
+            <Loader2 className="animate-spin text-copper" size={48} />
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 section-gap py-10">
+            Failed to load properties.
+          </div>
+        ) : (
         <StaggerContainer
           className="section-gap grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           staggerDelay={0.08}
         >
           {items.map((p) => (
-            <StaggerItem key={p.title}>
+            <StaggerItem key={p.slug || p.title}>
               <Link to={`/properties/${p.slug}`}>
                 <motion.article
                   whileHover={{ y: -8 }}
@@ -52,7 +89,7 @@ export default function PropertiesList() {
                 >
                   <div className="relative aspect-4/3 overflow-hidden">
                     <img
-                      src={p.img}
+                      src={p.thumbnail}
                       alt={p.title}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -84,8 +121,9 @@ export default function PropertiesList() {
             </StaggerItem>
           ))}
         </StaggerContainer>
+        )}
 
-        {totalPages > 1 && (
+        {totalPages > 1 && !loading && !error && (
           <div className="mt-12 flex items-center justify-center gap-4">
             <button
               disabled={currentPage === 1}

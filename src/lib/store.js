@@ -194,40 +194,62 @@ function initializeStore() {
 initializeStore();
 
 // --- Auth ---
-export function login(email, password) {
-  const normalizedEmail = email.trim().toLowerCase();
-  if (normalizedEmail === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-    sessionStorage.setItem(KEYS.auth, "true");
-    sessionStorage.setItem(KEYS.authUser, normalizedEmail);
-    return { ok: true };
+export async function login(email, password) {
+  try {
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const res = await fetch(`${baseUrl}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success && data.data) {
+      localStorage.setItem("aurora_access_token", data.data.accessToken);
+      localStorage.setItem("aurora_refresh_token", data.data.refreshToken);
+      if (data.data.user) {
+        localStorage.setItem("aurora_admin_user", JSON.stringify(data.data.user));
+      }
+      return { ok: true };
+    }
+    return { ok: false, error: data.message || "Invalid credentials." };
+  } catch (error) {
+    return { ok: false, error: "Network error occurred." };
   }
-  return { ok: false, error: "Invalid email or password." };
 }
 
 export function getAuthUser() {
-  return sessionStorage.getItem(KEYS.authUser) || ADMIN_CREDENTIALS.email;
+  try {
+    const userStr = localStorage.getItem("aurora_admin_user");
+    return userStr ? JSON.parse(userStr).email : ADMIN_CREDENTIALS.email;
+  } catch {
+    return ADMIN_CREDENTIALS.email;
+  }
 }
 
 export function isAuthenticated() {
-  return sessionStorage.getItem(KEYS.auth) === "true";
+  return !!localStorage.getItem("aurora_access_token");
 }
 
 export function logout() {
-  sessionStorage.removeItem(KEYS.auth);
-  sessionStorage.removeItem(KEYS.authUser);
+  localStorage.removeItem("aurora_access_token");
+  localStorage.removeItem("aurora_refresh_token");
+  localStorage.removeItem("aurora_admin_user");
+  sessionStorage.removeItem(KEYS.auth); // Cleanup old state
+  sessionStorage.removeItem(KEYS.authUser); // Cleanup old state
 }
 
 // --- Inquiries ---
 export const INQUIRY_TYPES = {
-  homeowner: "Homeowner",
-  contact: "General contact",
-  booking: "Short Stay",
+  HOMEOWNER: "Homeowner",
+  GENERAL_CONTACT: "General contact",
+  SHORT_STAY_INQUIRY: "Short Stay",
 };
 
 export const INQUIRY_STATUSES = {
-  new: "New",
-  contacted: "Contacted",
-  closed: "Closed",
+  NEW: "New",
+  CONTACTED: "Contacted",
+  CLOSED: "Closed",
 };
 
 export function getInquiries() {

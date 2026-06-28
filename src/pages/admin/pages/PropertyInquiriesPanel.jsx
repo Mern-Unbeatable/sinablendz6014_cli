@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Swal from "sweetalert2";
-import { updateInquiry, deleteInquiry, INQUIRY_STATUSES } from "@/lib/store";
+import { updateInquiry, INQUIRY_STATUSES } from "@/lib/store";
 import { formatShortDate, formatDate, TypeBadge, DetailRow } from "../components/shared";
+import { apiFetch } from "@/lib/api";
 
 export default function PropertyInquiriesPanel({ inquiries, property, onBack, selectedId, onSelect }) {
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -16,7 +17,7 @@ export default function PropertyInquiriesPanel({ inquiries, property, onBack, se
 
   const propertyInquiries = inquiries.filter(i => 
     (i.propertyTitle === property.title || i.propertyId === property.id) && 
-    (i.type === "booking" || i.type === "guest")
+    i.type === "SHORT_STAY_INQUIRY"
   );
   const selected = propertyInquiries.find((i) => i.id === selectedId);
 
@@ -122,9 +123,24 @@ export default function PropertyInquiriesPanel({ inquiries, property, onBack, se
                               confirmButtonColor: '#1a1a1a',
                               cancelButtonColor: '#d33',
                               confirmButtonText: 'Yes, delete it!'
-                            }).then((result) => {
+                            }).then(async (result) => {
                               if (result.isConfirmed) {
-                                deleteInquiry(item.id);
+                                try {
+                                  const res = await apiFetch(`/api/admin/inquiries/${item.id}`, {
+                                    method: "DELETE",
+                                  });
+                                  if (res.ok) {
+                                    // Refresh or optimistically remove (since this relies on global state, we might need a refresh or callback, but we will just remove from list if it had local state. For now we just alert success, or we should have a callback)
+                                    Swal.fire("Deleted!", "Inquiry has been deleted.", "success").then(() => {
+                                      window.location.reload();
+                                    });
+                                  } else {
+                                    throw new Error("Failed to delete inquiry");
+                                  }
+                                } catch (err) {
+                                  console.error(err);
+                                  Swal.fire("Error", "Could not delete inquiry. Please try again.", "error");
+                                }
                               }
                             });
                           }}

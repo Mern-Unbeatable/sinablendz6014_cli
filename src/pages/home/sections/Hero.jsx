@@ -14,6 +14,11 @@ function Hero() {
   const [tab, setTab] = useState("home");
   const [isSwitching, setIsSwitching] = useState(false);
   const [sent, setSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkInDate, setCheckInDate] = useState("");
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
   const handleTabChange = (newTab) => {
     if (tab === newTab || isSwitching) return;
@@ -24,23 +29,71 @@ function Hero() {
     }, 500);
   };
 
-  const handleInquirySubmit = (e) => {
+  const handleInquirySubmit = async (e) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    addInquiry({
-      type: tab === "home" ? "homeowner" : "guest",
-      name: String(fd.get("name") || ""),
-      email: String(fd.get("email") || ""),
-      phone: String(fd.get("phone") || ""),
-      address: tab === "home" ? String(fd.get("address") || "") : undefined,
-      message: tab === "guest" ? String(fd.get("message") || "") : undefined,
-      checkIn: tab === "guest" ? String(fd.get("checkIn") || "") : undefined,
-      checkOut: tab === "guest" ? String(fd.get("checkOut") || "") : undefined,
-    });
-    setSent(true);
-    toast.success("Inquiry received! Our team will contact you shortly.");
-    e.currentTarget.reset();
-    setTimeout(() => setSent(false), 4000);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    setIsSubmitting(true);
+
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL || "https://api-sinablendz6014.maktechgroup.tech";
+      
+      if (tab === "home") {
+        const payload = {
+          name: String(fd.get("name") || ""),
+          propertyAddress: String(fd.get("address") || ""),
+          email: String(fd.get("email") || ""),
+          phone: String(fd.get("phone") || ""),
+        };
+
+        const res = await fetch(`${baseUrl}/api/inquiries/homeowner`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error("Failed to submit homeowner inquiry");
+      } else {
+        const payload = {
+          name: String(fd.get("name") || ""),
+          lookingFor: String(fd.get("message") || ""),
+          email: String(fd.get("email") || ""),
+          phone: String(fd.get("phone") || ""),
+          checkIn: String(fd.get("checkIn") || ""),
+          checkOut: String(fd.get("checkOut") || ""),
+        };
+
+        const res = await fetch(`${baseUrl}/api/inquiries/guest`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error("Failed to submit guest inquiry");
+      }
+
+      // Keep local store update if still needed by the app
+      addInquiry({
+        type: tab === "home" ? "homeowner" : "guest",
+        name: String(fd.get("name") || ""),
+        email: String(fd.get("email") || ""),
+        phone: String(fd.get("phone") || ""),
+        address: tab === "home" ? String(fd.get("address") || "") : undefined,
+        message: tab === "guest" ? String(fd.get("message") || "") : undefined,
+        checkIn: tab === "guest" ? String(fd.get("checkIn") || "") : undefined,
+        checkOut: tab === "guest" ? String(fd.get("checkOut") || "") : undefined,
+      });
+
+      setSent(true);
+      toast.success("Inquiry received! Our team will contact you shortly.");
+      form.reset();
+      setTimeout(() => setSent(false), 4000);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -194,7 +247,7 @@ function Hero() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <p className="mb-5 text-base text-muted-foreground">
+                    <p className="mb-5 text-base text-muted-foreground text-center">
                       {tab === "home" ? (
                         <>
                           <span className="italic-script text-lg!">
@@ -266,6 +319,9 @@ function Hero() {
                             <input
                               name="checkIn"
                               type="date"
+                              min={todayStr}
+                              value={checkInDate}
+                              onChange={(e) => setCheckInDate(e.target.value)}
                               className="w-full rounded-xl border border-border bg-white pl-11 pr-4 py-3.5 text-base focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 text-ink"
                               required
                             />
@@ -277,8 +333,8 @@ function Hero() {
                             <input
                               name="checkOut"
                               type="date"
+                              min={checkInDate || todayStr}
                               className="w-full rounded-xl border border-border bg-white pl-12 pr-4 py-3.5 text-base focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 text-ink"
-                              required
                             />
                           </div>
                         </>
@@ -286,17 +342,20 @@ function Hero() {
 
                       <button
                         type="submit"
-                        className={`btn-primary whitespace-nowrap cursor-pointer ${
+                        disabled={isSubmitting}
+                        className={`btn-primary whitespace-nowrap cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed ${
                           tab === "home"
                             ? "sm:col-span-2 lg:col-span-4 xl:col-span-1"
                             : "sm:col-span-2"
                         }`}
                       >
-                        {sent
-                          ? "Inquiry Sent ✓"
-                          : tab === "home"
-                            ? "List My Property"
-                            : "Send Inquiry"}
+                        {isSubmitting
+                          ? "Sending..."
+                          : sent
+                            ? "Inquiry Sent ✓"
+                            : tab === "home"
+                              ? "List My Property"
+                              : "Send Inquiry"}
                       </button>
                     </form>
                   </motion.div>
