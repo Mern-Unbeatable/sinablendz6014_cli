@@ -1,16 +1,16 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
-const HomePage = lazy(() => import("@/pages/home"));
-const AboutPage = lazy(() => import("@/pages/about"));
-const ServicesPage = lazy(() => import("@/pages/services"));
-const PropertiesPage = lazy(() => import("@/pages/properties"));
+const HomePage = lazy(() => import("@/pages/home/home"));
+const AboutPage = lazy(() => import("@/pages/about/about"));
+const ServicesPage = lazy(() => import("@/pages/services/services"));
+const PropertiesPage = lazy(() => import("@/pages/properties/properties"));
 const PropertyDetailsPage = lazy(() => import("@/pages/property-details"));
-const ContactPage = lazy(() => import("@/pages/contact"));
+const ContactPage = lazy(() => import("@/pages/contact/contact"));
 const PrivacyPage = lazy(() => import("@/pages/privacy"));
 const TermsPage = lazy(() => import("@/pages/terms"));
 const NotFoundPage = lazy(() => import("@/pages/not-found"));
-const AdminPage = lazy(() => import("@/pages/admin"));
+const AdminPage = lazy(() => import("@/pages/admin/admin"));
 
 function PageLoader() {
   return (

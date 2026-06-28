@@ -469,7 +469,7 @@ export default function PropertyDetailsPage() {
 
               {/* Amenities */}
               <FadeIn delay={0.3}>
-                <div className="py-8 border-b border-border">
+                <div className="pt-8">
                   <h2 className="text-2xl font-bold tracking-tight mb-6">What this place offers</h2>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                     {property.amenities.map((key) => {
@@ -626,7 +626,7 @@ export default function PropertyDetailsPage() {
 
           {/* Other Listings */}
           {otherProperties.length > 0 && (
-            <div className="mt-16 pt-16 border-t border-border">
+            <div className="mt-8 pt-8 border-t border-border">
               <FadeIn>
                 <h2 className="text-2xl font-bold tracking-tight">More from Aurora Suites</h2>
               </FadeIn>
