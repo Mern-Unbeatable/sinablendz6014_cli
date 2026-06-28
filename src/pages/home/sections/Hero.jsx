@@ -24,6 +24,8 @@ function Hero() {
       phone: String(fd.get("phone") || ""),
       address: tab === "home" ? String(fd.get("address") || "") : undefined,
       message: tab === "guest" ? String(fd.get("message") || "") : undefined,
+      checkIn: tab === "guest" ? String(fd.get("checkIn") || "") : undefined,
+      checkOut: tab === "guest" ? String(fd.get("checkOut") || "") : undefined,
     });
     setSent(true);
     toast.success("Inquiry received! Our team will contact you shortly.");
@@ -32,7 +34,7 @@ function Hero() {
   };
 
   return (
-    <section className="relative isolate overflow-hidden bg-ink">
+    <section className="relative isolate overflow-hidden bg-ink min-h-[95vh] flex flex-col justify-center">
       <img
         src={hero}
         alt=""
@@ -137,7 +139,7 @@ function Hero() {
                 </span>
               </button>
             </div>
-            <div className="mt-2 rounded-xl bg-sand p-6">
+            <div className="mt-2 rounded-xl bg-sand p-6 min-h-[500px] sm:min-h-[350px] xl:min-h-[240px]">
               <p className="mb-5 text-base text-muted-foreground">
                 {tab === "home" ? (
                   <>
@@ -153,7 +155,11 @@ function Hero() {
                 )}
               </p>
               <form
-                className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[1fr_1fr_1fr_1fr_auto]"
+                className={`grid gap-3 sm:grid-cols-2 ${
+                  tab === "home"
+                    ? "lg:grid-cols-4 xl:grid-cols-[1fr_1fr_1fr_1fr_auto]"
+                    : "lg:grid-cols-3 xl:grid-cols-4"
+                }`}
                 onSubmit={handleInquirySubmit}
               >
                 <input
@@ -172,7 +178,7 @@ function Hero() {
                 ) : (
                   <input
                     name="message"
-                    className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 sm:col-span-1"
+                    className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
                     placeholder="What are you looking for?"
                   />
                 )}
@@ -190,9 +196,41 @@ function Hero() {
                   className="rounded-xl border border-border bg-white px-5 py-3.5 text-base placeholder:text-muted-foreground/60 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
                   placeholder="Phone Number"
                 />
+
+                {tab === "guest" && (
+                  <>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none uppercase tracking-wider font-semibold">
+                        In
+                      </span>
+                      <input
+                        name="checkIn"
+                        type="date"
+                        className="w-full rounded-xl border border-border bg-white pl-11 pr-4 py-3.5 text-base focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 text-ink"
+                        required
+                      />
+                    </div>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none uppercase tracking-wider font-semibold">
+                        Out
+                      </span>
+                      <input
+                        name="checkOut"
+                        type="date"
+                        className="w-full rounded-xl border border-border bg-white pl-12 pr-4 py-3.5 text-base focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20 text-ink"
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
                 <button
                   type="submit"
-                  className="btn-primary whitespace-nowrap sm:col-span-2 lg:col-span-4 xl:col-span-1"
+                  className={`btn-primary whitespace-nowrap ${
+                    tab === "home"
+                      ? "sm:col-span-2 lg:col-span-4 xl:col-span-1"
+                      : "sm:col-span-2 lg:col-span-3 xl:col-span-2"
+                  }`}
                 >
                   {sent ? "Inquiry Sent ✓" : tab === "home" ? "List My Property" : "Send Inquiry"}
                 </button>

@@ -1,10 +1,40 @@
 import { useState } from "react";
-import { Inbox, Eye, Trash2, Clock, Mail, Phone, Building2, MapPin, Calendar, MessageSquare } from "lucide-react";
+import {
+  Inbox,
+  Eye,
+  Trash2,
+  Clock,
+  Mail,
+  Phone,
+  Building2,
+  MapPin,
+  Calendar,
+  MessageSquare,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import Swal from "sweetalert2";
 import { updateInquiry, deleteInquiry, INQUIRY_STATUSES, INQUIRY_TYPES } from "@/lib/store";
 import { formatShortDate, formatDate, TypeBadge, DetailRow } from "../components/shared";
@@ -14,7 +44,7 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const filteredInquiries = inquiries.filter(i => {
+  const filteredInquiries = inquiries.filter((i) => {
     if (typeFilter !== "all" && i.type !== typeFilter) return false;
     if (statusFilter !== "all" && i.status !== statusFilter) return false;
     return true;
@@ -34,7 +64,8 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
           <p className="eyebrow">Inbox</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink">Inquiries</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filteredInquiries.length} submission{filteredInquiries.length !== 1 ? "s" : ""} from website forms
+            {filteredInquiries.length} submission{filteredInquiries.length !== 1 ? "s" : ""} from
+            website forms
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
@@ -45,7 +76,9 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
               {Object.entries(INQUIRY_TYPES).map(([val, label]) => (
-                <SelectItem key={val} value={val}>{label}</SelectItem>
+                <SelectItem key={val} value={val}>
+                  {label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -56,7 +89,9 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
               {Object.entries(INQUIRY_STATUSES).map(([val, label]) => (
-                <SelectItem key={val} value={val}>{label}</SelectItem>
+                <SelectItem key={val} value={val}>
+                  {label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -90,7 +125,9 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
               <TableBody>
                 {filteredInquiries.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell className="whitespace-nowrap">{formatShortDate(item.createdAt)}</TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      {formatShortDate(item.createdAt)}
+                    </TableCell>
                     <TableCell className="font-medium">{item.name || "Unknown"}</TableCell>
                     <TableCell>
                       <TypeBadge type={item.type} />
@@ -131,13 +168,13 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                           className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                           onClick={() => {
                             Swal.fire({
-                              title: 'Delete Inquiry?',
+                              title: "Delete Inquiry?",
                               text: "Are you sure you want to delete this inquiry permanently?",
-                              icon: 'warning',
+                              icon: "warning",
                               showCancelButton: true,
-                              confirmButtonColor: '#1a1a1a',
-                              cancelButtonColor: '#d33',
-                              confirmButtonText: 'Yes, delete it!'
+                              confirmButtonColor: "#d33",
+                              cancelButtonColor: "#1a1a1a",
+                              confirmButtonText: "Yes, delete it!",
                             }).then((result) => {
                               if (result.isConfirmed) {
                                 deleteInquiry(item.id);
@@ -155,10 +192,16 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
             </Table>
           )}
           <div className="flex items-center justify-between border-t border-border/60 px-6 py-4">
-            <span className="text-sm text-muted-foreground">Showing 1 to {filteredInquiries.length} of {filteredInquiries.length} entries</span>
+            <span className="text-sm text-muted-foreground">
+              Showing 1 to {filteredInquiries.length} of {filteredInquiries.length} entries
+            </span>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm" disabled>Next</Button>
+              <Button variant="outline" size="sm" disabled>
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" disabled>
+                Next
+              </Button>
             </div>
           </div>
         </CardContent>

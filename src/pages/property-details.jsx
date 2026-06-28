@@ -20,13 +20,22 @@ import {
   Star,
   Shield,
   Clock,
+  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Layout, PageMain } from "@/components/site/Layout";
 import { Logo } from "@/components/site/Logo";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AMENITIES_MAP } from "@/data/amenities";
 import { addInquiry, isPropertyPublished, getProperties } from "@/lib/store";
 import penthouse from "@/assets/penthouse.jpg";
@@ -252,6 +261,7 @@ export default function PropertyDetailsPage() {
   }
   const [sent, setSent] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   if (!property || !isPropertyPublished(slug)) {
     return (
@@ -357,7 +367,13 @@ export default function PropertyDetailsPage() {
             {/* Desktop View: Masonry Grid */}
             <div className="hidden md:block relative group">
               <div className="grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden">
-                <div className="md:row-span-2 relative overflow-hidden group/item">
+                <div
+                  className="md:row-span-2 relative overflow-hidden group/item cursor-pointer"
+                  onClick={() => {
+                    setActiveImage(0);
+                    setLightboxOpen(true);
+                  }}
+                >
                   <img
                     src={images[0]}
                     alt="Main"
@@ -365,7 +381,13 @@ export default function PropertyDetailsPage() {
                   />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden group/item">
+                <div
+                  className="relative overflow-hidden group/item cursor-pointer"
+                  onClick={() => {
+                    setActiveImage(1);
+                    setLightboxOpen(true);
+                  }}
+                >
                   <img
                     src={images[1]}
                     alt="Gallery 1"
@@ -373,7 +395,13 @@ export default function PropertyDetailsPage() {
                   />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden group/item">
+                <div
+                  className="relative overflow-hidden group/item cursor-pointer"
+                  onClick={() => {
+                    setActiveImage(2);
+                    setLightboxOpen(true);
+                  }}
+                >
                   <img
                     src={images[2]}
                     alt="Gallery 2"
@@ -381,7 +409,13 @@ export default function PropertyDetailsPage() {
                   />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden group/item">
+                <div
+                  className="relative overflow-hidden group/item cursor-pointer"
+                  onClick={() => {
+                    setActiveImage(3);
+                    setLightboxOpen(true);
+                  }}
+                >
                   <img
                     src={images[3]}
                     alt="Gallery 3"
@@ -389,7 +423,13 @@ export default function PropertyDetailsPage() {
                   />
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="relative overflow-hidden group/item">
+                <div
+                  className="relative overflow-hidden group/item cursor-pointer"
+                  onClick={() => {
+                    setActiveImage(4);
+                    setLightboxOpen(true);
+                  }}
+                >
                   <img
                     src={images[4]}
                     alt="Gallery 4"
@@ -398,7 +438,13 @@ export default function PropertyDetailsPage() {
                   <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
               </div>
-              <button className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform flex items-center gap-2 border border-border z-10">
+              <button
+                onClick={() => {
+                  setActiveImage(0);
+                  setLightboxOpen(true);
+                }}
+                className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform flex items-center gap-2 border border-border z-10"
+              >
                 Show all photos
               </button>
             </div>
@@ -566,7 +612,6 @@ export default function PropertyDetailsPage() {
                           <input
                             name="checkOut"
                             type="date"
-                            required
                             className="w-full bg-transparent outline-none text-[0.95rem] text-ink mt-0.5 cursor-pointer"
                           />
                         </div>
@@ -663,6 +708,42 @@ export default function PropertyDetailsPage() {
                   </StaggerItem>
                 ))}
               </StaggerContainer>
+            </div>
+          )}
+          {/* Lightbox Modal */}
+          {lightboxOpen && (
+            <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/95 backdrop-blur-sm">
+              <button
+                className="absolute top-6 right-6 p-2 text-white/70 hover:text-white transition-colors"
+                onClick={() => setLightboxOpen(false)}
+              >
+                <X size={32} />
+              </button>
+
+              <button
+                className="absolute left-6 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white transition-colors"
+                onClick={() => setActiveImage((i) => (i === 0 ? images.length - 1 : i - 1))}
+              >
+                <ChevronLeft size={48} strokeWidth={1.5} />
+              </button>
+
+              <button
+                className="absolute right-6 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white transition-colors"
+                onClick={() => setActiveImage((i) => (i === images.length - 1 ? 0 : i + 1))}
+              >
+                <ChevronRight size={48} strokeWidth={1.5} />
+              </button>
+
+              <div className="w-full max-w-5xl px-4 md:px-12 max-h-screen">
+                <img
+                  src={images[activeImage]}
+                  alt={`Property Image ${activeImage + 1}`}
+                  className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
+                />
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 font-medium">
+                  {activeImage + 1} / {images.length}
+                </div>
+              </div>
             </div>
           )}
         </div>

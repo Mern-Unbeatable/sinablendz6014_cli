@@ -1,4 +1,4 @@
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 @source "../src";
 @import "tw-animate-css";
 
@@ -97,8 +97,12 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -108,16 +112,32 @@
     font-size: 16px;
     line-height: 1.6;
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
     line-height: 1.2;
   }
-  h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; }
-  h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 600; }
-  h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 600; }
-  p { font-size: clamp(0.95rem, 1.2vw, 1.1rem); }
-  .font-display { font-family: var(--font-display); }
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 700;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 600;
+  }
+  h3 {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+  }
+  p {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
   .italic-script {
     font-family: var(--font-display);
     font-style: italic;
@@ -146,14 +166,21 @@
   font-weight: 600;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
-  transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
   box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--copper) 60%, transparent);
   @media (width >= 768px) {
     gap: 0.5rem;
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-  &:hover { background: color-mix(in oklab, var(--copper) 88%, black); transform: translateY(-2px); box-shadow: 0 15px 40px -12px color-mix(in oklab, var(--copper) 70%, transparent); }
+  &:hover {
+    background: color-mix(in oklab, var(--copper) 88%, black);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px -12px color-mix(in oklab, var(--copper) 70%, transparent);
+  }
 }
 
 @utility btn-outline {
@@ -169,13 +196,17 @@
   font-weight: 600;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
-  transition: all .25s ease;
+  transition: all 0.25s ease;
   @media (width >= 768px) {
     gap: 0.5rem;
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-  &:hover { background: var(--sand-soft); color: var(--ink); transform: translateY(-2px); }
+  &:hover {
+    background: var(--sand-soft);
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
 }
 
 @utility btn-ghost-dark {
@@ -190,13 +221,16 @@
   font-weight: 600;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
-  transition: all .25s ease;
+  transition: all 0.25s ease;
   @media (width >= 768px) {
     gap: 0.5rem;
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-  &:hover { background: color-mix(in oklab, var(--ink) 85%, var(--copper)); transform: translateY(-2px); }
+  &:hover {
+    background: color-mix(in oklab, var(--ink) 85%, var(--copper));
+    transform: translateY(-2px);
+  }
 }
 
 @utility section-pad {
@@ -250,10 +284,12 @@
 }
 
 @utility section-head {
-  & h2, & .section-title {
+  & h2,
+  & .section-title {
     margin-top: 1rem;
   }
-  & p, & .section-desc {
+  & p,
+  & .section-desc {
     margin-top: 1rem;
   }
 }

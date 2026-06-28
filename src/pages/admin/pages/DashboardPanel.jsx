@@ -35,21 +35,9 @@ export default function DashboardPanel({ stats, onNavigate }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={Inbox}
-          label="New inquiries"
-          value={stats.newInquiries}
-          sub="Awaiting response"
-          accent
-        />
+        <StatCard icon={Inbox} label="New inquiries" value={stats.newInquiries} accent />
         <StatCard icon={Mail} label="Total inquiries" value={stats.totalInquiries} />
-        <StatCard
-          icon={Eye}
-          label="Live listings"
-          value={stats.publishedProperties}
-          sub={`${stats.draftProperties} in draft`}
-          accent
-        />
+        <StatCard icon={Eye} label="Live listings" value={stats.publishedProperties} accent />
         <StatCard icon={Building2} label="All properties" value={stats.totalProperties} />
       </div>
 

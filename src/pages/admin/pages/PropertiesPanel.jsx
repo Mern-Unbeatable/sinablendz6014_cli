@@ -1,14 +1,43 @@
 import { useState } from "react";
-import { Plus, EyeOff, Inbox, Pencil, Trash2, Users, MapPin, Image as ImageIcon, Eye } from "lucide-react";
+import {
+  Plus,
+  EyeOff,
+  Inbox,
+  Pencil,
+  Trash2,
+  Users,
+  MapPin,
+  Image as ImageIcon,
+  Eye,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { AMENITIES_MAP } from "@/data/amenities";
 import { setPropertyStatus, addProperty, updateProperty, deleteProperty } from "@/lib/store";
+
+function getPaginationRange(currentPage, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, "...", totalPages];
+  }
+  if (currentPage >= totalPages - 3) {
+    return [1, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+  return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+}
 
 export default function PropertiesPanel({ properties }) {
   const navigate = useNavigate();
@@ -29,7 +58,17 @@ export default function PropertiesPanel({ properties }) {
 
   const openAddModal = () => {
     setEditingProperty(null);
-    setFormData({ title: "", location: "", price: "", beds: "", baths: "", guests: "", description: "", img: "", amenities: [] });
+    setFormData({
+      title: "",
+      location: "",
+      price: "",
+      beds: "",
+      baths: "",
+      guests: "",
+      description: "",
+      img: "",
+      amenities: [],
+    });
     setIsModalOpen(true);
   };
 
@@ -77,7 +116,7 @@ export default function PropertiesPanel({ properties }) {
     setIsModalOpen(false);
   };
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 3;
   const totalPages = Math.ceil(properties.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProperties = properties.slice(startIndex, startIndex + itemsPerPage);
@@ -229,9 +268,7 @@ export default function PropertiesPanel({ properties }) {
                 </div>
               </div>
               <div className="grid gap-2">
-                <label className="text-sm font-medium">
-                  Property Image
-                </label>
+                <label className="text-sm font-medium">Property Image</label>
                 <div className="relative">
                   <input
                     id="img"
@@ -251,21 +288,29 @@ export default function PropertiesPanel({ properties }) {
                     }}
                     required={!editingProperty}
                   />
-                  <div className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${formData.img ? 'border-copper bg-copper/5' : 'border-border bg-sand hover:bg-sand/80'}`}>
+                  <div
+                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${formData.img ? "border-copper bg-copper/5" : "border-border bg-sand hover:bg-sand/80"}`}
+                  >
                     {formData.img ? (
                       <div className="flex flex-col items-center text-center">
                         <div className="h-20 w-32 rounded-lg bg-white overflow-hidden mb-3 shadow-sm ring-1 ring-border">
-                           <img src={formData.img} alt="Preview" className="h-full w-full object-cover" />
+                          <img
+                            src={formData.img}
+                            alt="Preview"
+                            className="h-full w-full object-cover"
+                          />
                         </div>
-                        <p className="text-sm font-medium text-copper">Click or drag to replace image</p>
+                        <p className="text-sm font-medium text-copper">
+                          Click or drag to replace image
+                        </p>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center text-center">
-                         <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 text-muted-foreground ring-1 ring-border">
-                            <ImageIcon size={20} />
-                         </div>
-                         <p className="text-sm font-medium text-ink">Upload property image</p>
-                         <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
+                        <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 text-muted-foreground ring-1 ring-border">
+                          <ImageIcon size={20} />
+                        </div>
+                        <p className="text-sm font-medium text-ink">Upload property image</p>
+                        <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
                       </div>
                     )}
                   </div>
@@ -344,9 +389,9 @@ export default function PropertiesPanel({ properties }) {
                       </>
                     )}
                   </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     className="flex-1 text-ink"
                     onClick={() => navigate(`/admin/property-inquiries/${property.id}`)}
                   >
@@ -354,24 +399,34 @@ export default function PropertiesPanel({ properties }) {
                   </Button>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1 text-ink" onClick={() => openEditModal(property)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 text-ink"
+                    onClick={() => openEditModal(property)}
+                  >
                     <Pencil size={14} className="mr-1.5" /> Edit
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20" onClick={() => {
-                    Swal.fire({
-                      title: 'Delete Property?',
-                      text: "Are you sure you want to delete this property? This action cannot be undone.",
-                      icon: 'warning',
-                      showCancelButton: true,
-                      confirmButtonColor: '#1a1a1a',
-                      cancelButtonColor: '#d33',
-                      confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        deleteProperty(property.id);
-                      }
-                    });
-                  }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
+                    onClick={() => {
+                      Swal.fire({
+                        title: "Delete Property?",
+                        text: "Are you sure you want to delete this property? This action cannot be undone.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#1a1a1a",
+                        confirmButtonText: "Yes, delete it!",
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          deleteProperty(property.id);
+                        }
+                      });
+                    }}
+                  >
                     <Trash2 size={14} className="mr-1.5" /> Delete
                   </Button>
                 </div>
@@ -382,24 +437,46 @@ export default function PropertiesPanel({ properties }) {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-border/60 pt-4 mt-6">
-          <span className="text-sm text-muted-foreground">
-            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, properties.length)} of {properties.length} properties
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border/60 pt-4 mt-6">
+          <span className="text-sm text-muted-foreground hidden sm:block">
+            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, properties.length)} of{" "}
+            {properties.length} properties
           </span>
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
               disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             >
               Previous
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+
+            <div className="flex items-center gap-1 hidden sm:flex">
+              {getPaginationRange(currentPage, totalPages).map((pageNumber, i) =>
+                pageNumber === "..." ? (
+                  <span key={`dots-${i}`} className="px-2 text-muted-foreground">
+                    ...
+                  </span>
+                ) : (
+                  <Button
+                    key={pageNumber}
+                    variant={currentPage === pageNumber ? "default" : "outline"}
+                    size="sm"
+                    className="w-9 px-0"
+                    onClick={() => setCurrentPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </Button>
+                ),
+              )}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
               disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             >
               Next
             </Button>
