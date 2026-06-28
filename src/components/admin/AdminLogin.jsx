@@ -159,9 +159,9 @@ export function AdminLogin({ onSuccess }) {
                   Remember me
                 </span>
               </label>
-              <a href="#" className="text-sm font-semibold text-copper hover:text-copper/80">
+              {/* <a href="#" className="text-sm font-semibold text-copper hover:text-copper/80">
                 Forgot password?
-              </a>
+              </a> */}
             </div>
 
             {error && (
