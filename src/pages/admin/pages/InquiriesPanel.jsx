@@ -50,6 +50,7 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -78,7 +79,7 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
       }
     };
     fetchInquiries();
-  }, [currentPage, typeFilter, statusFilter]);
+  }, [currentPage, typeFilter, statusFilter, refreshTrigger]);
 
   const selected = items.find((i) => i.id === selectedId);
 
@@ -125,7 +126,7 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
             method: "DELETE",
           });
           if (res.ok) {
-            setItems((prev) => prev.filter((i) => i.id !== id));
+            setRefreshTrigger(prev => prev + 1);
           } else {
             throw new Error("Failed to delete inquiry");
           }

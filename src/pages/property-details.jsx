@@ -185,89 +185,54 @@ export default function PropertyDetailsPage() {
               </div>
             </div>
 
-            {/* Desktop View: Masonry Grid */}
+            {/* Desktop View: Dynamic Masonry Grid */}
             <div className="hidden md:block relative group">
-              <div className="grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden">
-                <div
-                  className="md:row-span-2 relative overflow-hidden group/item cursor-pointer"
+              <div
+                className={`grid gap-2 h-[60vh] rounded-2xl overflow-hidden ${
+                  images.length === 1
+                    ? "md:grid-cols-1"
+                    : images.length === 2
+                    ? "md:grid-cols-2"
+                    : images.length === 3
+                    ? "md:grid-cols-[2fr_1fr] md:grid-rows-2"
+                    : "md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2"
+                }`}
+              >
+                {images.slice(0, 5).map((img, i) => {
+                  let itemClass = "relative overflow-hidden group/item cursor-pointer ";
+                  if (images.length >= 3 && i === 0) itemClass += "md:row-span-2 ";
+                  if (images.length === 4 && i === 3) itemClass += "md:col-span-2 ";
+
+                  return (
+                    <div
+                      key={i}
+                      className={itemClass}
+                      onClick={() => {
+                        setActiveImage(i);
+                        setLightboxOpen(true);
+                      }}
+                    >
+                      <img
+                        src={img}
+                        alt={`Gallery ${i}`}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
+                      />
+                      <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                    </div>
+                  );
+                })}
+              </div>
+              {images.length > 5 && (
+                <button
                   onClick={() => {
                     setActiveImage(0);
                     setLightboxOpen(true);
                   }}
+                  className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform flex items-center gap-2 border border-border z-10"
                 >
-                  <img
-                    src={images[0]}
-                    alt="Main"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                </div>
-                <div
-                  className="relative overflow-hidden group/item cursor-pointer"
-                  onClick={() => {
-                    setActiveImage(1);
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <img
-                    src={images[1]}
-                    alt="Gallery 1"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                </div>
-                <div
-                  className="relative overflow-hidden group/item cursor-pointer"
-                  onClick={() => {
-                    setActiveImage(2);
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <img
-                    src={images[2]}
-                    alt="Gallery 2"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                </div>
-                <div
-                  className="relative overflow-hidden group/item cursor-pointer"
-                  onClick={() => {
-                    setActiveImage(3);
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <img
-                    src={images[3]}
-                    alt="Gallery 3"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                </div>
-                <div
-                  className="relative overflow-hidden group/item cursor-pointer"
-                  onClick={() => {
-                    setActiveImage(4);
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <img
-                    src={images[4]}
-                    alt="Gallery 4"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-ink/10 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setActiveImage(0);
-                  setLightboxOpen(true);
-                }}
-                className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-lg text-sm font-semibold shadow-soft hover:scale-105 transition-transform flex items-center gap-2 border border-border z-10"
-              >
-                Show all photos
-              </button>
+                  Show all {images.length} photos
+                </button>
+              )}
             </div>
           </FadeIn>
 

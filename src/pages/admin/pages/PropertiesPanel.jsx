@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   EyeOff,
@@ -9,6 +9,9 @@ import {
   MapPin,
   Image as ImageIcon,
   Eye,
+  Search,
+  Loader2,
+  X,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +27,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { AMENITIES_MAP } from "@/data/amenities";
-import { setPropertyStatus, addProperty, updateProperty, deleteProperty } from "@/lib/store";
+import { setPropertyStatus, addProperty, updateProperty, deleteProperty, logout } from "@/lib/store";
+import { apiFetch } from "@/lib/api";
 
 function getPaginationRange(currentPage, totalPages) {
   if (totalPages <= 7) {
@@ -39,53 +43,82 @@ function getPaginationRange(currentPage, totalPages) {
   return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
 }
 
+const initialFormState = {
+  title: "",
+  location: "",
+  price: "",
+  beds: "",
+  baths: "",
+  guests: "",
+  sizeSqm: "",
+  description: "",
+  images: [],
+  amenities: [],
+};
+
 export default function PropertiesPanel({ properties }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [apiData, setApiData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const [editingProperty, setEditingProperty] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    price: "",
-    beds: "",
-    baths: "",
-    guests: "",
-    description: "",
-    img: "",
-    amenities: [],
-  });
+  const [formData, setFormData] = useState(initialFormState);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const openAddModal = () => {
     setEditingProperty(null);
-    setFormData({
-      title: "",
-      location: "",
-      price: "",
-      beds: "",
-      baths: "",
-      guests: "",
-      description: "",
-      img: "",
-      amenities: [],
-    });
+    setFormData(initialFormState);
+    setImageFiles([]);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (prop) => {
+  const openEditModal = async (prop) => {
     setEditingProperty(prop);
     setFormData({
       title: prop.title,
       location: prop.location,
-      price: prop.price || "",
+      price: prop.price || prop.pricePerNight || "",
       beds: prop.beds,
       baths: prop.baths,
       guests: prop.guests,
       description: prop.description || "",
-      img: prop.img,
+      images: prop.images || (prop.img ? [prop.img] : (prop.thumbnail ? [prop.thumbnail] : [])),
       amenities: prop.amenities || [],
     });
+    setImageFiles([]);
     setIsModalOpen(true);
+
+    if (prop.slug) {
+      try {
+        const res = await apiFetch(`/api/admin/properties/slug/${prop.slug}`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          const fullProp = data.data;
+          setFormData((prev) => ({
+            ...prev,
+            title: fullProp.title || prev.title,
+            location: fullProp.location || prev.location,
+            price: fullProp.price || fullProp.pricePerNight || prev.price,
+            beds: fullProp.beds || prev.beds,
+            baths: fullProp.baths || prev.baths,
+            guests: fullProp.guests || prev.guests,
+            sizeSqm: fullProp.sizeSqm || prev.sizeSqm,
+            description: fullProp.description || prev.description,
+            images: fullProp.images || prev.images,
+            amenities: fullProp.amenities || prev.amenities,
+          }));
+          setImageFiles([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch full property details", err);
+      }
+    }
   };
 
   const toggleAmenity = (key) => {
@@ -99,42 +132,288 @@ export default function PropertiesPanel({ properties }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      ...formData,
-      price: Number(formData.price),
-      beds: Number(formData.beds),
-      baths: Number(formData.baths),
-      guests: Number(formData.guests),
-    };
+    
     if (editingProperty) {
-      updateProperty(editingProperty.id, data);
+      setIsSubmitting(true);
+      try {
+        const payload = new FormData();
+        payload.append("title", formData.title);
+        payload.append("location", formData.location);
+        if (formData.description) payload.append("description", formData.description);
+        payload.append("pricePerNight", formData.price);
+        payload.append("beds", formData.beds);
+        payload.append("baths", formData.baths);
+        payload.append("guests", formData.guests);
+        if (formData.sizeSqm) payload.append("sizeSqm", formData.sizeSqm);
+        payload.append("amenities", JSON.stringify(formData.amenities));
+        
+        if (imageFiles && imageFiles.length > 0) {
+          imageFiles.forEach(file => {
+            payload.append("images", file);
+          });
+        }
+
+        const res = await apiFetch(`/api/admin/properties/${editingProperty.id || editingProperty.slug}`, {
+          method: "PUT",
+          body: payload,
+        });
+        
+        const data = await res.json();
+        if (res.ok && data.success) {
+          Swal.fire({
+            title: "Success",
+            text: "Property updated successfully",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          setIsModalOpen(false);
+          setRefreshTrigger(prev => prev + 1);
+          setImageFiles([]);
+        } else {
+          throw new Error(data.message || "Failed to update property");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message, "error");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
-      addProperty(data);
+      setIsSubmitting(true);
+      try {
+        const payload = new FormData();
+        payload.append("title", formData.title);
+        payload.append("location", formData.location);
+        if (formData.description) payload.append("description", formData.description);
+        payload.append("pricePerNight", formData.price);
+        payload.append("beds", formData.beds);
+        payload.append("baths", formData.baths);
+        payload.append("guests", formData.guests);
+        if (formData.sizeSqm) payload.append("sizeSqm", formData.sizeSqm);
+        payload.append("amenities", JSON.stringify(formData.amenities));
+        
+        if (imageFiles && imageFiles.length > 0) {
+          imageFiles.forEach(file => {
+            payload.append("images", file);
+          });
+        }
+
+        const res = await apiFetch(`/api/admin/properties`, {
+          method: "POST",
+          body: payload,
+        });
+        
+        const data = await res.json();
+        if (res.ok && data.success) {
+          Swal.fire({
+            title: "Success",
+            text: "Property created successfully",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          setIsModalOpen(false);
+          setRefreshTrigger(prev => prev + 1);
+          setImageFiles([]);
+        } else {
+          throw new Error(data.message || "Failed to create property");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message, "error");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-    setIsModalOpen(false);
+  };
+
+  const handleRemoveImage = async (e, idx, imgSrc) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const actualSrc = typeof imgSrc === "string" ? imgSrc : imgSrc.url;
+
+    if (actualSrc.startsWith("data:") || actualSrc.startsWith("blob:")) {
+      const newImages = formData.images.filter((_, i) => i !== idx);
+      setFormData((prev) => ({ ...prev, images: newImages }));
+
+      let dataUrlCount = 0;
+      for (let i = 0; i < idx; i++) {
+        const src = typeof formData.images[i] === "string" ? formData.images[i] : formData.images[i].url;
+        if (src.startsWith("data:") || src.startsWith("blob:")) dataUrlCount++;
+      }
+      setImageFiles((prev) => prev.filter((_, i) => i !== dataUrlCount));
+      return;
+    }
+
+    if (!editingProperty || (!editingProperty.id && !editingProperty.slug)) return;
+
+    try {
+      const propertyId = editingProperty.id || editingProperty.slug;
+      const res = await apiFetch(`/api/admin/properties/${propertyId}/images`, {
+        method: "DELETE",
+        body: JSON.stringify({ image: actualSrc }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFormData((prev) => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }));
+        if (apiData) {
+          setApiData(prev => ({
+             ...prev,
+             data: prev.data.map(p => (p.id === propertyId || p.slug === propertyId) ? {...p, images: p.images ? p.images.filter(img => (typeof img === 'string' ? img : img.url) !== actualSrc) : []} : p)
+          }));
+        }
+        Swal.fire({
+          title: "Deleted!",
+          text: "Image removed from property.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        throw new Error(data.message || "Failed to delete image");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", err.message, "error");
+    }
+  };
+
+  const handleStatusChange = async (id, isLive) => {
+    const newStatus = isLive ? "HIDDEN" : "LIVE";
+    try {
+      const res = await apiFetch(`/api/admin/properties/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (apiData) {
+          setApiData((prev) => ({
+            ...prev,
+            data: prev.data.map((p) =>
+              p.id === id || p.slug === id ? { ...p, status: newStatus } : p
+            ),
+          }));
+        }
+        Swal.fire({
+          title: "Success",
+          text: `Property is now ${newStatus === "LIVE" ? "Live" : "Hidden"}`,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        throw new Error(data.message || "Failed to update status");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", err.message, "error");
+    }
+  };
+
+  const handleDeleteProperty = async (id) => {
+    try {
+      const res = await apiFetch(`/api/admin/properties/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setRefreshTrigger(prev => prev + 1);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Property has been deleted.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        throw new Error(data.message || "Failed to delete property");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", err.message, "error");
+    }
   };
 
   const itemsPerPage = 3;
-  const totalPages = Math.ceil(properties.length / itemsPerPage);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (debouncedSearch !== searchTerm) {
+        setDebouncedSearch(searchTerm);
+        setCurrentPage(1);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm, debouncedSearch]);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        let url = `/api/admin/properties?page=${currentPage}&limit=${itemsPerPage}`;
+        if (debouncedSearch) {
+          url += `&search=${encodeURIComponent(debouncedSearch)}`;
+        }
+        const res = await apiFetch(url);
+        const data = await res.json();
+
+        if (data.success) {
+          setApiData(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch properties from API", err);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    fetchProperties();
+  }, [currentPage, debouncedSearch, refreshTrigger]);
+
+  const totalPages = apiData ? apiData.pagination.totalPages : Math.ceil(properties.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedProperties = properties.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedProperties = apiData ? apiData.data : properties.slice(startIndex, startIndex + itemsPerPage);
+  const totalCount = apiData ? apiData.pagination.total : properties.length;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <p className="eyebrow">Listings</p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink">Properties</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {properties.filter((p) => p.status === "published").length} of {properties.length}{" "}
-            properties visible on the public site
-          </p>
+      {/* Header */}
+      <div className="flex flex-col gap-6 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div>
+            <p className="eyebrow">Listings</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink">Properties</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {totalCount} propert{totalCount !== 1 ? "ies" : "y"} total
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
+            <div className="relative w-full sm:w-64 md:w-80">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                {isSearching ? <Loader2 size={16} className="animate-spin text-copper" /> : <Search size={16} />}
+              </div>
+              <input
+                type="text"
+                placeholder="Search properties..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setIsSearching(true);
+                }}
+                className="w-full h-10 pl-10 pr-4 rounded-xl border border-border/80 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-ink focus:border-transparent transition-all text-sm font-medium placeholder:font-normal placeholder:text-muted-foreground"
+              />
+            </div>
+            <Button
+              onClick={openAddModal}
+              className="bg-ink text-white hover:bg-ink/90 shadow-soft shrink-0 w-full sm:w-auto h-10 rounded-xl"
+            >
+              <Plus size={16} className="mr-2" /> Add Property
+            </Button>
+          </div>
         </div>
-        <Button onClick={openAddModal} className="bg-ink hover:bg-ink/90 text-white gap-2 shrink-0">
-          <Plus size={16} /> Add Property
-        </Button>
       </div>
 
       {/* Property Modal */}
@@ -185,7 +464,7 @@ export default function PropertiesPanel({ properties }) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 <div className="grid gap-2">
                   <label htmlFor="beds" className="text-sm font-medium">
                     Beds
@@ -226,6 +505,19 @@ export default function PropertiesPanel({ properties }) {
                     onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                     placeholder="6"
                     required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label htmlFor="sizeSqm" className="text-sm font-medium">
+                    Size (sqm)
+                  </label>
+                  <Input
+                    id="sizeSqm"
+                    type="number"
+                    min="1"
+                    value={formData.sizeSqm || ""}
+                    onChange={(e) => setFormData({ ...formData, sizeSqm: e.target.value })}
+                    placeholder="85"
                   />
                 </div>
               </div>
@@ -271,37 +563,48 @@ export default function PropertiesPanel({ properties }) {
                 <label className="text-sm font-medium">Property Image</label>
                 <div className="relative">
                   <input
-                    id="img"
+                    id="images"
                     type="file"
                     accept="image/*"
+                    multiple
                     title=" "
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setFormData({ ...formData, img: reader.result });
-                        };
-                        reader.readAsDataURL(file);
+                      const files = Array.from(e.target.files || []);
+                      if (files.length > 0) {
+                        setImageFiles(prev => [...prev, ...files]);
+                        const newPreviews = files.map(file => URL.createObjectURL(file));
+                        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...newPreviews] }));
                       }
+                      e.target.value = '';
                     }}
-                    required={!editingProperty}
+                    required={!editingProperty && (!formData.images || formData.images.length === 0)}
                   />
                   <div
-                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${formData.img ? "border-copper bg-copper/5" : "border-border bg-sand hover:bg-sand/80"}`}
+                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${(formData.images && formData.images.length > 0) ? "border-copper bg-copper/5" : "border-border bg-sand hover:bg-sand/80"}`}
                   >
-                    {formData.img ? (
-                      <div className="flex flex-col items-center text-center">
-                        <div className="h-20 w-32 rounded-lg bg-white overflow-hidden mb-3 shadow-sm ring-1 ring-border">
-                          <img
-                            src={formData.img}
-                            alt="Preview"
-                            className="h-full w-full object-cover"
-                          />
+                    {(formData.images && formData.images.length > 0) ? (
+                      <div className="flex flex-col w-full">
+                        <div className="flex flex-wrap gap-3 mb-4 max-h-[140px] overflow-y-auto no-scrollbar justify-center">
+                          {formData.images.map((imgSrc, idx) => (
+                            <div key={idx} className="relative z-20 h-20 w-24 rounded-lg bg-white overflow-hidden shadow-sm ring-1 ring-border shrink-0 group">
+                              <img
+                                src={typeof imgSrc === 'string' ? imgSrc : imgSrc.url}
+                                alt={`Preview ${idx + 1}`}
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={(e) => handleRemoveImage(e, idx, imgSrc)}
+                                className="absolute top-1 right-1 bg-black/50 hover:bg-black p-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X size={12} />
+                              </button>
+                            </div>
+                          ))}
                         </div>
-                        <p className="text-sm font-medium text-copper">
-                          Click or drag to replace image
+                        <p className="text-sm font-medium text-copper text-center">
+                          Click or drag to add more images
                         </p>
                       </div>
                     ) : (
@@ -309,7 +612,7 @@ export default function PropertiesPanel({ properties }) {
                         <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 text-muted-foreground ring-1 ring-border">
                           <ImageIcon size={20} />
                         </div>
-                        <p className="text-sm font-medium text-ink">Upload property image</p>
+                        <p className="text-sm font-medium text-ink">Upload property images</p>
                         <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
                       </div>
                     )}
@@ -318,43 +621,56 @@ export default function PropertiesPanel({ properties }) {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-ink hover:bg-ink/90 text-white">
-                Save changes
+              <Button type="submit" className="bg-ink hover:bg-ink/90 text-white" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
+                  </>
+                ) : (
+                  "Save changes"
+                )}
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {paginatedProperties.map((property) => (
+      <div className={`grid gap-5 sm:grid-cols-2 xl:grid-cols-3 transition-opacity duration-300 ${isSearching ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
+        {paginatedProperties.map((property) => {
+          const isLive = property.status === "published" || property.status === "LIVE";
+          return (
           <Card
             key={property.id || property.slug}
             className="overflow-hidden border-0 shadow-soft group flex flex-col"
           >
             <div className="relative aspect-16/10 overflow-hidden bg-sand shrink-0">
               <img
-                src={property.img}
+                src={(property.images && property.images.length > 0) ? (property.images[0]?.url || property.images[0]) : (property.thumbnail || property.img)}
                 alt={property.title}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute left-3 top-3">
                 <span
                   className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm ${
-                    property.status === "published"
+                    isLive
                       ? "bg-white/90 text-emerald-700"
                       : "bg-white/90 text-muted-foreground"
                   }`}
                 >
-                  {property.status === "published" ? "● Live" : "○ Draft"}
+                  {isLive ? "● Live" : "○ Draft"}
                 </span>
               </div>
             </div>
             <CardContent className="p-5 flex flex-col flex-1">
-              <h3 className="font-semibold text-ink leading-snug line-clamp-2">{property.title}</h3>
+              <h3 
+                className="font-semibold text-ink leading-snug line-clamp-2 cursor-pointer hover:underline"
+                onClick={() => navigate(`/admin/properties/${property.slug}`)}
+              >
+                {property.title}
+              </h3>
               <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin size={13} className="shrink-0" />
                 {property.location}
@@ -365,21 +681,21 @@ export default function PropertiesPanel({ properties }) {
                 </span>
                 <span>{property.beds} beds</span>
                 <span>{property.baths} baths</span>
+                <span className="flex items-center gap-1 ml-auto text-copper font-medium">
+                  <Inbox size={12} /> {property.stayInquiryCount || 0} {property.stayInquiryCount === 1 ? 'inquiry' : 'inquiries'}
+                </span>
               </p>
               <div className="mt-auto flex flex-col gap-2">
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    className={`flex-1 ${property.status === "published" ? "bg-sand text-ink hover:bg-sand/80" : "bg-copper hover:bg-copper/90 text-white"}`}
-                    variant={property.status === "published" ? "secondary" : "default"}
+                    className={`flex-1 ${isLive ? "bg-sand text-ink hover:bg-sand/80" : "bg-copper hover:bg-copper/90 text-white"}`}
+                    variant={isLive ? "secondary" : "default"}
                     onClick={() =>
-                      setPropertyStatus(
-                        property.id,
-                        property.status === "published" ? "draft" : "published",
-                      )
+                      handleStatusChange(property.id || property.slug, isLive)
                     }
                   >
-                    {property.status === "published" ? (
+                    {isLive ? (
                       <>
                         <EyeOff size={14} className="mr-1.5" /> Unpublish
                       </>
@@ -393,7 +709,7 @@ export default function PropertiesPanel({ properties }) {
                     size="sm"
                     variant="outline"
                     className="flex-1 text-ink"
-                    onClick={() => navigate(`/admin/property-inquiries/${property.id}`)}
+                    onClick={() => navigate(`/admin/properties/${property.id}/inquiries`)}
                   >
                     <Inbox size={14} className="mr-1.5" /> Inquiries
                   </Button>
@@ -422,7 +738,7 @@ export default function PropertiesPanel({ properties }) {
                         confirmButtonText: "Yes, delete it!",
                       }).then((result) => {
                         if (result.isConfirmed) {
-                          deleteProperty(property.id);
+                          handleDeleteProperty(property.id || property.slug);
                         }
                       });
                     }}
@@ -433,14 +749,14 @@ export default function PropertiesPanel({ properties }) {
               </div>
             </CardContent>
           </Card>
-        ))}
+        )})}
       </div>
 
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border/60 pt-4 mt-6">
           <span className="text-sm text-muted-foreground hidden sm:block">
-            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, properties.length)} of{" "}
-            {properties.length} properties
+            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, totalCount)} of{" "}
+            {totalCount} properties
           </span>
           <div className="flex items-center gap-2">
             <Button
@@ -452,7 +768,7 @@ export default function PropertiesPanel({ properties }) {
               Previous
             </Button>
 
-            <div className="flex items-center gap-1 hidden sm:flex">
+            <div className="hidden sm:flex items-center gap-1">
               {getPaginationRange(currentPage, totalPages).map((pageNumber, i) =>
                 pageNumber === "..." ? (
                   <span key={`dots-${i}`} className="px-2 text-muted-foreground">

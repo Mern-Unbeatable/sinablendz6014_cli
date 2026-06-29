@@ -8,6 +8,7 @@ import { useStoreSync } from "@/hooks/use-store-sync";
 import DashboardPanel from "./pages/DashboardPanel";
 import InquiriesPanel from "./pages/InquiriesPanel";
 import PropertiesPanel from "./pages/PropertiesPanel";
+import PropertyDetailsPanel from "./pages/PropertyDetailsPanel";
 import PropertyInquiriesPanel from "./pages/PropertyInquiriesPanel";
 
 export default function AdminPage() {
@@ -21,6 +22,7 @@ export default function AdminPage() {
   const path = location.pathname.split("/").filter(Boolean);
   const view = path.length > 1 ? path[1] : "overview";
   const viewId = path.length > 2 ? path[2] : null;
+  const subView = path.length > 3 ? path[3] : null;
 
   const handleViewChange = (newView) => {
     navigate(`/admin${newView === "overview" ? "" : `/${newView}`}`);
@@ -56,14 +58,18 @@ export default function AdminPage() {
           onSelect={setSelectedInquiry}
         />
       )}
-      {view === "properties" && <PropertiesPanel properties={properties} />}
-      {view === "property-inquiries" && viewId && (
+      {view === "properties" && !viewId && <PropertiesPanel properties={properties} />}
+      {view === "properties" && viewId && !subView && (
+        <PropertyDetailsPanel 
+          slug={viewId} 
+          onBack={() => navigate('/admin/properties')} 
+        />
+      )}
+      {view === "properties" && viewId && subView === "inquiries" && (
         <PropertyInquiriesPanel
-          inquiries={inquiries}
-          property={properties.find(p => p.id === viewId)}
+          propertyId={viewId}
+          property={properties.find(p => p.id === viewId || p.slug === viewId)}
           onBack={() => navigate('/admin/properties')}
-          selectedId={selectedInquiry}
-          onSelect={setSelectedInquiry}
         />
       )}
     </AdminShell>

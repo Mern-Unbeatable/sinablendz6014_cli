@@ -25,9 +25,12 @@ export async function apiFetch(endpoint, options = {}) {
   let accessToken = localStorage.getItem("aurora_access_token");
 
   const headers = {
-    "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
+  if (!headers["Content-Type"] && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (accessToken) {
     headers["Authorization"] = `Bearer ${accessToken}`;
