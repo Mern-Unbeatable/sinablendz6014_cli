@@ -15,7 +15,7 @@ export default function ContactPage() {
       </PageHero>
 
       <Section className="bg-sand">
-        <div className="container-luxe grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+        <div className="container-luxe flex flex-col-reverse lg:grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
           <ContactSidebar />
           <ContactForm />
         </div>

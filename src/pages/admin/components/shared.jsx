@@ -19,13 +19,13 @@ export function formatShortDate(iso) {
 
 export function StatusBadge({ status }) {
   const styles = {
-    new: "bg-copper/10 text-copper border-copper/25",
-    contacted: "bg-blue-50 text-blue-700 border-blue-200",
-    closed: "bg-sand text-muted-foreground border-border",
+    NEW: "bg-copper/10 text-copper border-copper/25",
+    CONTACTED: "bg-blue-50 text-blue-700 border-blue-200",
+    CLOSED: "bg-sand text-muted-foreground border-border",
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[status] || styles.closed}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[status] || styles.CLOSED}`}
     >
       {INQUIRY_STATUSES[status] || status}
     </span>
@@ -34,14 +34,13 @@ export function StatusBadge({ status }) {
 
 export function TypeBadge({ type }) {
   const colors = {
-    homeowner: "bg-ink/5 text-ink border-ink/10",
-    guest: "bg-copper/10 text-copper border-copper/20",
-    contact: "bg-sand text-ink/70 border-border",
-    booking: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    HOMEOWNER: "bg-ink/5 text-ink border-ink/10",
+    GENERAL_CONTACT: "bg-sand text-ink/70 border-border",
+    SHORT_STAY_INQUIRY: "bg-emerald-50 text-emerald-800 border-emerald-200",
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors[type] || colors.contact}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors[type] || colors.GENERAL_CONTACT}`}
     >
       {INQUIRY_TYPES[type] || type}
     </span>

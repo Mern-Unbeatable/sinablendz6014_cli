@@ -1,11 +1,30 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
-import { getPublishedProperties } from "@/lib/store";
+import { useEffect, useState } from "react";
 
 function Properties() {
-  const properties = getPublishedProperties().slice(0, 3);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_BASE_URL || "https://api-sinablendz6014.maktechgroup.tech";
+        const res = await fetch(`${baseUrl}/api/properties?page=1&limit=3`);
+        const result = await res.json();
+        if (result.success) {
+          setProperties(result.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch properties:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   return (
     <section className="section-pad bg-sand-soft">
@@ -31,8 +50,12 @@ function Properties() {
           className="section-gap grid gap-6 md:grid-cols-2 lg:grid-cols-3"
           staggerDelay={0.1}
         >
-          {properties.map((p) => (
-            <StaggerItem key={p.title}>
+          {loading ? (
+            <div className="col-span-full flex justify-center py-12">
+              <Loader2 className="animate-spin text-copper" size={32} />
+            </div>
+          ) : properties.map((p) => (
+            <StaggerItem key={p.id}>
               <Link to={`/properties/${p.slug}`}>
                 <motion.article
                   whileHover={{ y: -8 }}
@@ -41,7 +64,7 @@ function Properties() {
                 >
                   <div className="relative aspect-4/3 overflow-hidden">
                     <img
-                      src={p.img}
+                      src={p.thumbnail}
                       alt={p.title}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"

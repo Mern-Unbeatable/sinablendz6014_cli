@@ -20,7 +20,7 @@ export default function ServicesPage() {
 
       <WhatWeDo />
       <Audience />
-
+      <Process />
       <Section className="bg-sand-soft">
         <div className="container-luxe text-center">
           <FadeIn>
@@ -35,8 +35,6 @@ export default function ServicesPage() {
           </FadeIn>
         </div>
       </Section>
-
-      <Process />
     </Layout>
   );
 }

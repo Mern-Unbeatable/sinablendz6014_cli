@@ -10,19 +10,19 @@ const inputClass =
   "block w-full rounded-xl border-0 py-3.5 pl-11 text-ink shadow-sm ring-1 ring-inset ring-border bg-sand/30 placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-copper focus:bg-white sm:text-sm sm:leading-6 transition-all";
 
 export function AdminLogin({ onSuccess }) {
-  const [email, setEmail] = useState("admin@aurorasuites.com.au");
-  const [password, setPassword] = useState("aurora2024");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const result = login(email, password);
+    const result = await login(email, password);
     if (result.ok) {
       setTimeout(() => {
         onSuccess();
@@ -91,6 +91,7 @@ export function AdminLogin({ onSuccess }) {
                   type="email"
                   autoComplete="email"
                   required
+                  placeholder="Enter email"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -118,6 +119,7 @@ export function AdminLogin({ onSuccess }) {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);

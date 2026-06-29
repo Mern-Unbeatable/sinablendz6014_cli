@@ -67,121 +67,131 @@ export function Header({ theme = "dark" }) {
               : "bg-transparent"
         }`}
       >
-      <div className="container-luxe flex items-center justify-between py-3 md:py-4">
-        <Logo className="h-11 md:h-16" />
+        <div className="container-luxe flex items-center justify-between py-3 md:py-4">
+          <Logo className="h-11 md:h-16" />
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 lg:flex">
-          {links.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end={l.to === "/"}
-              className={({ isActive }) =>
-                `relative px-5 py-2 text-[0.95rem] font-medium transition-colors duration-300 ${
-                  isActive
-                    ? "text-copper"
-                    : `${textMutedClass} hover:text-copper`
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  {l.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute inset-x-2 -bottom-1 h-0.5 rounded-full bg-copper"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
-          ))}
-          <Link
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {links.map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end={l.to === "/"}
+                className={({ isActive }) =>
+                  `relative px-5 py-2 text-[0.95rem] font-medium transition-colors duration-300 ${
+                    isActive ? "text-copper" : `${textMutedClass} hover:text-copper`
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {l.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-indicator"
+                        className="absolute inset-x-2 -bottom-1 h-0.5 rounded-full bg-copper"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
+            {/* <Link
             to="/admin"
             className="ml-4 inline-flex items-center gap-2 rounded-full bg-copper px-6 py-2.5 text-[0.95rem] font-semibold text-white transition-all hover:bg-copper/90 hover:shadow-lg hover:shadow-copper/25 hover:-translate-y-0.5"
           >
             Login
-          </Link>
-        </nav>
+          </Link> */}
+          </nav>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className={`relative z-50 flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-sm lg:hidden ${
-            isLightMode ? "bg-ink/10 text-ink" : "bg-white/10 text-sand-soft"
-          }`}
-          aria-label="Menu"
-        >
-          <AnimatePresence mode="wait">
-            {open ? (
-              <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <X size={20} />
-              </motion.div>
-            ) : (
-              <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Menu size={20} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden bg-ink lg:hidden"
+          {/* Mobile toggle */}
+          <button
+            onClick={() => setOpen(!open)}
+            className={`relative z-50 flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-sm lg:hidden ${
+              isLightMode ? "bg-ink/10 text-ink" : "bg-white/10 text-sand-soft"
+            }`}
+            aria-label="Menu"
           >
-            <div className="container-luxe py-6 space-y-1">
-              {links.map((l, i) => (
+            <AnimatePresence mode="wait">
+              {open ? (
                 <motion.div
-                  key={l.to}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <NavLink
-                    to={l.to}
-                    end={l.to === "/"}
-                    onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      `block rounded-xl px-5 py-3.5 text-lg font-medium transition-colors ${
-                        isActive
-                          ? "bg-copper/10 text-copper"
-                          : "text-sand-soft/80 hover:bg-white/5 hover:text-sand-soft"
-                      }`
-                    }
-                  >
-                    {l.label}
-                  </NavLink>
+                  <X size={20} />
                 </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="pt-4"
-              >
-                <Link
-                  to="/admin"
-                  onClick={() => setOpen(false)}
-                  className="btn-primary w-full justify-center gap-2"
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Login
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+                  <Menu size={20} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden bg-ink lg:hidden"
+            >
+              <div className="container-luxe py-6 space-y-1">
+                {links.map((l, i) => (
+                  <motion.div
+                    key={l.to}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05, duration: 0.3 }}
+                  >
+                    <NavLink
+                      to={l.to}
+                      end={l.to === "/"}
+                      onClick={() => setOpen(false)}
+                      className={({ isActive }) =>
+                        `block rounded-xl px-5 py-3.5 text-lg font-medium transition-colors ${
+                          isActive
+                            ? "bg-copper/10 text-copper"
+                            : "text-sand-soft/80 hover:bg-white/5 hover:text-sand-soft"
+                        }`
+                      }
+                    >
+                      {l.label}
+                    </NavLink>
+                  </motion.div>
+                ))}
+                {/* <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="pt-4"
+                >
+                  <Link
+                    to="/admin"
+                    onClick={() => setOpen(false)}
+                    className="btn-primary w-full justify-center gap-2"
+                  >
+                    Login
+                  </Link>
+                </motion.div> */}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.header>
     </>
   );
 }

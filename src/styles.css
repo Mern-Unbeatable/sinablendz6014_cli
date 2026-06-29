@@ -307,3 +307,9 @@
     display: none;
   }
 }
+
+/* Fix for SweetAlert2 unclickable inside Radix Dialog */
+.swal2-container {
+  pointer-events: auto !important;
+  z-index: 99999 !important;
+}

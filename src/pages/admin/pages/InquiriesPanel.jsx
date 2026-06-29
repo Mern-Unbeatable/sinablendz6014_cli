@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Inbox,
   Eye,
@@ -10,6 +10,7 @@ import {
   MapPin,
   Calendar,
   MessageSquare,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -38,23 +39,103 @@ import {
 import Swal from "sweetalert2";
 import { updateInquiry, deleteInquiry, INQUIRY_STATUSES, INQUIRY_TYPES } from "@/lib/store";
 import { formatShortDate, formatDate, TypeBadge, DetailRow } from "../components/shared";
+import { apiFetch } from "@/lib/api";
 
-export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
+export default function InquiriesPanel({ selectedId, onSelect }) {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [items, setItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const filteredInquiries = inquiries.filter((i) => {
-    if (typeFilter !== "all" && i.type !== typeFilter) return false;
-    if (statusFilter !== "all" && i.status !== statusFilter) return false;
-    return true;
-  });
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      setLoading(true);
+      try {
+        let url = `/api/admin/inquiries?page=${currentPage}&limit=8`;
+        if (typeFilter !== "all") url += `&type=${typeFilter}`;
+        if (statusFilter !== "all") url += `&status=${statusFilter}`;
 
-  const selected = inquiries.find((i) => i.id === selectedId);
+        const res = await apiFetch(url);
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setItems(data.data || []);
+          setTotalPages(
+            data.totalPages || data.pagination?.totalPages || Math.ceil((data.total || 0) / 8) || 1,
+          );
+          setTotalItems(data.total || data.pagination?.total || data.data?.length || 0);
+        } else {
+          setItems([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch inquiries", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInquiries();
+  }, [currentPage, typeFilter, statusFilter, refreshTrigger]);
+
+  const selected = items.find((i) => i.id === selectedId);
 
   const openView = (id) => {
     onSelect(id);
     setViewModalOpen(true);
+  };
+
+  const handleStatusChange = async (id, val) => {
+    // Optimistic UI update
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status: val } : i)));
+
+    try {
+      const res = await apiFetch(`/api/admin/inquiries/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: val }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update status");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        title: "Error",
+        text: "Could not update status. Please try again.",
+        icon: "error",
+      });
+    }
+  };
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Delete Inquiry?",
+      text: "Are you sure you want to delete this inquiry permanently?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#1a1a1a",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await apiFetch(`/api/admin/inquiries/${id}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            setRefreshTrigger(prev => prev + 1);
+          } else {
+            throw new Error("Failed to delete inquiry");
+          }
+        } catch (err) {
+          console.error(err);
+          Swal.fire("Error", "Could not delete inquiry. Please try again.", "error");
+        }
+      }
+    });
   };
 
   return (
@@ -64,8 +145,7 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
           <p className="eyebrow">Inbox</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink">Inquiries</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filteredInquiries.length} submission{filteredInquiries.length !== 1 ? "s" : ""} from
-            website forms
+            {totalItems} submission{totalItems !== 1 ? "s" : ""} from website forms
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
@@ -100,14 +180,18 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
 
       <Card className="border-0 shadow-soft">
         <CardContent className="p-0">
-          {filteredInquiries.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="animate-spin text-copper" size={40} />
+            </div>
+          ) : items.length === 0 ? (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sand text-muted-foreground">
                 <Inbox size={24} />
               </div>
-              <p className="mt-4 font-medium text-ink">No inquiries yet</p>
+              <p className="mt-4 font-medium text-ink">No inquiries found</p>
               <p className="mt-1 max-w-xs text-sm text-muted-foreground">
-                When someone submits a form on the website, it will appear here.
+                Try adjusting your filters or wait for new submissions.
               </p>
             </div>
           ) : (
@@ -117,13 +201,13 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                   <TableHead>Date</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Type</TableHead>
-                  <TableHead>Property</TableHead>
+                  <TableHead>Property Address</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredInquiries.map((item) => (
+                {items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="whitespace-nowrap">
                       {formatShortDate(item.createdAt)}
@@ -132,23 +216,35 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                     <TableCell>
                       <TypeBadge type={item.type} />
                     </TableCell>
-                    <TableCell className="max-w-[150px] truncate" title={item.propertyTitle}>
-                      {item.propertyTitle || "—"}
+                    <TableCell
+                      className="max-w-[150px] truncate"
+                      title={item.propertyTitle || item.property?.title || item.propertyAddress}
+                    >
+                      {item.propertyTitle || item.property?.title || item.propertyAddress || "—"}
                     </TableCell>
                     <TableCell>
                       <Select
                         value={item.status}
-                        onValueChange={(val) => updateInquiry(item.id, { status: val })}
+                        onValueChange={(val) => handleStatusChange(item.id, val)}
+                        disabled={item.status === "CLOSED"}
                       >
-                        <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60">
+                        <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {Object.entries(INQUIRY_STATUSES).map(([val, label]) => (
-                            <SelectItem key={val} value={val} className="text-xs">
-                              {label}
-                            </SelectItem>
-                          ))}
+                          {Object.entries(INQUIRY_STATUSES)
+                            .filter(([val]) => {
+                              if (item.status === "NEW")
+                                return val === "NEW" || val === "CONTACTED";
+                              if (item.status === "CONTACTED")
+                                return val === "CONTACTED" || val === "CLOSED";
+                              return val === "CLOSED";
+                            })
+                            .map(([val, label]) => (
+                              <SelectItem key={val} value={val} className="text-xs">
+                                {label}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -166,21 +262,7 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => {
-                            Swal.fire({
-                              title: "Delete Inquiry?",
-                              text: "Are you sure you want to delete this inquiry permanently?",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#d33",
-                              cancelButtonColor: "#1a1a1a",
-                              confirmButtonText: "Yes, delete it!",
-                            }).then((result) => {
-                              if (result.isConfirmed) {
-                                deleteInquiry(item.id);
-                              }
-                            });
-                          }}
+                          onClick={() => handleDelete(item.id)}
                         >
                           <Trash2 size={16} />
                         </Button>
@@ -193,13 +275,24 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
           )}
           <div className="flex items-center justify-between border-t border-border/60 px-6 py-4">
             <span className="text-sm text-muted-foreground">
-              Showing 1 to {filteredInquiries.length} of {filteredInquiries.length} entries
+              Showing {(currentPage - 1) * 8 + 1} to {Math.min(currentPage * 8, totalItems)} of{" "}
+              {totalItems} entries
             </span>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage === 1 || loading}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              >
                 Previous
               </Button>
-              <Button variant="outline" size="sm" disabled>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage >= totalPages || loading}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              >
                 Next
               </Button>
             </div>
@@ -240,7 +333,7 @@ export default function InquiriesPanel({ inquiries, selectedId, onSelect }) {
                 </DetailRow>
                 <DetailRow icon={Calendar} label="Stay dates">
                   {selected.checkIn
-                    ? `${selected.checkIn} → ${selected.checkOut || "—"} · ${selected.guests || "—"} guests`
+                    ? `${formatShortDate(selected.checkIn)} → ${selected.checkOut ? formatShortDate(selected.checkOut) : "—"} · ${selected.guestCount || selected.guests || "—"} guests`
                     : null}
                 </DetailRow>
                 <DetailRow icon={MessageSquare} label="Message">
