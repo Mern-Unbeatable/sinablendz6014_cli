@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { isAuthenticated, logout, getDashboardStats, getInquiries, getPropertyAdminList } from "@/lib/store";
+import { isAuthenticated, logout, getInquiries, getPropertyAdminList } from "@/lib/store";
 import { useStoreSync } from "@/hooks/use-store-sync";
+import { apiFetch } from "@/lib/api";
 
 import DashboardPanel from "./pages/DashboardPanel";
 import InquiriesPanel from "./pages/InquiriesPanel";
@@ -14,6 +15,17 @@ import PropertyInquiriesPanel from "./pages/PropertyInquiriesPanel";
 export default function AdminPage() {
   const [authed, setAuthed] = useState(isAuthenticated());
   const [selectedInquiry, setSelectedInquiry] = useState(null);
+  const [sidebarStats, setSidebarStats] = useState(null);
+
+  useEffect(() => {
+    if (!authed) return;
+    apiFetch("/api/admin/dashboard/overview")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success) setSidebarStats(json.data);
+      })
+      .catch(console.error);
+  }, [authed]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,11 +40,9 @@ export default function AdminPage() {
     navigate(`/admin${newView === "overview" ? "" : `/${newView}`}`);
   };
 
-  const loadStats = useCallback(() => getDashboardStats(), []);
   const loadInquiries = useCallback(() => getInquiries(), []);
   const loadProperties = useCallback(() => getPropertyAdminList(), []);
 
-  const [stats] = useStoreSync(loadStats);
   const [inquiries] = useStoreSync(loadInquiries);
   const [properties] = useStoreSync(loadProperties);
 
@@ -44,13 +54,13 @@ export default function AdminPage() {
     <AdminShell
       view={view}
       onViewChange={handleViewChange}
-      newInquiryCount={stats.newInquiries}
+      newInquiryCount={sidebarStats?.newInquiries?.simpleInquiries || 0}
       onSignOut={() => {
         logout();
         setAuthed(false);
       }}
     >
-      {view === "overview" && <DashboardPanel stats={stats} onNavigate={handleViewChange} />}
+      {view === "overview" && <DashboardPanel onNavigate={handleViewChange} />}
       {view === "inquiries" && (
         <InquiriesPanel
           inquiries={inquiries}

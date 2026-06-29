@@ -60,8 +60,12 @@ function Hero() {
           email: String(fd.get("email") || ""),
           phone: String(fd.get("phone") || ""),
           checkIn: String(fd.get("checkIn") || ""),
-          checkOut: String(fd.get("checkOut") || ""),
         };
+
+        const checkOutValue = fd.get("checkOut");
+        if (checkOutValue) {
+          payload.checkOut = String(checkOutValue);
+        }
 
         const res = await fetch(`${baseUrl}/api/inquiries/guest`, {
           method: "POST",

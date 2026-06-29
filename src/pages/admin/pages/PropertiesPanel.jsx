@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   Plus,
   EyeOff,
@@ -186,7 +187,7 @@ export default function PropertiesPanel({ properties }) {
         }
       } catch (err) {
         console.error(err);
-        Swal.fire("Error", err.message, "error");
+        toast.error(err.message || "Something went wrong");
       } finally {
         setIsSubmitting(false);
       }
@@ -232,7 +233,7 @@ export default function PropertiesPanel({ properties }) {
         }
       } catch (err) {
         console.error(err);
-        Swal.fire("Error", err.message, "error");
+        toast.error(err.message || "Something went wrong");
       } finally {
         setIsSubmitting(false);
       }
@@ -299,7 +300,7 @@ export default function PropertiesPanel({ properties }) {
       }
     } catch (err) {
       console.error(err);
-      Swal.fire("Error", err.message, "error");
+      toast.error(err.message || "Failed to delete image");
     }
   };
 

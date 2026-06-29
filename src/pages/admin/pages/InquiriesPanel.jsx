@@ -430,6 +430,13 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
                     </p>
                   ) : null}
                 </DetailRow>
+                <DetailRow icon={MessageSquare} label="Looking for">
+                  {selected.lookingFor ? (
+                    <p className="whitespace-pre-wrap rounded-xl bg-sand p-4 text-sm leading-relaxed mt-2">
+                      {selected.lookingFor}
+                    </p>
+                  ) : null}
+                </DetailRow>
               </div>
             </>
           )}
