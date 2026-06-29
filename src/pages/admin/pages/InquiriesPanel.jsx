@@ -195,7 +195,10 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
               </p>
             </div>
           ) : (
-            <Table>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
@@ -271,7 +274,76 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden flex flex-col divide-y divide-border/60">
+                {items.map((item) => (
+                  <div key={item.id} className="p-5 flex flex-col gap-4 hover:bg-black/[0.02] transition-colors">
+                    <div className="flex justify-between items-start gap-3">
+                      <div className="min-w-0">
+                        <p className="font-medium text-ink break-words">{item.name || "Unknown"}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{formatShortDate(item.createdAt)}</p>
+                      </div>
+                      <div className="shrink-0">
+                        <TypeBadge type={item.type} />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-ink/80 flex items-center gap-2 mb-1">
+                        <MapPin size={14} className="text-muted-foreground shrink-0" />
+                        <span className="line-clamp-1">{item.propertyTitle || item.property?.title || item.propertyAddress || "—"}</span>
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <Select
+                        value={item.status}
+                        onValueChange={(val) => handleStatusChange(item.id, val)}
+                        disabled={item.status === "CLOSED"}
+                      >
+                        <SelectTrigger className="w-[120px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed shadow-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(INQUIRY_STATUSES)
+                            .filter(([val]) => {
+                              if (item.status === "NEW")
+                                return val === "NEW" || val === "CONTACTED";
+                              if (item.status === "CONTACTED")
+                                return val === "CONTACTED" || val === "CLOSED";
+                              return val === "CLOSED";
+                            })
+                            .map(([val, label]) => (
+                              <SelectItem key={val} value={val} className="text-xs">
+                                {label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-ink shadow-none"
+                          onClick={() => openView(item.id)}
+                        >
+                          <Eye size={16} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 shadow-none"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
           <div className="flex items-center justify-between border-t border-border/60 px-6 py-4">
             <span className="text-sm text-muted-foreground">

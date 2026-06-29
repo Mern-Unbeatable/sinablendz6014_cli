@@ -30,7 +30,7 @@ export default function Audience() {
   return (
     <>
       <Section className="bg-sand">
-        <div className="container-luxe">
+        <div className="container-luxe space-y-12 lg:space-y-20">
           <FadeIn>
             <div className="rounded-3xl bg-sand-soft card-pad shadow-soft">
               <div className="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-16">
@@ -76,11 +76,7 @@ export default function Audience() {
               </div>
             </div>
           </FadeIn>
-        </div>
-      </Section>
 
-      <Section className="bg-sand">
-        <div className="container-luxe">
           <FadeIn>
             <div className="rounded-3xl bg-sand-soft card-pad shadow-soft">
               <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16">

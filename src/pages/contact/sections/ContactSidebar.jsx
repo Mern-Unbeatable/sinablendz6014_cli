@@ -34,7 +34,7 @@ function ContactDetail({ icon: Icon, label, value }) {
       </span>
       <div>
         <p className="text-xs tracking-[0.25em] text-sand-soft/50">{label}</p>
-        <p className="mt-0.5 text-base">{value}</p>
+        <p className="mt-0.5 text-base break-all">{value}</p>
       </div>
     </div>
   );

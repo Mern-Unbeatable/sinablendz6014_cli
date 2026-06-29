@@ -48,7 +48,6 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
   const [selectedDetails, setSelectedDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   
-  const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,7 +60,6 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
       setLoading(true);
       try {
         let url = `/api/admin/properties/${propertyId}/inquiries?page=${currentPage}&limit=10`;
-        if (typeFilter !== "all") url += `&type=${typeFilter}`;
         if (statusFilter !== "all") url += `&status=${statusFilter}`;
 
         const res = await apiFetch(url);
@@ -85,7 +83,7 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
     if (propertyId) {
       fetchInquiries();
     }
-  }, [propertyId, currentPage, typeFilter, statusFilter]);
+  }, [propertyId, currentPage, statusFilter]);
 
   const selected = items.find((i) => i.id === selectedId);
 
@@ -169,19 +167,6 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
       </div>
 
       <div className="flex flex-col sm:flex-row justify-end gap-3">
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[140px] bg-white">
-            <SelectValue placeholder="All Types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            {Object.entries(INQUIRY_TYPES).map(([val, label]) => (
-              <SelectItem key={val} value={val}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[140px] bg-white">
             <SelectValue placeholder="All Statuses" />
@@ -214,7 +199,9 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
               </p>
             </div>
           ) : (
-            <Table>
+            <>
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
@@ -283,7 +270,68 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+                </Table>
+              </div>
+              <div className="md:hidden flex flex-col divide-y divide-border/60">
+                {items.map((item) => (
+                  <div key={item.id} className="p-5 flex flex-col gap-4 hover:bg-black/[0.02] transition-colors">
+                    <div className="flex justify-between items-start gap-3">
+                      <div className="min-w-0">
+                        <p className="font-medium text-ink break-words">{item.name || "Unknown"}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{formatShortDate(item.createdAt)}</p>
+                      </div>
+                      <div className="shrink-0">
+                        <TypeBadge type={item.type} />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <Select
+                        value={item.status}
+                        onValueChange={(val) => handleStatusChange(item.id, val)}
+                        disabled={item.status === "CLOSED"}
+                      >
+                        <SelectTrigger className="w-[120px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed shadow-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(INQUIRY_STATUSES)
+                            .filter(([val]) => {
+                              if (item.status === "NEW")
+                                return val === "NEW" || val === "CONTACTED";
+                              if (item.status === "CONTACTED")
+                                return val === "CONTACTED" || val === "CLOSED";
+                              return val === "CLOSED";
+                            })
+                            .map(([val, label]) => (
+                              <SelectItem key={val} value={val} className="text-xs">
+                                {label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-ink shadow-none"
+                          onClick={() => openView(item.id)}
+                        >
+                          <Eye size={16} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 shadow-none"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
           <div className="flex items-center justify-between border-t border-border/60 px-6 py-4">
             <span className="text-sm text-muted-foreground">

@@ -27,7 +27,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { AMENITIES_MAP } from "@/data/amenities";
-import { setPropertyStatus, addProperty, updateProperty, deleteProperty, logout } from "@/lib/store";
+import {
+  setPropertyStatus,
+  addProperty,
+  updateProperty,
+  deleteProperty,
+  logout,
+} from "@/lib/store";
 import { apiFetch } from "@/lib/api";
 
 function getPaginationRange(currentPage, totalPages) {
@@ -88,7 +94,7 @@ export default function PropertiesPanel({ properties }) {
       baths: prop.baths,
       guests: prop.guests,
       description: prop.description || "",
-      images: prop.images || (prop.img ? [prop.img] : (prop.thumbnail ? [prop.thumbnail] : [])),
+      images: prop.images || (prop.img ? [prop.img] : prop.thumbnail ? [prop.thumbnail] : []),
       amenities: prop.amenities || [],
     });
     setImageFiles([]);
@@ -134,7 +140,7 @@ export default function PropertiesPanel({ properties }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (editingProperty) {
       setIsSubmitting(true);
       try {
@@ -148,18 +154,21 @@ export default function PropertiesPanel({ properties }) {
         payload.append("guests", formData.guests);
         if (formData.sizeSqm) payload.append("sizeSqm", formData.sizeSqm);
         payload.append("amenities", JSON.stringify(formData.amenities));
-        
+
         if (imageFiles && imageFiles.length > 0) {
-          imageFiles.forEach(file => {
+          imageFiles.forEach((file) => {
             payload.append("images", file);
           });
         }
 
-        const res = await apiFetch(`/api/admin/properties/${editingProperty.id || editingProperty.slug}`, {
-          method: "PUT",
-          body: payload,
-        });
-        
+        const res = await apiFetch(
+          `/api/admin/properties/${editingProperty.id || editingProperty.slug}`,
+          {
+            method: "PUT",
+            body: payload,
+          },
+        );
+
         const data = await res.json();
         if (res.ok && data.success) {
           Swal.fire({
@@ -170,7 +179,7 @@ export default function PropertiesPanel({ properties }) {
             showConfirmButton: false,
           });
           setIsModalOpen(false);
-          setRefreshTrigger(prev => prev + 1);
+          setRefreshTrigger((prev) => prev + 1);
           setImageFiles([]);
         } else {
           throw new Error(data.message || "Failed to update property");
@@ -194,9 +203,9 @@ export default function PropertiesPanel({ properties }) {
         payload.append("guests", formData.guests);
         if (formData.sizeSqm) payload.append("sizeSqm", formData.sizeSqm);
         payload.append("amenities", JSON.stringify(formData.amenities));
-        
+
         if (imageFiles && imageFiles.length > 0) {
-          imageFiles.forEach(file => {
+          imageFiles.forEach((file) => {
             payload.append("images", file);
           });
         }
@@ -205,7 +214,7 @@ export default function PropertiesPanel({ properties }) {
           method: "POST",
           body: payload,
         });
-        
+
         const data = await res.json();
         if (res.ok && data.success) {
           Swal.fire({
@@ -216,7 +225,7 @@ export default function PropertiesPanel({ properties }) {
             showConfirmButton: false,
           });
           setIsModalOpen(false);
-          setRefreshTrigger(prev => prev + 1);
+          setRefreshTrigger((prev) => prev + 1);
           setImageFiles([]);
         } else {
           throw new Error(data.message || "Failed to create property");
@@ -242,7 +251,8 @@ export default function PropertiesPanel({ properties }) {
 
       let dataUrlCount = 0;
       for (let i = 0; i < idx; i++) {
-        const src = typeof formData.images[i] === "string" ? formData.images[i] : formData.images[i].url;
+        const src =
+          typeof formData.images[i] === "string" ? formData.images[i] : formData.images[i].url;
         if (src.startsWith("data:") || src.startsWith("blob:")) dataUrlCount++;
       }
       setImageFiles((prev) => prev.filter((_, i) => i !== dataUrlCount));
@@ -261,9 +271,20 @@ export default function PropertiesPanel({ properties }) {
       if (res.ok && data.success) {
         setFormData((prev) => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }));
         if (apiData) {
-          setApiData(prev => ({
-             ...prev,
-             data: prev.data.map(p => (p.id === propertyId || p.slug === propertyId) ? {...p, images: p.images ? p.images.filter(img => (typeof img === 'string' ? img : img.url) !== actualSrc) : []} : p)
+          setApiData((prev) => ({
+            ...prev,
+            data: prev.data.map((p) =>
+              p.id === propertyId || p.slug === propertyId
+                ? {
+                    ...p,
+                    images: p.images
+                      ? p.images.filter(
+                          (img) => (typeof img === "string" ? img : img.url) !== actualSrc,
+                        )
+                      : [],
+                  }
+                : p,
+            ),
           }));
         }
         Swal.fire({
@@ -295,7 +316,7 @@ export default function PropertiesPanel({ properties }) {
           setApiData((prev) => ({
             ...prev,
             data: prev.data.map((p) =>
-              p.id === id || p.slug === id ? { ...p, status: newStatus } : p
+              p.id === id || p.slug === id ? { ...p, status: newStatus } : p,
             ),
           }));
         }
@@ -322,7 +343,7 @@ export default function PropertiesPanel({ properties }) {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setRefreshTrigger(prev => prev + 1);
+        setRefreshTrigger((prev) => prev + 1);
         Swal.fire({
           title: "Deleted!",
           text: "Property has been deleted.",
@@ -340,7 +361,7 @@ export default function PropertiesPanel({ properties }) {
   };
 
   const itemsPerPage = 3;
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (debouncedSearch !== searchTerm) {
@@ -373,9 +394,13 @@ export default function PropertiesPanel({ properties }) {
     fetchProperties();
   }, [currentPage, debouncedSearch, refreshTrigger]);
 
-  const totalPages = apiData ? apiData.pagination.totalPages : Math.ceil(properties.length / itemsPerPage);
+  const totalPages = apiData
+    ? apiData.pagination.totalPages
+    : Math.ceil(properties.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedProperties = apiData ? apiData.data : properties.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedProperties = apiData
+    ? apiData.data
+    : properties.slice(startIndex, startIndex + itemsPerPage);
   const totalCount = apiData ? apiData.pagination.total : properties.length;
 
   return (
@@ -393,7 +418,11 @@ export default function PropertiesPanel({ properties }) {
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
             <div className="relative w-full sm:w-64 md:w-80">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
-                {isSearching ? <Loader2 size={16} className="animate-spin text-copper" /> : <Search size={16} />}
+                {isSearching ? (
+                  <Loader2 size={16} className="animate-spin text-copper" />
+                ) : (
+                  <Search size={16} />
+                )}
               </div>
               <input
                 type="text"
@@ -418,7 +447,7 @@ export default function PropertiesPanel({ properties }) {
 
       {/* Property Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto no-scrollbar">
+        <DialogContent className="w-screen h-dvh max-w-none max-h-none rounded-none sm:w-full sm:max-w-[600px] sm:max-h-[90vh] sm:rounded-xl overflow-y-auto no-scrollbar">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>{editingProperty ? "Edit Property" : "Add New Property"}</DialogTitle>
@@ -436,7 +465,7 @@ export default function PropertiesPanel({ properties }) {
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <label htmlFor="location" className="text-sm font-medium">
                     Location
@@ -464,7 +493,7 @@ export default function PropertiesPanel({ properties }) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="grid gap-2">
                   <label htmlFor="beds" className="text-sm font-medium">
                     Beds
@@ -536,7 +565,7 @@ export default function PropertiesPanel({ properties }) {
               </div>
               <div className="grid gap-2">
                 <label className="text-sm font-medium">Amenities</label>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-2 p-4 border border-border rounded-lg bg-sand/30">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2 p-4 border border-border rounded-lg bg-sand/30">
                   {Object.entries(AMENITIES_MAP).map(([key, item]) => {
                     const Icon = item.icon;
                     return (
@@ -572,31 +601,39 @@ export default function PropertiesPanel({ properties }) {
                     onChange={(e) => {
                       const files = Array.from(e.target.files || []);
                       if (files.length > 0) {
-                        setImageFiles(prev => [...prev, ...files]);
-                        const newPreviews = files.map(file => URL.createObjectURL(file));
-                        setFormData(prev => ({ ...prev, images: [...(prev.images || []), ...newPreviews] }));
+                        setImageFiles((prev) => [...prev, ...files]);
+                        const newPreviews = files.map((file) => URL.createObjectURL(file));
+                        setFormData((prev) => ({
+                          ...prev,
+                          images: [...(prev.images || []), ...newPreviews],
+                        }));
                       }
-                      e.target.value = '';
+                      e.target.value = "";
                     }}
-                    required={!editingProperty && (!formData.images || formData.images.length === 0)}
+                    required={
+                      !editingProperty && (!formData.images || formData.images.length === 0)
+                    }
                   />
                   <div
-                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${(formData.images && formData.images.length > 0) ? "border-copper bg-copper/5" : "border-border bg-sand hover:bg-sand/80"}`}
+                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-colors ${formData.images && formData.images.length > 0 ? "border-copper bg-copper/5" : "border-border bg-sand hover:bg-sand/80"}`}
                   >
-                    {(formData.images && formData.images.length > 0) ? (
+                    {formData.images && formData.images.length > 0 ? (
                       <div className="flex flex-col w-full">
-                        <div className="flex flex-wrap gap-3 mb-4 max-h-[140px] overflow-y-auto no-scrollbar justify-center">
+                        <div className="flex flex-wrap gap-3 mb-4 max-h-[140px] overflow-y-auto justify-center relative z-20 p-1">
                           {formData.images.map((imgSrc, idx) => (
-                            <div key={idx} className="relative z-20 h-20 w-24 rounded-lg bg-white overflow-hidden shadow-sm ring-1 ring-border shrink-0 group">
+                            <div
+                              key={idx}
+                              className="relative z-20 h-20 w-24 rounded-lg bg-white overflow-hidden shadow-sm ring-1 ring-border shrink-0 group"
+                            >
                               <img
-                                src={typeof imgSrc === 'string' ? imgSrc : imgSrc.url}
+                                src={typeof imgSrc === "string" ? imgSrc : imgSrc.url}
                                 alt={`Preview ${idx + 1}`}
                                 className="h-full w-full object-cover"
                               />
                               <button
                                 type="button"
                                 onClick={(e) => handleRemoveImage(e, idx, imgSrc)}
-                                className="absolute top-1 right-1 bg-black/50 hover:bg-black p-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-1 right-1 bg-black/50 hover:bg-black p-1 rounded-full text-white transition-opacity"
                               >
                                 <X size={12} />
                               </button>
@@ -620,11 +657,20 @@ export default function PropertiesPanel({ properties }) {
                 </div>
               </div>
             </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>
+            <DialogFooter className="gap-2 pt-4 sm:pt-0 sm:gap-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="bg-ink hover:bg-ink/90 text-white" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="bg-ink hover:bg-ink/90 text-white"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
@@ -638,118 +684,122 @@ export default function PropertiesPanel({ properties }) {
         </DialogContent>
       </Dialog>
 
-      <div className={`grid gap-5 sm:grid-cols-2 xl:grid-cols-3 transition-opacity duration-300 ${isSearching ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
+      <div
+        className={`grid gap-5 sm:grid-cols-2 xl:grid-cols-3 transition-opacity duration-300 ${isSearching ? "opacity-50 pointer-events-none" : "opacity-100"}`}
+      >
         {paginatedProperties.map((property) => {
           const isLive = property.status === "published" || property.status === "LIVE";
           return (
-          <Card
-            key={property.id || property.slug}
-            className="overflow-hidden border-0 shadow-soft group flex flex-col"
-          >
-            <div className="relative aspect-16/10 overflow-hidden bg-sand shrink-0">
-              <img
-                src={(property.images && property.images.length > 0) ? (property.images[0]?.url || property.images[0]) : (property.thumbnail || property.img)}
-                alt={property.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute left-3 top-3">
-                <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm ${
-                    isLive
-                      ? "bg-white/90 text-emerald-700"
-                      : "bg-white/90 text-muted-foreground"
-                  }`}
+            <Card
+              key={property.id || property.slug}
+              className="overflow-hidden border-0 shadow-soft group flex flex-col"
+            >
+              <div className="relative aspect-16/10 overflow-hidden bg-sand shrink-0">
+                <img
+                  src={
+                    property.images && property.images.length > 0
+                      ? property.images[0]?.url || property.images[0]
+                      : property.thumbnail || property.img
+                  }
+                  alt={property.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute left-3 top-3">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm ${
+                      isLive ? "bg-white/90 text-emerald-700" : "bg-white/90 text-muted-foreground"
+                    }`}
+                  >
+                    {isLive ? "● Live" : "○ Draft"}
+                  </span>
+                </div>
+              </div>
+              <CardContent className="p-5 flex flex-col flex-1">
+                <h3
+                  className="font-semibold text-ink leading-snug line-clamp-2 cursor-pointer hover:underline"
+                  onClick={() => navigate(`/admin/properties/${property.slug}`)}
                 >
-                  {isLive ? "● Live" : "○ Draft"}
-                </span>
-              </div>
-            </div>
-            <CardContent className="p-5 flex flex-col flex-1">
-              <h3 
-                className="font-semibold text-ink leading-snug line-clamp-2 cursor-pointer hover:underline"
-                onClick={() => navigate(`/admin/properties/${property.slug}`)}
-              >
-                {property.title}
-              </h3>
-              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-                <MapPin size={13} className="shrink-0" />
-                {property.location}
-              </p>
-              <p className="mt-2 flex items-center gap-3 text-xs text-muted-foreground mb-4">
-                <span className="flex items-center gap-1">
-                  <Users size={12} /> {property.guests}
-                </span>
-                <span>{property.beds} beds</span>
-                <span>{property.baths} baths</span>
-                <span className="flex items-center gap-1 ml-auto text-copper font-medium">
-                  <Inbox size={12} /> {property.stayInquiryCount || 0} {property.stayInquiryCount === 1 ? 'inquiry' : 'inquiries'}
-                </span>
-              </p>
-              <div className="mt-auto flex flex-col gap-2">
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className={`flex-1 ${isLive ? "bg-sand text-ink hover:bg-sand/80" : "bg-copper hover:bg-copper/90 text-white"}`}
-                    variant={isLive ? "secondary" : "default"}
-                    onClick={() =>
-                      handleStatusChange(property.id || property.slug, isLive)
-                    }
-                  >
-                    {isLive ? (
-                      <>
-                        <EyeOff size={14} className="mr-1.5" /> Unpublish
-                      </>
-                    ) : (
-                      <>
-                        <Eye size={14} className="mr-1.5" /> Publish
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 text-ink"
-                    onClick={() => navigate(`/admin/properties/${property.id}/inquiries`)}
-                  >
-                    <Inbox size={14} className="mr-1.5" /> Inquiries
-                  </Button>
+                  {property.title}
+                </h3>
+                <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin size={13} className="shrink-0" />
+                  {property.location}
+                </p>
+                <p className="mt-2 flex items-center gap-3 text-xs text-muted-foreground mb-4">
+                  <span className="flex items-center gap-1">
+                    <Users size={12} /> {property.guests}
+                  </span>
+                  <span>{property.beds} beds</span>
+                  <span>{property.baths} baths</span>
+                  <span className="flex items-center gap-1 ml-auto text-copper font-medium">
+                    <Inbox size={12} /> {property.stayInquiryCount || 0}{" "}
+                    {property.stayInquiryCount === 1 ? "inquiry" : "inquiries"}
+                  </span>
+                </p>
+                <div className="mt-auto flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className={`flex-1 ${isLive ? "bg-sand text-ink hover:bg-sand/80" : "bg-copper hover:bg-copper/90 text-white"}`}
+                      variant={isLive ? "secondary" : "default"}
+                      onClick={() => handleStatusChange(property.id || property.slug, isLive)}
+                    >
+                      {isLive ? (
+                        <>
+                          <EyeOff size={14} className="mr-1.5" /> Unpublish
+                        </>
+                      ) : (
+                        <>
+                          <Eye size={14} className="mr-1.5" /> Publish
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 text-ink"
+                      onClick={() => navigate(`/admin/properties/${property.id}/inquiries`)}
+                    >
+                      <Inbox size={14} className="mr-1.5" /> Inquiries
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 text-ink"
+                      onClick={() => openEditModal(property)}
+                    >
+                      <Pencil size={14} className="mr-1.5" /> Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
+                      onClick={() => {
+                        Swal.fire({
+                          title: "Delete Property?",
+                          text: "Are you sure you want to delete this property? This action cannot be undone.",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#d33",
+                          cancelButtonColor: "#1a1a1a",
+                          confirmButtonText: "Yes, delete it!",
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            handleDeleteProperty(property.id || property.slug);
+                          }
+                        });
+                      }}
+                    >
+                      <Trash2 size={14} className="mr-1.5" /> Delete
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 text-ink"
-                    onClick={() => openEditModal(property)}
-                  >
-                    <Pencil size={14} className="mr-1.5" /> Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
-                    onClick={() => {
-                      Swal.fire({
-                        title: "Delete Property?",
-                        text: "Are you sure you want to delete this property? This action cannot be undone.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#1a1a1a",
-                        confirmButtonText: "Yes, delete it!",
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          handleDeleteProperty(property.id || property.slug);
-                        }
-                      });
-                    }}
-                  >
-                    <Trash2 size={14} className="mr-1.5" /> Delete
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )})}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {totalPages > 1 && (
