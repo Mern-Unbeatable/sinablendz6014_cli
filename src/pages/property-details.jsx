@@ -345,10 +345,18 @@ export default function PropertyDetailsPage() {
                           email: String(fd.get("email") || ""),
                           phone: String(fd.get("phone") || ""),
                           checkIn: String(fd.get("checkIn") || ""),
-                          checkOut: String(fd.get("checkOut") || ""),
                           guestCount: parseInt(String(fd.get("guests") || "1"), 10),
-                          message: String(fd.get("message") || ""),
                         };
+
+                        const checkOutValue = fd.get("checkOut");
+                        if (checkOutValue) {
+                          payload.checkOut = String(checkOutValue);
+                        }
+
+                        const messageValue = fd.get("message");
+                        if (messageValue) {
+                          payload.message = String(messageValue);
+                        }
 
                         const res = await fetch(`${baseUrl}/api/inquiries/stay/${slug}`, {
                           method: "POST",

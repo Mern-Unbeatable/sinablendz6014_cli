@@ -1,5 +1,7 @@
-import { Inbox, Mail, Eye, Building2, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Inbox, Mail, Eye, Building2, ChevronRight, Home, Loader2 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api";
 
 export function StatCard({ icon: Icon, label, value, sub, accent }) {
   return (
@@ -20,7 +22,41 @@ export function StatCard({ icon: Icon, label, value, sub, accent }) {
   );
 }
 
-export default function DashboardPanel({ stats, onNavigate }) {
+export default function DashboardPanel({ onNavigate }) {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await apiFetch("/api/admin/dashboard/overview");
+        const json = await res.json();
+        if (json.success) {
+          setStats(json.data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-32">
+        <Loader2 className="animate-spin text-copper" size={48} />
+      </div>
+    );
+  }
+
+  const newInquiries = stats?.newInquiries?.simpleInquiries || 0;
+  const propertyInquiries = stats?.newInquiries?.propertyInquiries || 0;
+  const totalInquiries = stats?.totalInquiries || 0;
+  const liveListings = stats?.liveListings || 0;
+  const allProperties = stats?.allProperties || 0;
+
   return (
     <div className="space-y-8">
       <div>
@@ -34,11 +70,12 @@ export default function DashboardPanel({ stats, onNavigate }) {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={Inbox} label="New inquiries" value={stats.newInquiries} accent />
-        <StatCard icon={Mail} label="Total inquiries" value={stats.totalInquiries} />
-        <StatCard icon={Eye} label="Live listings" value={stats.publishedProperties} accent />
-        <StatCard icon={Building2} label="All properties" value={stats.totalProperties} />
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+        <StatCard icon={Inbox} label="New inquiries" value={newInquiries} accent />
+        <StatCard icon={Home} label="Property inquiries" value={propertyInquiries} accent />
+        {/* <StatCard icon={Mail} label="Total inquiries" value={totalInquiries} /> */}
+        <StatCard icon={Eye} label="Live listings" value={liveListings} accent />
+        <StatCard icon={Building2} label="All properties" value={allProperties} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -49,7 +86,7 @@ export default function DashboardPanel({ stats, onNavigate }) {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { label: "Review new inquiries", view: "inquiries", count: stats.newInquiries },
+              { label: "Review new inquiries", view: "inquiries", count: newInquiries },
               { label: "Manage property listings", view: "properties" },
             ].map((action) => (
               <button

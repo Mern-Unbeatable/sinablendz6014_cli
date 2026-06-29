@@ -427,6 +427,13 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
                     </p>
                   ) : null}
                 </DetailRow>
+                <DetailRow icon={MessageSquare} label="Looking for">
+                  {(selectedDetails || selected).lookingFor ? (
+                    <p className="whitespace-pre-wrap rounded-xl bg-sand p-4 text-sm leading-relaxed mt-2">
+                      {(selectedDetails || selected).lookingFor}
+                    </p>
+                  ) : null}
+                </DetailRow>
               </div>
             </>
           ) : null}
