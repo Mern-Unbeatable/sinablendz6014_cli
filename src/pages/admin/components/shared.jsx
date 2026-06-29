@@ -25,7 +25,7 @@ export function StatusBadge({ status }) {
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[status] || styles.CLOSED}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${styles[status] || styles.CLOSED}`}
     >
       {INQUIRY_STATUSES[status] || status}
     </span>
@@ -40,7 +40,7 @@ export function TypeBadge({ type }) {
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors[type] || colors.GENERAL_CONTACT}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${colors[type] || colors.GENERAL_CONTACT}`}
     >
       {INQUIRY_TYPES[type] || type}
     </span>
