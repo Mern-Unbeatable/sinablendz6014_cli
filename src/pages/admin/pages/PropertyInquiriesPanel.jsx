@@ -47,7 +47,7 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
   const [selectedId, setSelectedId] = useState(null);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  
+
   const [statusFilter, setStatusFilter] = useState("all");
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,7 +68,10 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
         if (res.ok && data.success) {
           setItems(data.data || []);
           setTotalPages(
-            data.pagination?.totalPages || data.totalPages || Math.ceil((data.pagination?.total || data.total || 0) / 10) || 1,
+            data.pagination?.totalPages ||
+              data.totalPages ||
+              Math.ceil((data.pagination?.total || data.total || 0) / 10) ||
+              1,
           );
           setTotalItems(data.pagination?.total || data.total || data.data?.length || 0);
         } else {
@@ -139,7 +142,7 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
           });
           if (res.ok) {
             setItems((prev) => prev.filter((i) => i.id !== id));
-            setTotalItems(t => Math.max(0, t - 1));
+            setTotalItems((t) => Math.max(0, t - 1));
           } else {
             throw new Error("Failed to delete inquiry");
           }
@@ -154,12 +157,19 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0 h-10 w-10 border border-border/60 bg-white hover:bg-sand/80">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="shrink-0 h-10 w-10 border border-border/60 bg-white hover:bg-sand/80"
+        >
           <ChevronRight size={20} className="rotate-180" />
         </Button>
         <div>
           <p className="eyebrow">Property Inquiries</p>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-ink">{property?.title || "Property"}</h2>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-ink">
+            {property?.title || "Property"}
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {totalItems} submission{totalItems !== 1 ? "s" : ""} for this property
           </p>
@@ -202,83 +212,90 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
             <>
               <div className="hidden md:block overflow-x-auto">
                 <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="whitespace-nowrap">
-                      {formatShortDate(item.createdAt)}
-                    </TableCell>
-                    <TableCell className="font-medium">{item.name || "Unknown"}</TableCell>
-                    <TableCell>
-                      <TypeBadge type={item.type} />
-                    </TableCell>
-                    <TableCell>
-                      <Select
-                        value={item.status}
-                        onValueChange={(val) => handleStatusChange(item.id, val)}
-                        disabled={item.status === "CLOSED"}
-                      >
-                        <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(INQUIRY_STATUSES)
-                            .filter(([val]) => {
-                              if (item.status === "NEW")
-                                return val === "NEW" || val === "CONTACTED";
-                              if (item.status === "CONTACTED")
-                                return val === "CONTACTED" || val === "CLOSED";
-                              return val === "CLOSED";
-                            })
-                            .map(([val, label]) => (
-                              <SelectItem key={val} value={val} className="text-xs">
-                                {label}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-ink"
-                          onClick={() => openView(item.id)}
-                        >
-                          <Eye size={16} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="whitespace-nowrap">
+                          {formatShortDate(item.createdAt)}
+                        </TableCell>
+                        <TableCell className="font-medium">{item.name || "Unknown"}</TableCell>
+                        <TableCell>
+                          <TypeBadge type={item.type} />
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={item.status}
+                            onValueChange={(val) => handleStatusChange(item.id, val)}
+                            disabled={item.status === "CLOSED"}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(INQUIRY_STATUSES)
+                                .filter(([val]) => {
+                                  if (item.status === "NEW")
+                                    return val === "NEW" || val === "CONTACTED";
+                                  if (item.status === "CONTACTED")
+                                    return val === "CONTACTED" || val === "CLOSED";
+                                  return val === "CLOSED";
+                                })
+                                .map(([val, label]) => (
+                                  <SelectItem key={val} value={val} className="text-xs">
+                                    {label}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-ink"
+                              onClick={() => openView(item.id)}
+                            >
+                              <Eye size={16} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => handleDelete(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
                 </Table>
               </div>
               <div className="md:hidden flex flex-col divide-y divide-border/60">
                 {items.map((item) => (
-                  <div key={item.id} className="p-5 flex flex-col gap-4 hover:bg-black/[0.02] transition-colors">
+                  <div
+                    key={item.id}
+                    className="p-5 flex flex-col gap-4 hover:bg-black/2 transition-colors"
+                  >
                     <div className="flex justify-between items-start gap-3">
                       <div className="min-w-0">
-                        <p className="font-medium text-ink break-words">{item.name || "Unknown"}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{formatShortDate(item.createdAt)}</p>
+                        <p className="font-medium text-ink wrap-break-word">
+                          {item.name || "Unknown"}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {formatShortDate(item.createdAt)}
+                        </p>
                       </div>
                       <div className="shrink-0">
                         <TypeBadge type={item.type} />
@@ -335,8 +352,8 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
           )}
           <div className="flex items-center justify-between border-t border-border/60 px-6 py-4">
             <span className="text-sm text-muted-foreground">
-              Showing {items.length > 0 ? (currentPage - 1) * 10 + 1 : 0} to {Math.min(currentPage * 10, totalItems)} of{" "}
-              {totalItems} entries
+              Showing {items.length > 0 ? (currentPage - 1) * 10 + 1 : 0} to{" "}
+              {Math.min(currentPage * 10, totalItems)} of {totalItems} entries
             </span>
             <div className="flex gap-2">
               <Button
@@ -366,7 +383,7 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
             <div className="flex h-40 items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin text-copper" />
             </div>
-          ) : (selectedDetails || selected) ? (
+          ) : selectedDetails || selected ? (
             <>
               <DialogHeader>
                 <DialogTitle className="text-xl flex items-center gap-3">
@@ -381,7 +398,10 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
               <div className="space-y-2 py-4">
                 <DetailRow icon={Mail} label="Email">
                   {(selectedDetails || selected).email ? (
-                    <a href={`mailto:${(selectedDetails || selected).email}`} className="text-copper hover:underline">
+                    <a
+                      href={`mailto:${(selectedDetails || selected).email}`}
+                      className="text-copper hover:underline"
+                    >
                       {(selectedDetails || selected).email}
                     </a>
                   ) : null}
@@ -390,7 +410,10 @@ export default function PropertyInquiriesPanel({ propertyId, property, onBack })
                   {(selectedDetails || selected).phone}
                 </DetailRow>
                 <DetailRow icon={Building2} label="Property">
-                  {selectedDetails?.property?.title || property?.title || selected?.propertyTitle || "Unknown"}
+                  {selectedDetails?.property?.title ||
+                    property?.title ||
+                    selected?.propertyTitle ||
+                    "Unknown"}
                 </DetailRow>
                 <DetailRow icon={Calendar} label="Stay dates">
                   {(selectedDetails || selected).checkIn

@@ -132,7 +132,7 @@ export default function PropertiesList() {
             >
               Previous
             </button>
-            <div className="flex items-center gap-1.5 hidden sm:flex">
+            <div className="hidden sm:flex items-center gap-1.5">
               {getPaginationRange(currentPage, totalPages).map((pageNumber, i) => (
                 pageNumber === "..." ? (
                   <span key={`dots-${i}`} className="px-2 text-ink/70">...</span>
