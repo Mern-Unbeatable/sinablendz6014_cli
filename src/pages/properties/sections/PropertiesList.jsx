@@ -112,7 +112,7 @@ export default function PropertiesList() {
                         <Bath size={14} className="text-copper" /> {p.baths} Bath
                       </span>
                     </div>
-                    <div className="mt-4 flex items-center gap-1 text-sm text-copper font-medium opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="mt-4 flex items-center gap-1 text-sm text-copper font-medium opacity-100 lg:opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       View Details <ArrowRight size={14} />
                     </div>
                   </div>

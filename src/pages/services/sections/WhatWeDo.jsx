@@ -7,7 +7,7 @@ import penthouse from "@/assets/penthouse.jpg";
 
 export default function WhatWeDo() {
   return (
-    <Section className="bg-sand">
+    <Section className="bg-sand pb-8 lg:pb-10">
       <div className="container-luxe grid-split">
         <div>
           <FadeIn>
