@@ -126,7 +126,7 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
             method: "DELETE",
           });
           if (res.ok) {
-            setRefreshTrigger(prev => prev + 1);
+            setRefreshTrigger((prev) => prev + 1);
           } else {
             throw new Error("Failed to delete inquiry");
           }
@@ -199,92 +199,102 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Property Address</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="whitespace-nowrap">
-                      {formatShortDate(item.createdAt)}
-                    </TableCell>
-                    <TableCell className="font-medium">{item.name || "Unknown"}</TableCell>
-                    <TableCell>
-                      <TypeBadge type={item.type} />
-                    </TableCell>
-                    <TableCell
-                      className="max-w-[150px] truncate"
-                      title={item.propertyTitle || item.property?.title || item.propertyAddress}
-                    >
-                      {item.propertyTitle || item.property?.title || item.propertyAddress || "—"}
-                    </TableCell>
-                    <TableCell>
-                      <Select
-                        value={item.status}
-                        onValueChange={(val) => handleStatusChange(item.id, val)}
-                        disabled={item.status === "CLOSED"}
-                      >
-                        <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(INQUIRY_STATUSES)
-                            .filter(([val]) => {
-                              if (item.status === "NEW")
-                                return val === "NEW" || val === "CONTACTED";
-                              if (item.status === "CONTACTED")
-                                return val === "CONTACTED" || val === "CLOSED";
-                              return val === "CLOSED";
-                            })
-                            .map(([val, label]) => (
-                              <SelectItem key={val} value={val} className="text-xs">
-                                {label}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-ink"
-                          onClick={() => openView(item.id)}
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Property Address</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="whitespace-nowrap">
+                          {formatShortDate(item.createdAt)}
+                        </TableCell>
+                        <TableCell className="font-medium">{item.name || "Unknown"}</TableCell>
+                        <TableCell>
+                          <TypeBadge type={item.type} />
+                        </TableCell>
+                        <TableCell
+                          className="max-w-[150px] truncate"
+                          title={item.propertyTitle || item.property?.title || item.propertyAddress}
                         >
-                          <Eye size={16} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+                          {item.propertyTitle ||
+                            item.property?.title ||
+                            item.propertyAddress ||
+                            "—"}
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={item.status}
+                            onValueChange={(val) => handleStatusChange(item.id, val)}
+                            disabled={item.status === "CLOSED"}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-border/60 disabled:opacity-75 disabled:cursor-not-allowed">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(INQUIRY_STATUSES)
+                                .filter(([val]) => {
+                                  if (item.status === "NEW")
+                                    return val === "NEW" || val === "CONTACTED";
+                                  if (item.status === "CONTACTED")
+                                    return val === "CONTACTED" || val === "CLOSED";
+                                  return val === "CLOSED";
+                                })
+                                .map(([val, label]) => (
+                                  <SelectItem key={val} value={val} className="text-xs">
+                                    {label}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-ink"
+                              onClick={() => openView(item.id)}
+                            >
+                              <Eye size={16} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => handleDelete(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
                 </Table>
               </div>
 
               {/* Mobile Card View */}
               <div className="md:hidden flex flex-col divide-y divide-border/60">
                 {items.map((item) => (
-                  <div key={item.id} className="p-5 flex flex-col gap-4 hover:bg-black/[0.02] transition-colors">
+                  <div
+                    key={item.id}
+                    className="p-5 flex flex-col gap-4 hover:bg-black/2 transition-colors"
+                  >
                     <div className="flex justify-between items-start gap-3">
                       <div className="min-w-0">
-                        <p className="font-medium text-ink break-words">{item.name || "Unknown"}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{formatShortDate(item.createdAt)}</p>
+                        <p className="font-medium text-ink wrap-break-word">
+                          {item.name || "Unknown"}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {formatShortDate(item.createdAt)}
+                        </p>
                       </div>
                       <div className="shrink-0">
                         <TypeBadge type={item.type} />
@@ -293,7 +303,12 @@ export default function InquiriesPanel({ selectedId, onSelect }) {
                     <div>
                       <p className="text-sm font-medium text-ink/80 flex items-center gap-2 mb-1">
                         <MapPin size={14} className="text-muted-foreground shrink-0" />
-                        <span className="line-clamp-1">{item.propertyTitle || item.property?.title || item.propertyAddress || "—"}</span>
+                        <span className="line-clamp-1">
+                          {item.propertyTitle ||
+                            item.property?.title ||
+                            item.propertyAddress ||
+                            "—"}
+                        </span>
                       </p>
                     </div>
                     <div className="flex items-center justify-between pt-1">
