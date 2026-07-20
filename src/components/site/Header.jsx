@@ -68,7 +68,7 @@ export function Header({ theme = "dark" }) {
         }`}
       >
         <div className="container-luxe flex items-center justify-between py-3 md:py-4">
-          <Logo className="h-11 md:h-16" />
+          <Logo className="h-11 md:h-16 lg:h-20" />
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 lg:flex">
