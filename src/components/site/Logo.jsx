@@ -7,7 +7,7 @@ export function Logo({ className = "h-10" }) {
       <img
         src={logo}
         alt="Aurora Suites"
-        className={`${className} w-auto object-contain transition-opacity group-hover:opacity-90`}
+        className={`${className} w-auto object-contain transition-all group-hover:opacity-90 brightness-[1.3] drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]`}
       />
     </Link>
   );
